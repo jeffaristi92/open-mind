@@ -5,6 +5,12 @@
  */
 package Vista;
 
+import Controlador.ConnectionFactory;
+import Controlador.OpmProductoJpaController;
+import Modelo.OpmProducto;
+import java.sql.Connection;
+import java.util.List;
+
 /**
  *
  * @author ARISTIZABAL
@@ -28,6 +34,7 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -37,6 +44,13 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Producto");
 
@@ -57,15 +71,30 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(78, 78, 78)
+                .addComponent(jButton1)
+                .addContainerGap(749, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 479, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(65, 65, 65)
+                .addComponent(jButton1)
+                .addContainerGap(391, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try{
+        mtdPrueba();
+        }catch(Exception exc){
+            System.out.println("Error: "+exc.getMessage());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -101,8 +130,22 @@ public class Principal extends javax.swing.JFrame {
             }
         });
     }
+    
+    void mtdPrueba(){
+        ConnectionFactory conexion = new ConnectionFactory();
+        
+        OpmProductoJpaController controlador = new OpmProductoJpaController(conexion.getFactory());
+        
+        List<OpmProducto> lista = controlador.findOpmProductoEntities();
+        
+        System.out.println("Cantidad productos: "+lista.size());
+        for (OpmProducto lista1 : lista) {
+            System.out.println(String.format("%s, %s, %s, %s, %s", lista1.getNmCodigo().toString(), lista1.getNvNombre(),lista1.getNvDescripcion(), lista1.getNmCosto().toString(), ""+lista1.getNmValor()));
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
