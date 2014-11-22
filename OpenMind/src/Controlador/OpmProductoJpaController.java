@@ -19,6 +19,7 @@ import Modelo.OpmInventarioPunto;
 import Modelo.OpmDetalleRemision;
 import Modelo.OpmDetalleTraslado;
 import Modelo.OpmDetalleVenta;
+import Modelo.OpmDetalleLote;
 import Modelo.OpmProducto;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,6 +55,9 @@ public class OpmProductoJpaController implements Serializable {
         if (opmProducto.getOpmDetalleVentaList() == null) {
             opmProducto.setOpmDetalleVentaList(new ArrayList<OpmDetalleVenta>());
         }
+        if (opmProducto.getOpmDetalleLoteList() == null) {
+            opmProducto.setOpmDetalleLoteList(new ArrayList<OpmDetalleLote>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -88,6 +92,12 @@ public class OpmProductoJpaController implements Serializable {
                 attachedOpmDetalleVentaList.add(opmDetalleVentaListOpmDetalleVentaToAttach);
             }
             opmProducto.setOpmDetalleVentaList(attachedOpmDetalleVentaList);
+            List<OpmDetalleLote> attachedOpmDetalleLoteList = new ArrayList<OpmDetalleLote>();
+            for (OpmDetalleLote opmDetalleLoteListOpmDetalleLoteToAttach : opmProducto.getOpmDetalleLoteList()) {
+                opmDetalleLoteListOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListOpmDetalleLoteToAttach.getNmCodigo());
+                attachedOpmDetalleLoteList.add(opmDetalleLoteListOpmDetalleLoteToAttach);
+            }
+            opmProducto.setOpmDetalleLoteList(attachedOpmDetalleLoteList);
             em.persist(opmProducto);
             for (OpmInventario opmInventarioListOpmInventario : opmProducto.getOpmInventarioList()) {
                 OpmProducto oldNmProductoOfOpmInventarioListOpmInventario = opmInventarioListOpmInventario.getNmProducto();
@@ -134,6 +144,15 @@ public class OpmProductoJpaController implements Serializable {
                     oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta = em.merge(oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta);
                 }
             }
+            for (OpmDetalleLote opmDetalleLoteListOpmDetalleLote : opmProducto.getOpmDetalleLoteList()) {
+                OpmProducto oldNmProductoOfOpmDetalleLoteListOpmDetalleLote = opmDetalleLoteListOpmDetalleLote.getNmProducto();
+                opmDetalleLoteListOpmDetalleLote.setNmProducto(opmProducto);
+                opmDetalleLoteListOpmDetalleLote = em.merge(opmDetalleLoteListOpmDetalleLote);
+                if (oldNmProductoOfOpmDetalleLoteListOpmDetalleLote != null) {
+                    oldNmProductoOfOpmDetalleLoteListOpmDetalleLote.getOpmDetalleLoteList().remove(opmDetalleLoteListOpmDetalleLote);
+                    oldNmProductoOfOpmDetalleLoteListOpmDetalleLote = em.merge(oldNmProductoOfOpmDetalleLoteListOpmDetalleLote);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -158,6 +177,8 @@ public class OpmProductoJpaController implements Serializable {
             List<OpmDetalleTraslado> opmDetalleTrasladoListNew = opmProducto.getOpmDetalleTrasladoList();
             List<OpmDetalleVenta> opmDetalleVentaListOld = persistentOpmProducto.getOpmDetalleVentaList();
             List<OpmDetalleVenta> opmDetalleVentaListNew = opmProducto.getOpmDetalleVentaList();
+            List<OpmDetalleLote> opmDetalleLoteListOld = persistentOpmProducto.getOpmDetalleLoteList();
+            List<OpmDetalleLote> opmDetalleLoteListNew = opmProducto.getOpmDetalleLoteList();
             List<String> illegalOrphanMessages = null;
             for (OpmInventario opmInventarioListOldOpmInventario : opmInventarioListOld) {
                 if (!opmInventarioListNew.contains(opmInventarioListOldOpmInventario)) {
@@ -199,6 +220,14 @@ public class OpmProductoJpaController implements Serializable {
                     illegalOrphanMessages.add("You must retain OpmDetalleVenta " + opmDetalleVentaListOldOpmDetalleVenta + " since its nmProducto field is not nullable.");
                 }
             }
+            for (OpmDetalleLote opmDetalleLoteListOldOpmDetalleLote : opmDetalleLoteListOld) {
+                if (!opmDetalleLoteListNew.contains(opmDetalleLoteListOldOpmDetalleLote)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmDetalleLote " + opmDetalleLoteListOldOpmDetalleLote + " since its nmProducto field is not nullable.");
+                }
+            }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
@@ -237,6 +266,13 @@ public class OpmProductoJpaController implements Serializable {
             }
             opmDetalleVentaListNew = attachedOpmDetalleVentaListNew;
             opmProducto.setOpmDetalleVentaList(opmDetalleVentaListNew);
+            List<OpmDetalleLote> attachedOpmDetalleLoteListNew = new ArrayList<OpmDetalleLote>();
+            for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLoteToAttach : opmDetalleLoteListNew) {
+                opmDetalleLoteListNewOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListNewOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListNewOpmDetalleLoteToAttach.getNmCodigo());
+                attachedOpmDetalleLoteListNew.add(opmDetalleLoteListNewOpmDetalleLoteToAttach);
+            }
+            opmDetalleLoteListNew = attachedOpmDetalleLoteListNew;
+            opmProducto.setOpmDetalleLoteList(opmDetalleLoteListNew);
             opmProducto = em.merge(opmProducto);
             for (OpmInventario opmInventarioListNewOpmInventario : opmInventarioListNew) {
                 if (!opmInventarioListOld.contains(opmInventarioListNewOpmInventario)) {
@@ -290,6 +326,17 @@ public class OpmProductoJpaController implements Serializable {
                     if (oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta != null && !oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta.equals(opmProducto)) {
                         oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListNewOpmDetalleVenta);
                         oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta = em.merge(oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta);
+                    }
+                }
+            }
+            for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLote : opmDetalleLoteListNew) {
+                if (!opmDetalleLoteListOld.contains(opmDetalleLoteListNewOpmDetalleLote)) {
+                    OpmProducto oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote = opmDetalleLoteListNewOpmDetalleLote.getNmProducto();
+                    opmDetalleLoteListNewOpmDetalleLote.setNmProducto(opmProducto);
+                    opmDetalleLoteListNewOpmDetalleLote = em.merge(opmDetalleLoteListNewOpmDetalleLote);
+                    if (oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote != null && !oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote.equals(opmProducto)) {
+                        oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote.getOpmDetalleLoteList().remove(opmDetalleLoteListNewOpmDetalleLote);
+                        oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote = em.merge(oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote);
                     }
                 }
             }
@@ -357,6 +404,13 @@ public class OpmProductoJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleVenta " + opmDetalleVentaListOrphanCheckOpmDetalleVenta + " in its opmDetalleVentaList field has a non-nullable nmProducto field.");
+            }
+            List<OpmDetalleLote> opmDetalleLoteListOrphanCheck = opmProducto.getOpmDetalleLoteList();
+            for (OpmDetalleLote opmDetalleLoteListOrphanCheckOpmDetalleLote : opmDetalleLoteListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleLote " + opmDetalleLoteListOrphanCheckOpmDetalleLote + " in its opmDetalleLoteList field has a non-nullable nmProducto field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import Modelo.OpmVenta;
 import Modelo.OpmRemision;
+import Modelo.OpmLote;
 import Modelo.OpmUsuario;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,6 +48,9 @@ public class OpmUsuarioJpaController implements Serializable {
         if (opmUsuario.getOpmRemisionList() == null) {
             opmUsuario.setOpmRemisionList(new ArrayList<OpmRemision>());
         }
+        if (opmUsuario.getOpmLoteList() == null) {
+            opmUsuario.setOpmLoteList(new ArrayList<OpmLote>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -74,6 +78,12 @@ public class OpmUsuarioJpaController implements Serializable {
                 attachedOpmRemisionList.add(opmRemisionListOpmRemisionToAttach);
             }
             opmUsuario.setOpmRemisionList(attachedOpmRemisionList);
+            List<OpmLote> attachedOpmLoteList = new ArrayList<OpmLote>();
+            for (OpmLote opmLoteListOpmLoteToAttach : opmUsuario.getOpmLoteList()) {
+                opmLoteListOpmLoteToAttach = em.getReference(opmLoteListOpmLoteToAttach.getClass(), opmLoteListOpmLoteToAttach.getNmCodigo());
+                attachedOpmLoteList.add(opmLoteListOpmLoteToAttach);
+            }
+            opmUsuario.setOpmLoteList(attachedOpmLoteList);
             em.persist(opmUsuario);
             if (nmRol != null) {
                 nmRol.getOpmUsuarioList().add(opmUsuario);
@@ -106,6 +116,15 @@ public class OpmUsuarioJpaController implements Serializable {
                     oldNmEmpleadoOfOpmRemisionListOpmRemision = em.merge(oldNmEmpleadoOfOpmRemisionListOpmRemision);
                 }
             }
+            for (OpmLote opmLoteListOpmLote : opmUsuario.getOpmLoteList()) {
+                OpmUsuario oldNmEmpleadoOfOpmLoteListOpmLote = opmLoteListOpmLote.getNmEmpleado();
+                opmLoteListOpmLote.setNmEmpleado(opmUsuario);
+                opmLoteListOpmLote = em.merge(opmLoteListOpmLote);
+                if (oldNmEmpleadoOfOpmLoteListOpmLote != null) {
+                    oldNmEmpleadoOfOpmLoteListOpmLote.getOpmLoteList().remove(opmLoteListOpmLote);
+                    oldNmEmpleadoOfOpmLoteListOpmLote = em.merge(oldNmEmpleadoOfOpmLoteListOpmLote);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -128,6 +147,8 @@ public class OpmUsuarioJpaController implements Serializable {
             List<OpmVenta> opmVentaListNew = opmUsuario.getOpmVentaList();
             List<OpmRemision> opmRemisionListOld = persistentOpmUsuario.getOpmRemisionList();
             List<OpmRemision> opmRemisionListNew = opmUsuario.getOpmRemisionList();
+            List<OpmLote> opmLoteListOld = persistentOpmUsuario.getOpmLoteList();
+            List<OpmLote> opmLoteListNew = opmUsuario.getOpmLoteList();
             List<String> illegalOrphanMessages = null;
             for (OpmPuntoVenta opmPuntoVentaListOldOpmPuntoVenta : opmPuntoVentaListOld) {
                 if (!opmPuntoVentaListNew.contains(opmPuntoVentaListOldOpmPuntoVenta)) {
@@ -151,6 +172,14 @@ public class OpmUsuarioJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain OpmRemision " + opmRemisionListOldOpmRemision + " since its nmEmpleado field is not nullable.");
+                }
+            }
+            for (OpmLote opmLoteListOldOpmLote : opmLoteListOld) {
+                if (!opmLoteListNew.contains(opmLoteListOldOpmLote)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmLote " + opmLoteListOldOpmLote + " since its nmEmpleado field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -181,6 +210,13 @@ public class OpmUsuarioJpaController implements Serializable {
             }
             opmRemisionListNew = attachedOpmRemisionListNew;
             opmUsuario.setOpmRemisionList(opmRemisionListNew);
+            List<OpmLote> attachedOpmLoteListNew = new ArrayList<OpmLote>();
+            for (OpmLote opmLoteListNewOpmLoteToAttach : opmLoteListNew) {
+                opmLoteListNewOpmLoteToAttach = em.getReference(opmLoteListNewOpmLoteToAttach.getClass(), opmLoteListNewOpmLoteToAttach.getNmCodigo());
+                attachedOpmLoteListNew.add(opmLoteListNewOpmLoteToAttach);
+            }
+            opmLoteListNew = attachedOpmLoteListNew;
+            opmUsuario.setOpmLoteList(opmLoteListNew);
             opmUsuario = em.merge(opmUsuario);
             if (nmRolOld != null && !nmRolOld.equals(nmRolNew)) {
                 nmRolOld.getOpmUsuarioList().remove(opmUsuario);
@@ -220,6 +256,17 @@ public class OpmUsuarioJpaController implements Serializable {
                     if (oldNmEmpleadoOfOpmRemisionListNewOpmRemision != null && !oldNmEmpleadoOfOpmRemisionListNewOpmRemision.equals(opmUsuario)) {
                         oldNmEmpleadoOfOpmRemisionListNewOpmRemision.getOpmRemisionList().remove(opmRemisionListNewOpmRemision);
                         oldNmEmpleadoOfOpmRemisionListNewOpmRemision = em.merge(oldNmEmpleadoOfOpmRemisionListNewOpmRemision);
+                    }
+                }
+            }
+            for (OpmLote opmLoteListNewOpmLote : opmLoteListNew) {
+                if (!opmLoteListOld.contains(opmLoteListNewOpmLote)) {
+                    OpmUsuario oldNmEmpleadoOfOpmLoteListNewOpmLote = opmLoteListNewOpmLote.getNmEmpleado();
+                    opmLoteListNewOpmLote.setNmEmpleado(opmUsuario);
+                    opmLoteListNewOpmLote = em.merge(opmLoteListNewOpmLote);
+                    if (oldNmEmpleadoOfOpmLoteListNewOpmLote != null && !oldNmEmpleadoOfOpmLoteListNewOpmLote.equals(opmUsuario)) {
+                        oldNmEmpleadoOfOpmLoteListNewOpmLote.getOpmLoteList().remove(opmLoteListNewOpmLote);
+                        oldNmEmpleadoOfOpmLoteListNewOpmLote = em.merge(oldNmEmpleadoOfOpmLoteListNewOpmLote);
                     }
                 }
             }
@@ -273,6 +320,13 @@ public class OpmUsuarioJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmRemision " + opmRemisionListOrphanCheckOpmRemision + " in its opmRemisionList field has a non-nullable nmEmpleado field.");
+            }
+            List<OpmLote> opmLoteListOrphanCheck = opmUsuario.getOpmLoteList();
+            for (OpmLote opmLoteListOrphanCheckOpmLote : opmLoteListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmLote " + opmLoteListOrphanCheckOpmLote + " in its opmLoteList field has a non-nullable nmEmpleado field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

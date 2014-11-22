@@ -18,7 +18,7 @@ public class ConnectionFactory {
     public ConnectionFactory() {
 
         factory = Persistence.createEntityManagerFactory("OpenMindPU");
-    }
+}
 
     public EntityManagerFactory getFactory() {
         return factory;

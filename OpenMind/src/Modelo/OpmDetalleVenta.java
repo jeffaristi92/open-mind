@@ -36,6 +36,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmDetalleVenta.findByNmCantidad", query = "SELECT o FROM OpmDetalleVenta o WHERE o.nmCantidad = :nmCantidad"),
     @NamedQuery(name = "OpmDetalleVenta.findByNmPrecio", query = "SELECT o FROM OpmDetalleVenta o WHERE o.nmPrecio = :nmPrecio")})
 public class OpmDetalleVenta implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "NM_PRECIO")
+    private double nmPrecio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +48,6 @@ public class OpmDetalleVenta implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CANTIDAD")
     private int nmCantidad;
-    @Basic(optional = false)
-    @Column(name = "NM_PRECIO")
-    private int nmPrecio;
     @JoinColumn(name = "NM_VENTA", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmVenta nmVenta;
@@ -86,7 +86,7 @@ public class OpmDetalleVenta implements Serializable {
         this.nmCantidad = nmCantidad;
     }
 
-    public int getNmPrecio() {
+    public double getNmPrecio() {
         return nmPrecio;
     }
 
@@ -143,5 +143,8 @@ public class OpmDetalleVenta implements Serializable {
     public String toString() {
         return "Controlador.OpmDetalleVenta[ nmCodigo=" + nmCodigo + " ]";
     }
-    
+
+    public void setNmPrecio(double nmPrecio) {
+        this.nmPrecio = nmPrecio;
+    }
 }

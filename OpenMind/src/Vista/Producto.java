@@ -8,8 +8,10 @@ package Vista;
 import Controlador.ConnectionFactory;
 import Controlador.OpmProductoJpaController;
 import Modelo.OpmProducto;
-import java.math.BigDecimal;
 import java.util.List;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,25 +24,30 @@ public class Producto extends javax.swing.JPanel {
      * Creates new form Producto
      */
     OpmProductoJpaController _jpaControladorProducto;
-    
+
     public Producto() {
         initComponents();
         _jpaControladorProducto = new OpmProductoJpaController((new ConnectionFactory()).getFactory());
         mtdActualizarTabla();
     }
-    
-    void mtdActualizarTabla(){
+
+    void mtdActualizarTabla() {
         List<OpmProducto> lstProductos = _jpaControladorProducto.findOpmProductoEntities();
         DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
-        for(OpmProducto producto : lstProductos){            
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.removeRow(0);
+        }
+
+        for (OpmProducto producto : lstProductos) {
             Object[] fila;
-            fila = new Object[] {
-                (Object)producto.getNmCodigo(),
+            fila = new Object[]{
+                (Object) producto.getNmCodigo(),
                 producto.getNvNombre(),
                 producto.getNvDescripcion(),
                 producto.getNmCosto(),
                 producto.getNmValor(),
-                "si"
+                (producto.getBtActivo()) ? "Si" : "No"
             };
             modelo.addRow(fila);
         }
@@ -73,16 +80,17 @@ public class Producto extends javax.swing.JPanel {
         tblProductos = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        rbtActivo = new javax.swing.JRadioButton();
 
         jLabel1.setText("Codigo");
 
-        jLabel2.setText("Nombre");
+        jLabel2.setText("Nombre(*)");
 
         jLabel3.setText("Descripcion");
 
-        jLabel4.setText("Costo Produccion");
+        jLabel4.setText("Costo Produccion(*)");
 
-        jLabel5.setText("Costo Venta");
+        jLabel5.setText("Costo Venta(*)");
 
         jButton1.setText("Buscar");
 
@@ -109,6 +117,9 @@ public class Producto extends javax.swing.JPanel {
 
         jButton5.setText("<<");
 
+        rbtActivo.setSelected(true);
+        rbtActivo.setText("Activo");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,9 +138,8 @@ public class Producto extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(46, 46, 46)
                                 .addComponent(jLabel2))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel4)))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txfNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
@@ -149,6 +159,9 @@ public class Producto extends javax.swing.JPanel {
                                     .addComponent(jLabel5))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(rbtActivo)
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(txfDescripcion)
                                     .addComponent(txfVenta))))))
                 .addContainerGap())
@@ -159,7 +172,8 @@ public class Producto extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbtActivo))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -189,20 +203,41 @@ public class Producto extends javax.swing.JPanel {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
-        if(mtdValidarObligatorios()){
+        if (mtdValidarObligatorios()) {
             OpmProducto producto = new OpmProducto();
-            producto.setNmCodigo(Integer.parseInt(txfCodigo.getText()));
             producto.setNvNombre(txfNombre.getText());
-            producto.setNvDescripcion(txfNombre.getText());
+            producto.setNvDescripcion(txfDescripcion.getText());
             producto.setNmCosto(Double.parseDouble(txfCosto.getText()));
-            producto.setNmValor(Double.parseDouble(txfCosto.getText()));
-            _jpaControladorProducto.create(producto);
-            mtdActualizarTabla();
+            producto.setNmValor(Double.parseDouble(txfVenta.getText()));
+            producto.setBtActivo(rbtActivo.isSelected());
+
+            try {
+                _jpaControladorProducto.create(producto);
+                mtdActualizarTabla();
+            } catch (Exception exp) {
+                
+                JOptionPane.showMessageDialog(this, "No se pudo registrar el producto.\n Verifique que no existe otro producto con el mismo nombre", "Error", ERROR_MESSAGE);
+            }
+
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
-    
-    boolean mtdValidarObligatorios(){
-        return true;
+
+    boolean mtdValidarObligatorios() {
+        if (!txfNombre.getText().isEmpty() && mtdIsNumero(txfCosto.getText()) && mtdIsNumero(txfVenta.getText())) {
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(this, "Faltan campos obligatorios", "Advertencia", WARNING_MESSAGE);
+            return false;
+        }
+    }
+
+    boolean mtdIsNumero(String valor) {
+        try {
+            Double.parseDouble(valor);
+            return true;
+        } catch (Exception exp) {
+            return false;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -217,6 +252,7 @@ public class Producto extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JRadioButton rbtActivo;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txfCodigo;
     private javax.swing.JTextField txfCosto;

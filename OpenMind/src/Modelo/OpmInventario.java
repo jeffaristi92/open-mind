@@ -31,14 +31,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OpmInventario.findByNmCodigo", query = "SELECT o FROM OpmInventario o WHERE o.nmCodigo = :nmCodigo"),
     @NamedQuery(name = "OpmInventario.findByNmCantidad", query = "SELECT o FROM OpmInventario o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmInventario implements Serializable {
+    @Column(name = "NM_CANTIDAD")
+    private Integer nmCantidad;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
-    @Column(name = "NM_CANTIDAD")
-    private Long nmCantidad;
     @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmProducto nmProducto;
@@ -58,11 +58,11 @@ public class OpmInventario implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public Long getNmCantidad() {
+    public int getNmCantidad() {
         return nmCantidad;
     }
 
-    public void setNmCantidad(Long nmCantidad) {
+    public void setNmCantidad(int nmCantidad) {
         this.nmCantidad = nmCantidad;
     }
 
@@ -98,5 +98,8 @@ public class OpmInventario implements Serializable {
     public String toString() {
         return "Controlador.OpmInventario[ nmCodigo=" + nmCodigo + " ]";
     }
-    
+
+    public void setNmCantidad(Integer nmCantidad) {
+        this.nmCantidad = nmCantidad;
+    }    
 }

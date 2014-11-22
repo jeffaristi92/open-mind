@@ -40,6 +40,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmVenta.findByDaFecha", query = "SELECT o FROM OpmVenta o WHERE o.daFecha = :daFecha"),
     @NamedQuery(name = "OpmVenta.findByNmFlete", query = "SELECT o FROM OpmVenta o WHERE o.nmFlete = :nmFlete")})
 public class OpmVenta implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "NM_FLETE")
+    private double nmFlete;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +53,6 @@ public class OpmVenta implements Serializable {
     @Column(name = "DA_FECHA")
     @Temporal(TemporalType.DATE)
     private Date daFecha;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @Column(name = "NM_FLETE")
-    private BigDecimal nmFlete;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmVenta")
     private List<OpmAbono> opmAbonoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmVenta")
@@ -72,7 +71,7 @@ public class OpmVenta implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmVenta(Integer nmCodigo, Date daFecha, BigDecimal nmFlete) {
+    public OpmVenta(Integer nmCodigo, Date daFecha, double nmFlete) {
         this.nmCodigo = nmCodigo;
         this.daFecha = daFecha;
         this.nmFlete = nmFlete;
@@ -94,11 +93,11 @@ public class OpmVenta implements Serializable {
         this.daFecha = daFecha;
     }
 
-    public BigDecimal getNmFlete() {
+    public double getNmFlete() {
         return nmFlete;
     }
 
-    public void setNmFlete(BigDecimal nmFlete) {
+    public void setNmFlete(double nmFlete) {
         this.nmFlete = nmFlete;
     }
 

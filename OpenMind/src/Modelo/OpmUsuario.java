@@ -37,6 +37,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmUsuario.findByNvEmail", query = "SELECT o FROM OpmUsuario o WHERE o.nvEmail = :nvEmail"),
     @NamedQuery(name = "OpmUsuario.findByNvTel", query = "SELECT o FROM OpmUsuario o WHERE o.nvTel = :nvTel")})
 public class OpmUsuario implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "BT_ACTIVO")
+    private boolean btActivo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmEmpleado")
+    private List<OpmLote> opmLoteList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -162,6 +167,23 @@ public class OpmUsuario implements Serializable {
     @Override
     public String toString() {
         return "Controlador.OpmUsuario[ nmCodigo=" + nmCodigo + " ]";
+    }
+
+    public boolean getBtActivo() {
+        return btActivo;
+    }
+
+    public void setBtActivo(boolean btActivo) {
+        this.btActivo = btActivo;
+    }
+
+    @XmlTransient
+    public List<OpmLote> getOpmLoteList() {
+        return opmLoteList;
+    }
+
+    public void setOpmLoteList(List<OpmLote> opmLoteList) {
+        this.opmLoteList = opmLoteList;
     }
     
 }

@@ -36,6 +36,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OpmAbono.findByDaFecha", query = "SELECT o FROM OpmAbono o WHERE o.daFecha = :daFecha"),
     @NamedQuery(name = "OpmAbono.findByNmValor", query = "SELECT o FROM OpmAbono o WHERE o.nmValor = :nmValor")})
 public class OpmAbono implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "NM_VALOR")
+    private double nmValor;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,10 +49,6 @@ public class OpmAbono implements Serializable {
     @Column(name = "DA_FECHA")
     @Temporal(TemporalType.DATE)
     private Date daFecha;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @Column(name = "NM_VALOR")
-    private BigDecimal nmValor;
     @JoinColumn(name = "NM_VENTA", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmVenta nmVenta;
@@ -61,7 +60,7 @@ public class OpmAbono implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmAbono(Integer nmCodigo, Date daFecha, BigDecimal nmValor) {
+    public OpmAbono(Integer nmCodigo, Date daFecha, double nmValor) {
         this.nmCodigo = nmCodigo;
         this.daFecha = daFecha;
         this.nmValor = nmValor;
@@ -83,11 +82,11 @@ public class OpmAbono implements Serializable {
         this.daFecha = daFecha;
     }
 
-    public BigDecimal getNmValor() {
+    public double getNmValor() {
         return nmValor;
     }
 
-    public void setNmValor(BigDecimal nmValor) {
+    public void setNmValor(double nmValor) {
         this.nmValor = nmValor;
     }
 

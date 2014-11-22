@@ -37,7 +37,10 @@ public class Principal extends javax.swing.JFrame {
         panContenido = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menProducto = new javax.swing.JMenu();
-        mitNuevoProducto = new javax.swing.JMenuItem();
+        mitProducto = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -54,15 +57,24 @@ public class Principal extends javax.swing.JFrame {
             .addGap(0, 457, Short.MAX_VALUE)
         );
 
-        menProducto.setText("Producto");
+        menProducto.setText("Gestionar");
 
-        mitNuevoProducto.setText("Nuevo");
-        mitNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
+        mitProducto.setText("Productos");
+        mitProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mitNuevoProductoActionPerformed(evt);
+                mitProductoActionPerformed(evt);
             }
         });
-        menProducto.add(mitNuevoProducto);
+        menProducto.add(mitProducto);
+
+        jMenuItem2.setText("Empleados");
+        menProducto.add(jMenuItem2);
+
+        jMenuItem3.setText("Clientes");
+        menProducto.add(jMenuItem3);
+
+        jMenuItem4.setText("Proveedores");
+        menProducto.add(jMenuItem4);
 
         jMenuBar1.add(menProducto);
 
@@ -88,7 +100,7 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mitNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitNuevoProductoActionPerformed
+    private void mitProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitProductoActionPerformed
         // TODO add your handling code here:
         panContenido.removeAll();
         Producto obj  =new Producto();
@@ -96,13 +108,16 @@ public class Principal extends javax.swing.JFrame {
         obj.setSize(794, 478);
         obj.validate();
         obj.setVisible(true);
-    }//GEN-LAST:event_mitNuevoProductoActionPerformed
+    }//GEN-LAST:event_mitProductoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenu menProducto;
-    private javax.swing.JMenuItem mitNuevoProducto;
+    private javax.swing.JMenuItem mitProducto;
     private javax.swing.JPanel panContenido;
     // End of variables declaration//GEN-END:variables
 }

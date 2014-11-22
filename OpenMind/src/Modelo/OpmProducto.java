@@ -37,6 +37,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmProducto.findByNmCosto", query = "SELECT o FROM OpmProducto o WHERE o.nmCosto = :nmCosto"),
     @NamedQuery(name = "OpmProducto.findByNmValor", query = "SELECT o FROM OpmProducto o WHERE o.nmValor = :nmValor")})
 public class OpmProducto implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "BT_ACTIVO")
+    private boolean btActivo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
+    private List<OpmDetalleLote> opmDetalleLoteList;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @Column(name = "NM_COSTO")
+    private double nmCosto;
+    @Basic(optional = false)
+    @Column(name = "NM_VALOR")
+    private double nmValor;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,13 +61,6 @@ public class OpmProducto implements Serializable {
     @Basic(optional = false)
     @Column(name = "NV_DESCRIPCION")
     private String nvDescripcion;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @Column(name = "NM_COSTO")
-    private double nmCosto;
-    @Basic(optional = false)
-    @Column(name = "NM_VALOR")
-    private double nmValor;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
     private List<OpmInventario> opmInventarioList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
@@ -190,6 +195,23 @@ public class OpmProducto implements Serializable {
     @Override
     public String toString() {
         return "Controlador.OpmProducto[ nmCodigo=" + nmCodigo + " ]";
+    }
+
+    public boolean getBtActivo() {
+        return btActivo;
+    }
+
+    public void setBtActivo(boolean btActivo) {
+        this.btActivo = btActivo;
+    }
+
+    @XmlTransient
+    public List<OpmDetalleLote> getOpmDetalleLoteList() {
+        return opmDetalleLoteList;
+    }
+
+    public void setOpmDetalleLoteList(List<OpmDetalleLote> opmDetalleLoteList) {
+        this.opmDetalleLoteList = opmDetalleLoteList;
     }
     
 }
