@@ -52,10 +52,10 @@ public class OpmProducto implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @Column(name = "NM_COSTO")
-    private BigDecimal nmCosto;
+    private double nmCosto;
     @Basic(optional = false)
     @Column(name = "NM_VALOR")
-    private int nmValor;
+    private double nmValor;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
     private List<OpmInventario> opmInventarioList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
@@ -74,7 +74,7 @@ public class OpmProducto implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmProducto(Integer nmCodigo, String nvNombre, String nvDescripcion, BigDecimal nmCosto, int nmValor) {
+    public OpmProducto(Integer nmCodigo, String nvNombre, String nvDescripcion, double nmCosto, double nmValor) {
         this.nmCodigo = nmCodigo;
         this.nvNombre = nvNombre;
         this.nvDescripcion = nvDescripcion;
@@ -106,19 +106,19 @@ public class OpmProducto implements Serializable {
         this.nvDescripcion = nvDescripcion;
     }
 
-    public BigDecimal getNmCosto() {
+    public double getNmCosto() {
         return nmCosto;
     }
 
-    public void setNmCosto(BigDecimal nmCosto) {
+    public void setNmCosto(double nmCosto) {
         this.nmCosto = nmCosto;
     }
 
-    public int getNmValor() {
+    public double getNmValor() {
         return nmValor;
     }
 
-    public void setNmValor(int nmValor) {
+    public void setNmValor(double nmValor) {
         this.nmValor = nmValor;
     }
 

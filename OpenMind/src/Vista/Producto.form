@@ -39,11 +39,10 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="jTextField2" pref="200" max="32767" attributes="0"/>
-                          <Component id="jTextField1" max="32767" attributes="0"/>
-                          <Component id="jTextField4" max="32767" attributes="0"/>
+                          <Component id="txfNombre" pref="200" max="32767" attributes="0"/>
+                          <Component id="txfCodigo" max="32767" attributes="0"/>
+                          <Component id="txfCosto" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -51,7 +50,7 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -60,8 +59,8 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jTextField3" max="32767" attributes="0"/>
-                                  <Component id="jTextField5" max="32767" attributes="0"/>
+                                  <Component id="txfDescripcion" max="32767" attributes="0"/>
+                                  <Component id="txfVenta" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -77,27 +76,27 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txfCodigo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txfNombre" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txfDescripcion" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txfCosto" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txfVenta" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRegistrar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -117,35 +116,35 @@
         <Property name="text" type="java.lang.String" value="Codigo"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
+    <Component class="javax.swing.JTextField" name="txfCodigo">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Nombre"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField2">
+    <Component class="javax.swing.JTextField" name="txfNombre">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" value="Descripcion"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField3">
+    <Component class="javax.swing.JTextField" name="txfDescripcion">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
         <Property name="text" type="java.lang.String" value="Costo Produccion"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField4">
+    <Component class="javax.swing.JTextField" name="txfCosto">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
         <Property name="text" type="java.lang.String" value="Costo Venta"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField5">
+    <Component class="javax.swing.JTextField" name="txfVenta">
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
@@ -157,10 +156,13 @@
         <Property name="text" type="java.lang.String" value="Actualizar"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="btnRegistrar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Registrar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
@@ -169,7 +171,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="jTable1">
+        <Component class="javax.swing.JTable" name="tblProductos">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="6" rowCount="0">

@@ -34,36 +34,37 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
-        jButton1 = new javax.swing.JButton();
+        panContenido = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
+        menProducto = new javax.swing.JMenu();
+        mitNuevoProducto = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout panContenidoLayout = new javax.swing.GroupLayout(panContenido);
+        panContenido.setLayout(panContenidoLayout);
+        panContenidoLayout.setHorizontalGroup(
+            panContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 880, Short.MAX_VALUE)
+        );
+        panContenidoLayout.setVerticalGroup(
+            panContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 457, Short.MAX_VALUE)
+        );
+
+        menProducto.setText("Producto");
+
+        mitNuevoProducto.setText("Nuevo");
+        mitNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                mitNuevoProductoActionPerformed(evt);
             }
         });
+        menProducto.add(mitNuevoProducto);
 
-        jMenu1.setText("Producto");
-
-        jMenu3.setText("jMenu3");
-        jMenu1.add(jMenu3);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Empleado");
-        jMenuBar1.add(jMenu2);
-
-        jMenu4.setText("jMenu4");
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(menProducto);
 
         setJMenuBar(jMenuBar1);
 
@@ -72,85 +73,36 @@ public class Principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addComponent(jButton1)
-                .addContainerGap(749, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(panContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addComponent(jButton1)
-                .addContainerGap(391, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(panContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void mitNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitNuevoProductoActionPerformed
         // TODO add your handling code here:
-        try{
-        mtdPrueba();
-        }catch(Exception exc){
-            System.out.println("Error: "+exc.getMessage());
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Principal().setVisible(true);
-            }
-        });
-    }
-    
-    void mtdPrueba(){
-        ConnectionFactory conexion = new ConnectionFactory();
-        
-        OpmProductoJpaController controlador = new OpmProductoJpaController(conexion.getFactory());
-        
-        List<OpmProducto> lista = controlador.findOpmProductoEntities();
-        
-        System.out.println("Cantidad productos: "+lista.size());
-        for (OpmProducto lista1 : lista) {
-            System.out.println(String.format("%s, %s, %s, %s, %s", lista1.getNmCodigo().toString(), lista1.getNvNombre(),lista1.getNvDescripcion(), lista1.getNmCosto().toString(), ""+lista1.getNmValor()));
-        }
-    }
+        panContenido.removeAll();
+        Producto obj  =new Producto();
+        panContenido.add(obj);
+        obj.setSize(794, 478);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_mitNuevoProductoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenu menProducto;
+    private javax.swing.JMenuItem mitNuevoProducto;
+    private javax.swing.JPanel panContenido;
     // End of variables declaration//GEN-END:variables
 }
