@@ -5,6 +5,7 @@
  */
 package Transversal;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -12,21 +13,16 @@ import java.util.List;
  * @author RONALD
  */
 public class Util {
-    
-    public static boolean validarCamposObligatorios(List<String> camposAlfanumericos, List<String> camposNumericos) {
-        for (String campoAlfanumerico : camposAlfanumericos) {
-            if (campoAlfanumerico.isEmpty()) {
-                return false;
-            }
-        }
-        for (String campoNumerico : camposNumericos) {
-            if (validarNumero(campoNumerico)) {
+
+    public static boolean validarCamposObligatorios(List<String> campos) {
+        for (String campo : campos) {
+            if (campo.isEmpty()) {
                 return false;
             }
         }
         return true;
     }
-    
+
     static boolean validarNumero(String valor) {
         try {
             Double.parseDouble(valor);
@@ -35,5 +31,24 @@ public class Util {
             return false;
         }
     }
-    
+
+    public static boolean validarCampoNumerico(KeyEvent evt, boolean decimal, String cadena) {
+        char key = evt.getKeyChar();
+        if (Character.isDigit(key) || (key == '.')) {
+            if (decimal) {
+                if (key == '.') {
+                    if(cadena.contains(".")){
+                        return false;
+                    }
+                }
+            } else {
+                if (key == '.') {
+                    return false;
+                }
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
 }

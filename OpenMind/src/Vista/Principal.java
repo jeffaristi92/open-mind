@@ -5,12 +5,6 @@
  */
 package Vista;
 
-import Controlador.ConnectionFactory;
-import Controlador.OpmProductoJpaController;
-import Modelo.OpmProducto;
-import java.sql.Connection;
-import java.util.List;
-
 /**
  *
  * @author ARISTIZABAL
@@ -22,6 +16,8 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     /**
@@ -50,11 +46,11 @@ public class Principal extends javax.swing.JFrame {
         panContenido.setLayout(panContenidoLayout);
         panContenidoLayout.setHorizontalGroup(
             panContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 880, Short.MAX_VALUE)
+            .addGap(0, 780, Short.MAX_VALUE)
         );
         panContenidoLayout.setVerticalGroup(
             panContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 457, Short.MAX_VALUE)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
 
         menProducto.setText("Gestionar");
@@ -93,8 +89,8 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(panContenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -105,7 +101,7 @@ public class Principal extends javax.swing.JFrame {
         panContenido.removeAll();
         Producto obj  =new Producto();
         panContenido.add(obj);
-        obj.setSize(794, 478);
+        obj.setSize(794, 500);
         obj.validate();
         obj.setVisible(true);
     }//GEN-LAST:event_mitProductoActionPerformed
