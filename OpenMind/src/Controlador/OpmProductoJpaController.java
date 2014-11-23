@@ -169,16 +169,34 @@ public class OpmProductoJpaController implements Serializable {
             OpmProducto persistentOpmProducto = em.find(OpmProducto.class, opmProducto.getNmCodigo());
             List<OpmInventario> opmInventarioListOld = persistentOpmProducto.getOpmInventarioList();
             List<OpmInventario> opmInventarioListNew = opmProducto.getOpmInventarioList();
+            if(opmInventarioListNew == null){
+                opmInventarioListNew = new ArrayList<>();
+            }
             List<OpmInventarioPunto> opmInventarioPuntoListOld = persistentOpmProducto.getOpmInventarioPuntoList();
             List<OpmInventarioPunto> opmInventarioPuntoListNew = opmProducto.getOpmInventarioPuntoList();
+            if(opmInventarioPuntoListNew == null){
+                opmInventarioPuntoListNew = new ArrayList<>();
+            }
             List<OpmDetalleRemision> opmDetalleRemisionListOld = persistentOpmProducto.getOpmDetalleRemisionList();
             List<OpmDetalleRemision> opmDetalleRemisionListNew = opmProducto.getOpmDetalleRemisionList();
+            if(opmDetalleRemisionListNew == null){
+                opmDetalleRemisionListNew  = new ArrayList<>();
+            }
             List<OpmDetalleTraslado> opmDetalleTrasladoListOld = persistentOpmProducto.getOpmDetalleTrasladoList();
             List<OpmDetalleTraslado> opmDetalleTrasladoListNew = opmProducto.getOpmDetalleTrasladoList();
+            if(opmDetalleTrasladoListNew==null){
+                opmDetalleTrasladoListNew = new ArrayList<>();
+            }
             List<OpmDetalleVenta> opmDetalleVentaListOld = persistentOpmProducto.getOpmDetalleVentaList();
             List<OpmDetalleVenta> opmDetalleVentaListNew = opmProducto.getOpmDetalleVentaList();
+            if(opmDetalleVentaListNew==null){
+                opmDetalleVentaListNew = new ArrayList<>();
+            }
             List<OpmDetalleLote> opmDetalleLoteListOld = persistentOpmProducto.getOpmDetalleLoteList();
             List<OpmDetalleLote> opmDetalleLoteListNew = opmProducto.getOpmDetalleLoteList();
+            if(opmDetalleLoteListNew == null){
+                opmDetalleLoteListNew =  new ArrayList<>();
+            }
             List<String> illegalOrphanMessages = null;
             for (OpmInventario opmInventarioListOldOpmInventario : opmInventarioListOld) {
                 if (!opmInventarioListNew.contains(opmInventarioListOldOpmInventario)) {
