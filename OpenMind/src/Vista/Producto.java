@@ -8,6 +8,9 @@ package Vista;
 import Controlador.ConnectionFactory;
 import Controlador.OpmProductoJpaController;
 import Modelo.OpmProducto;
+import Transversal.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -73,8 +76,8 @@ public class Producto extends javax.swing.JPanel {
         txfCosto = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txfVenta = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jbtBuscar = new javax.swing.JButton();
+        jbtActualizar = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
@@ -92,9 +95,14 @@ public class Producto extends javax.swing.JPanel {
 
         jLabel5.setText("Costo Venta(*)");
 
-        jButton1.setText("Buscar");
+        jbtBuscar.setText("Buscar");
 
-        jButton2.setText("Actualizar");
+        jbtActualizar.setText("Actualizar");
+        jbtActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtActualizarActionPerformed(evt);
+            }
+        });
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -103,6 +111,7 @@ public class Producto extends javax.swing.JPanel {
             }
         });
 
+        tblProductos.setAutoCreateRowSorter(true);
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -110,7 +119,21 @@ public class Producto extends javax.swing.JPanel {
             new String [] {
                 "Codigo", "Nombre", "Descripcion", "Costo Produccion", "Precio Venta", "Activo"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblProductos.setToolTipText("");
+        tblProductos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tblProductosKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblProductos);
 
         jButton4.setText(">>");
@@ -148,9 +171,9 @@ public class Producto extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jbtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2)
+                                .addComponent(jbtActualizar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnRegistrar))
                             .addGroup(layout.createSequentialGroup()
@@ -188,8 +211,8 @@ public class Producto extends javax.swing.JPanel {
                     .addComponent(txfVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(jbtBuscar)
+                    .addComponent(jbtActualizar)
                     .addComponent(btnRegistrar))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -201,49 +224,74 @@ public class Producto extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Obtener datos del Formulario
+    private OpmProducto getDatos() {
+        OpmProducto producto = new OpmProducto();
+        producto.setNvNombre(txfNombre.getText());
+        producto.setNvDescripcion(txfDescripcion.getText());
+        producto.setNmCosto(Double.parseDouble(txfCosto.getText()));
+        producto.setNmValor(Double.parseDouble(txfVenta.getText()));
+        producto.setBtActivo(rbtActivo.isSelected());
+        return producto;
+    }
+    
+    // Validar campos
+    private boolean validarCamposObligatorios() {
+        List<String> camposAlfanumericos = new ArrayList<>();
+        camposAlfanumericos.add(txfNombre.getText());        
+        List<String> camposNumericos = new ArrayList<>();
+        camposNumericos.add(txfCosto.getText());
+        camposNumericos.add(txfVenta.getText());
+        if (Util.validarCamposObligatorios(camposAlfanumericos, camposNumericos)) {
+            return true;
+        }
+        else return false;
+    }
+    
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
-        if (mtdValidarObligatorios()) {
-            OpmProducto producto = new OpmProducto();
-            producto.setNvNombre(txfNombre.getText());
-            producto.setNvDescripcion(txfDescripcion.getText());
-            producto.setNmCosto(Double.parseDouble(txfCosto.getText()));
-            producto.setNmValor(Double.parseDouble(txfVenta.getText()));
-            producto.setBtActivo(rbtActivo.isSelected());
-
+        if (validarCamposObligatorios()) {
             try {
+                OpmProducto producto = getDatos();
                 _jpaControladorProducto.create(producto);
                 mtdActualizarTabla();
             } catch (Exception exp) {
-                
                 JOptionPane.showMessageDialog(this, "No se pudo registrar el producto.\n Verifique que no existe otro producto con el mismo nombre", "Error", ERROR_MESSAGE);
             }
-
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Faltan campos obligatorios", "Advertencia", WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
-    boolean mtdValidarObligatorios() {
-        if (!txfNombre.getText().isEmpty() && mtdIsNumero(txfCosto.getText()) && mtdIsNumero(txfVenta.getText())) {
-            return true;
-        } else {
-            JOptionPane.showMessageDialog(this, "Faltan campos obligatorios", "Advertencia", WARNING_MESSAGE);
-            return false;
-        }
-    }
-
-    boolean mtdIsNumero(String valor) {
+    // Actualizar
+    private void jbtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtActualizarActionPerformed
         try {
-            Double.parseDouble(valor);
-            return true;
-        } catch (Exception exp) {
-            return false;
+            OpmProducto producto = getDatos();
+            producto.setNmCodigo(Integer.parseInt(txfCodigo.getText()));
+            _jpaControladorProducto.edit(producto);
+            mtdActualizarTabla();
         }
-    }
+        catch (Exception exc) {
+            JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.\n Verifique que no los campos son correctos", "Error", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jbtActualizarActionPerformed
+
+    // Actualizar
+    private void tblProductosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProductosKeyPressed
+        try {
+            OpmProducto producto = getDatos();
+            producto.setNmCodigo(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0);
+            _jpaControladorProducto.edit(producto);
+            mtdActualizarTabla();
+        }
+        catch (Exception exc) {
+            JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.\n Verifique que no los campos son correctos", "Error", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_tblProductosKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
@@ -252,6 +300,8 @@ public class Producto extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jbtActualizar;
+    private javax.swing.JButton jbtBuscar;
     private javax.swing.JRadioButton rbtActivo;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txfCodigo;

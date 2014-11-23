@@ -44,9 +44,9 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="jButton1" min="-2" pref="85" max="-2" attributes="0"/>
+                              <Component id="jbtBuscar" min="-2" pref="85" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jbtActualizar" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -97,8 +97,8 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jbtBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jbtActualizar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnRegistrar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="32767" attributes="0"/>
@@ -149,15 +149,18 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txfVenta">
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="jbtBuscar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Buscar"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="jbtActualizar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Actualizar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtActualizarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnRegistrar">
       <Properties>
@@ -176,17 +179,22 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="tblProductos">
           <Properties>
+            <Property name="autoCreateRowSorter" type="boolean" value="true"/>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="6" rowCount="0">
-                <Column editable="true" title="Codigo" type="java.lang.Object"/>
-                <Column editable="true" title="Nombre" type="java.lang.Object"/>
-                <Column editable="true" title="Descripcion" type="java.lang.Object"/>
-                <Column editable="true" title="Costo Produccion" type="java.lang.Object"/>
-                <Column editable="true" title="Precio Venta" type="java.lang.Object"/>
-                <Column editable="true" title="Activo" type="java.lang.Object"/>
+                <Column editable="false" title="Codigo" type="java.lang.Object"/>
+                <Column editable="false" title="Nombre" type="java.lang.Object"/>
+                <Column editable="false" title="Descripcion" type="java.lang.Object"/>
+                <Column editable="false" title="Costo Produccion" type="java.lang.Object"/>
+                <Column editable="false" title="Precio Venta" type="java.lang.Object"/>
+                <Column editable="false" title="Activo" type="java.lang.Object"/>
               </Table>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblProductosKeyPressed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
