@@ -5,17 +5,50 @@
  */
 package Vista;
 
+import Controlador.ConnectionFactory;
+import Controlador.OpmProductoJpaController;
+import Controlador.OpmPuntoVentaJpaController;
+import Modelo.OpmProducto;
+import Modelo.OpmPuntoVenta;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ARISTIZABAL
  */
-public class Remision extends javax.swing.JPanel {
+public final class Remision extends javax.swing.JPanel {
 
     /**
      * Creates new form Remision
      */
+    OpmProductoJpaController _jpaControladorProducto;
+    OpmPuntoVentaJpaController _jpaControladorPuntoVenta;
+    List<OpmProducto> lsProductos;
+    List<OpmPuntoVenta> lsPuntosVenta;
+
     public Remision() {
+        _jpaControladorProducto = new OpmProductoJpaController((new ConnectionFactory()).getFactory());
+        _jpaControladorPuntoVenta = new OpmPuntoVentaJpaController((new ConnectionFactory()).getFactory());
         initComponents();
+        inicializarProductos();
+        inicializarPuntosVenta();
+    }
+
+    void inicializarProductos() {
+        lsProductos = _jpaControladorProducto.findOpmProductoEntities();
+
+        for (OpmProducto producto : lsProductos) {
+            jcbProductos.addItem(producto.getNvNombre());
+        }
+    }
+
+    void inicializarPuntosVenta() {
+        lsPuntosVenta = _jpaControladorPuntoVenta.findOpmPuntoVentaEntities();
+
+        for (OpmPuntoVenta puntoVenta : lsPuntosVenta) {
+            jcbPuntosVenta.addItem(puntoVenta.getNvDireccion());
+        }
     }
 
     /**
@@ -32,15 +65,17 @@ public class Remision extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jcbProductos = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jtfCantidad = new javax.swing.JTextField();
+        jbtAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtbDetalleRemision = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jcbPuntosVenta = new javax.swing.JComboBox();
 
         jLabel1.setText("Nro Remision");
 
@@ -52,9 +87,14 @@ public class Remision extends javax.swing.JPanel {
 
         jLabel4.setText("Cantidad");
 
-        jButton1.setText("Agregar");
+        jbtAgregar.setText("Agregar");
+        jbtAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtAgregarActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtbDetalleRemision.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -62,13 +102,15 @@ public class Remision extends javax.swing.JPanel {
                 "Cantidad", "Detalle", "Valor Unitario", "Valor Total"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtbDetalleRemision);
 
         jLabel5.setText("Total");
 
         jTextField3.setEditable(false);
 
         jButton2.setText("Remover");
+
+        jLabel6.setText("Punto Venta");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -84,11 +126,13 @@ public class Remision extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel1)
-                                    .addComponent(jLabel3))
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel6))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jTextField1)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jcbProductos, 0, 140, Short.MAX_VALUE)
+                                    .addComponent(jcbPuntosVenta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel2)
@@ -96,8 +140,8 @@ public class Remision extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addComponent(jtfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jbtAgregar, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -117,14 +161,18 @@ public class Remision extends javax.swing.JPanel {
                             .addComponent(jLabel1)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addComponent(jcbPuntosVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jcbProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jtfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(jbtAgregar)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -136,21 +184,32 @@ public class Remision extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jbtAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAgregarActionPerformed
+        // TODO add your handling code here:
+        OpmProducto producto = lsProductos.get(jcbProductos.getSelectedIndex());
+        DefaultTableModel modelo = (DefaultTableModel) jtbDetalleRemision.getModel();
+        double valorTotal = Integer.parseInt(jtfCantidad.getText())*producto.getNmValor();
+        modelo.addRow(new Object[]{jtfCantidad.getText(),producto.getNvNombre(),producto.getNmValor(), valorTotal});
+        
+    }//GEN-LAST:event_jbtAgregarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JButton jbtAgregar;
+    private javax.swing.JComboBox jcbProductos;
+    private javax.swing.JComboBox jcbPuntosVenta;
+    private javax.swing.JTable jtbDetalleRemision;
+    private javax.swing.JTextField jtfCantidad;
     // End of variables declaration//GEN-END:variables
 }

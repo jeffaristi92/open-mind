@@ -33,10 +33,26 @@ public class Principal extends javax.swing.JFrame {
         panContenido = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menProducto = new javax.swing.JMenu();
-        mitProducto = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jmeProducto = new javax.swing.JMenuItem();
+        jmeEmpleado = new javax.swing.JMenuItem();
+        jmeCliente = new javax.swing.JMenuItem();
+        jmeProveedor = new javax.swing.JMenuItem();
+        jmePuntoVenta = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jmeLote = new javax.swing.JMenuItem();
+        jmeRemision = new javax.swing.JMenuItem();
+        jmeVenta = new javax.swing.JMenuItem();
+        jmeTraslado = new javax.swing.JMenuItem();
+        jmeDevolucion = new javax.swing.JMenuItem();
+        jmeAbono = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jmeAdministritativo = new javax.swing.JMenuItem();
+        jmeNegocio = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jmeInventario = new javax.swing.JMenuItem();
+        jmeGastos = new javax.swing.JMenuItem();
+        jmeIngresos = new javax.swing.JMenuItem();
+        jmeEstadoResultados = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -55,24 +71,120 @@ public class Principal extends javax.swing.JFrame {
 
         menProducto.setText("Gestionar");
 
-        mitProducto.setText("Productos");
-        mitProducto.addActionListener(new java.awt.event.ActionListener() {
+        jmeProducto.setText("Productos");
+        jmeProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mitProductoActionPerformed(evt);
+                jmeProductoActionPerformed(evt);
             }
         });
-        menProducto.add(mitProducto);
+        menProducto.add(jmeProducto);
 
-        jMenuItem2.setText("Empleados");
-        menProducto.add(jMenuItem2);
+        jmeEmpleado.setText("Empleados");
+        jmeEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeEmpleadoActionPerformed(evt);
+            }
+        });
+        menProducto.add(jmeEmpleado);
 
-        jMenuItem3.setText("Clientes");
-        menProducto.add(jMenuItem3);
+        jmeCliente.setText("Clientes");
+        jmeCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeClienteActionPerformed(evt);
+            }
+        });
+        menProducto.add(jmeCliente);
 
-        jMenuItem4.setText("Proveedores");
-        menProducto.add(jMenuItem4);
+        jmeProveedor.setText("Proveedores");
+        menProducto.add(jmeProveedor);
+
+        jmePuntoVenta.setText("Punto Venta");
+        menProducto.add(jmePuntoVenta);
 
         jMenuBar1.add(menProducto);
+
+        jMenu1.setText("Transacciones");
+
+        jmeLote.setText("Lote");
+        jMenu1.add(jmeLote);
+
+        jmeRemision.setText("Remision");
+        jmeRemision.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeRemisionActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmeRemision);
+
+        jmeVenta.setText("Venta");
+        jmeVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeVentaActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmeVenta);
+
+        jmeTraslado.setText("Traslado");
+        jmeTraslado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeTrasladoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmeTraslado);
+
+        jmeDevolucion.setText("Devolucion");
+        jmeDevolucion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeDevolucionActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmeDevolucion);
+
+        jmeAbono.setText("Abonos");
+        jmeAbono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeAbonoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmeAbono);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu3.setText("Gastos");
+
+        jmeAdministritativo.setText("Admistrativos");
+        jMenu3.add(jmeAdministritativo);
+
+        jmeNegocio.setText("Negocio");
+        jMenu3.add(jmeNegocio);
+
+        jMenuBar1.add(jMenu3);
+
+        jMenu2.setText("Reportes");
+
+        jmeInventario.setText("Inventario");
+        jmeInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeInventarioActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmeInventario);
+
+        jmeGastos.setText("Gastos");
+        jMenu2.add(jmeGastos);
+
+        jmeIngresos.setText("Ingresos");
+        jMenu2.add(jmeIngresos);
+
+        jmeEstadoResultados.setText("Estado Resultados");
+        jmeEstadoResultados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeEstadoResultadosActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jmeEstadoResultados);
+
+        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -96,7 +208,7 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mitProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitProductoActionPerformed
+    private void jmeProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeProductoActionPerformed
         // TODO add your handling code here:
         panContenido.removeAll();
         Producto obj  =new Producto();
@@ -104,7 +216,97 @@ public class Principal extends javax.swing.JFrame {
         obj.setSize(794, 500);
         obj.validate();
         obj.setVisible(true);
-    }//GEN-LAST:event_mitProductoActionPerformed
+    }//GEN-LAST:event_jmeProductoActionPerformed
+
+    private void jmeRemisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeRemisionActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Remision obj  =new Remision();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeRemisionActionPerformed
+
+    private void jmeVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeVentaActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Venta obj  =new Venta();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeVentaActionPerformed
+
+    private void jmeTrasladoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeTrasladoActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Traslado obj  =new Traslado();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeTrasladoActionPerformed
+
+    private void jmeDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeDevolucionActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Devolucion obj  =new Devolucion();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeDevolucionActionPerformed
+
+    private void jmeAbonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeAbonoActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        AbonoVenta obj  =new AbonoVenta();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeAbonoActionPerformed
+
+    private void jmeEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeEmpleadoActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Empleado obj  =new Empleado();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeEmpleadoActionPerformed
+
+    private void jmeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeClienteActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Cliente obj  =new Cliente();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeClienteActionPerformed
+
+    private void jmeInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeInventarioActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        ReporteInventario obj  =new ReporteInventario();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeInventarioActionPerformed
+
+    private void jmeEstadoResultadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeEstadoResultadosActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        ReporteEstadoResultados obj  =new ReporteEstadoResultados();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeEstadoResultadosActionPerformed
 
     public static void main(String[] args) {
         // TODO code application logic here
@@ -141,13 +343,29 @@ public class Principal extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jmeAbono;
+    private javax.swing.JMenuItem jmeAdministritativo;
+    private javax.swing.JMenuItem jmeCliente;
+    private javax.swing.JMenuItem jmeDevolucion;
+    private javax.swing.JMenuItem jmeEmpleado;
+    private javax.swing.JMenuItem jmeEstadoResultados;
+    private javax.swing.JMenuItem jmeGastos;
+    private javax.swing.JMenuItem jmeIngresos;
+    private javax.swing.JMenuItem jmeInventario;
+    private javax.swing.JMenuItem jmeLote;
+    private javax.swing.JMenuItem jmeNegocio;
+    private javax.swing.JMenuItem jmeProducto;
+    private javax.swing.JMenuItem jmeProveedor;
+    private javax.swing.JMenuItem jmePuntoVenta;
+    private javax.swing.JMenuItem jmeRemision;
+    private javax.swing.JMenuItem jmeTraslado;
+    private javax.swing.JMenuItem jmeVenta;
     private javax.swing.JMenu menProducto;
-    private javax.swing.JMenuItem mitProducto;
     private javax.swing.JPanel panContenido;
     // End of variables declaration//GEN-END:variables
 }
