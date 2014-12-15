@@ -31,24 +31,24 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuItem1 = new javax.swing.JMenuItem();
         panContenido = new javax.swing.JPanel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        menProducto = new javax.swing.JMenu();
+        jmbMenuPrincipal = new javax.swing.JMenuBar();
+        jmnGestion = new javax.swing.JMenu();
         jmeProducto = new javax.swing.JMenuItem();
         jmeEmpleado = new javax.swing.JMenuItem();
         jmeCliente = new javax.swing.JMenuItem();
         jmeProveedor = new javax.swing.JMenuItem();
         jmePuntoVenta = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        jmnTransacciones = new javax.swing.JMenu();
         jmeLote = new javax.swing.JMenuItem();
         jmeRemision = new javax.swing.JMenuItem();
         jmeVenta = new javax.swing.JMenuItem();
         jmeTraslado = new javax.swing.JMenuItem();
         jmeDevolucion = new javax.swing.JMenuItem();
         jmeAbono = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jmnGastos = new javax.swing.JMenu();
         jmeAdministritativo = new javax.swing.JMenuItem();
         jmeNegocio = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jmnReportes = new javax.swing.JMenu();
         jmeInventario = new javax.swing.JMenuItem();
         jmeGastos = new javax.swing.JMenuItem();
         jmeIngresos = new javax.swing.JMenuItem();
@@ -69,7 +69,7 @@ public class Principal extends javax.swing.JFrame {
             .addGap(0, 500, Short.MAX_VALUE)
         );
 
-        menProducto.setText("Gestionar");
+        jmnGestion.setText("Gestionar");
 
         jmeProducto.setText("Productos");
         jmeProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -77,7 +77,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeProductoActionPerformed(evt);
             }
         });
-        menProducto.add(jmeProducto);
+        jmnGestion.add(jmeProducto);
 
         jmeEmpleado.setText("Empleados");
         jmeEmpleado.addActionListener(new java.awt.event.ActionListener() {
@@ -85,7 +85,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeEmpleadoActionPerformed(evt);
             }
         });
-        menProducto.add(jmeEmpleado);
+        jmnGestion.add(jmeEmpleado);
 
         jmeCliente.setText("Clientes");
         jmeCliente.addActionListener(new java.awt.event.ActionListener() {
@@ -93,20 +93,20 @@ public class Principal extends javax.swing.JFrame {
                 jmeClienteActionPerformed(evt);
             }
         });
-        menProducto.add(jmeCliente);
+        jmnGestion.add(jmeCliente);
 
         jmeProveedor.setText("Proveedores");
-        menProducto.add(jmeProveedor);
+        jmnGestion.add(jmeProveedor);
 
         jmePuntoVenta.setText("Punto Venta");
-        menProducto.add(jmePuntoVenta);
+        jmnGestion.add(jmePuntoVenta);
 
-        jMenuBar1.add(menProducto);
+        jmbMenuPrincipal.add(jmnGestion);
 
-        jMenu1.setText("Transacciones");
+        jmnTransacciones.setText("Transacciones");
 
         jmeLote.setText("Lote");
-        jMenu1.add(jmeLote);
+        jmnTransacciones.add(jmeLote);
 
         jmeRemision.setText("Remision");
         jmeRemision.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +114,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeRemisionActionPerformed(evt);
             }
         });
-        jMenu1.add(jmeRemision);
+        jmnTransacciones.add(jmeRemision);
 
         jmeVenta.setText("Venta");
         jmeVenta.addActionListener(new java.awt.event.ActionListener() {
@@ -122,7 +122,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeVentaActionPerformed(evt);
             }
         });
-        jMenu1.add(jmeVenta);
+        jmnTransacciones.add(jmeVenta);
 
         jmeTraslado.setText("Traslado");
         jmeTraslado.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +130,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeTrasladoActionPerformed(evt);
             }
         });
-        jMenu1.add(jmeTraslado);
+        jmnTransacciones.add(jmeTraslado);
 
         jmeDevolucion.setText("Devolucion");
         jmeDevolucion.addActionListener(new java.awt.event.ActionListener() {
@@ -138,7 +138,7 @@ public class Principal extends javax.swing.JFrame {
                 jmeDevolucionActionPerformed(evt);
             }
         });
-        jMenu1.add(jmeDevolucion);
+        jmnTransacciones.add(jmeDevolucion);
 
         jmeAbono.setText("Abonos");
         jmeAbono.addActionListener(new java.awt.event.ActionListener() {
@@ -146,21 +146,21 @@ public class Principal extends javax.swing.JFrame {
                 jmeAbonoActionPerformed(evt);
             }
         });
-        jMenu1.add(jmeAbono);
+        jmnTransacciones.add(jmeAbono);
 
-        jMenuBar1.add(jMenu1);
+        jmbMenuPrincipal.add(jmnTransacciones);
 
-        jMenu3.setText("Gastos");
+        jmnGastos.setText("Gastos");
 
         jmeAdministritativo.setText("Admistrativos");
-        jMenu3.add(jmeAdministritativo);
+        jmnGastos.add(jmeAdministritativo);
 
         jmeNegocio.setText("Negocio");
-        jMenu3.add(jmeNegocio);
+        jmnGastos.add(jmeNegocio);
 
-        jMenuBar1.add(jMenu3);
+        jmbMenuPrincipal.add(jmnGastos);
 
-        jMenu2.setText("Reportes");
+        jmnReportes.setText("Reportes");
 
         jmeInventario.setText("Inventario");
         jmeInventario.addActionListener(new java.awt.event.ActionListener() {
@@ -168,13 +168,13 @@ public class Principal extends javax.swing.JFrame {
                 jmeInventarioActionPerformed(evt);
             }
         });
-        jMenu2.add(jmeInventario);
+        jmnReportes.add(jmeInventario);
 
         jmeGastos.setText("Gastos");
-        jMenu2.add(jmeGastos);
+        jmnReportes.add(jmeGastos);
 
         jmeIngresos.setText("Ingresos");
-        jMenu2.add(jmeIngresos);
+        jmnReportes.add(jmeIngresos);
 
         jmeEstadoResultados.setText("Estado Resultados");
         jmeEstadoResultados.addActionListener(new java.awt.event.ActionListener() {
@@ -182,11 +182,11 @@ public class Principal extends javax.swing.JFrame {
                 jmeEstadoResultadosActionPerformed(evt);
             }
         });
-        jMenu2.add(jmeEstadoResultados);
+        jmnReportes.add(jmeEstadoResultados);
 
-        jMenuBar1.add(jMenu2);
+        jmbMenuPrincipal.add(jmnReportes);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(jmbMenuPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -343,11 +343,8 @@ public class Principal extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuBar jmbMenuPrincipal;
     private javax.swing.JMenuItem jmeAbono;
     private javax.swing.JMenuItem jmeAdministritativo;
     private javax.swing.JMenuItem jmeCliente;
@@ -365,7 +362,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmeRemision;
     private javax.swing.JMenuItem jmeTraslado;
     private javax.swing.JMenuItem jmeVenta;
-    private javax.swing.JMenu menProducto;
+    private javax.swing.JMenu jmnGastos;
+    private javax.swing.JMenu jmnGestion;
+    private javax.swing.JMenu jmnReportes;
+    private javax.swing.JMenu jmnTransacciones;
     private javax.swing.JPanel panContenido;
     // End of variables declaration//GEN-END:variables
 }

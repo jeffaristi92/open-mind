@@ -7,9 +7,9 @@
         <Property name="text" type="java.lang.String" value="jMenuItem1"/>
       </Properties>
     </Component>
-    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+    <Menu class="javax.swing.JMenuBar" name="jmbMenuPrincipal">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="menProducto">
+        <Menu class="javax.swing.JMenu" name="jmnGestion">
           <Properties>
             <Property name="text" type="java.lang.String" value="Gestionar"/>
           </Properties>
@@ -50,7 +50,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jmnTransacciones">
           <Properties>
             <Property name="text" type="java.lang.String" value="Transacciones"/>
           </Properties>
@@ -102,7 +102,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="jmnGastos">
           <Properties>
             <Property name="text" type="java.lang.String" value="Gastos"/>
           </Properties>
@@ -119,7 +119,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="jmnReportes">
           <Properties>
             <Property name="text" type="java.lang.String" value="Reportes"/>
           </Properties>
@@ -159,7 +159,7 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jmbMenuPrincipal"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
