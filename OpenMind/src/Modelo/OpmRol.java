@@ -6,7 +6,9 @@
 package Modelo;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,8 +16,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -38,6 +42,8 @@ public class OpmRol implements Serializable {
     @Basic(optional = false)
     @Column(name = "NV_NOMBRE")
     private String nvNombre;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmRol")
+    private List<OpmRecursosRol> opmRecursosRolList;
 
     public OpmRol() {
     }
@@ -65,6 +71,15 @@ public class OpmRol implements Serializable {
 
     public void setNvNombre(String nvNombre) {
         this.nvNombre = nvNombre;
+    }
+
+    @XmlTransient
+    public List<OpmRecursosRol> getOpmRecursosRolList() {
+        return opmRecursosRolList;
+    }
+
+    public void setOpmRecursosRolList(List<OpmRecursosRol> opmRecursosRolList) {
+        this.opmRecursosRolList = opmRecursosRolList;
     }
 
     @Override

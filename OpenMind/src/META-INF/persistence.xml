@@ -28,6 +28,8 @@
     <class>Modelo.OpmTipoGasto</class>
     <class>Modelo.OpmFabrica</class>
     <class>Modelo.OpmCuenta</class>
+    <class>Modelo.OpmRecursosRol</class>
+    <class>Modelo.OpmRecurso</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/openmind?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value=""/>

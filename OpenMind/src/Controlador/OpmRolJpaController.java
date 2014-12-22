@@ -5,16 +5,19 @@
  */
 package Controlador;
 
+import Controlador.exceptions.IllegalOrphanException;
 import Controlador.exceptions.NonexistentEntityException;
-import Modelo.OpmRol;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Modelo.OpmRecursosRol;
+import Modelo.OpmRol;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -32,11 +35,29 @@ public class OpmRolJpaController implements Serializable {
     }
 
     public void create(OpmRol opmRol) {
+        if (opmRol.getOpmRecursosRolList() == null) {
+            opmRol.setOpmRecursosRolList(new ArrayList<OpmRecursosRol>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<OpmRecursosRol> attachedOpmRecursosRolList = new ArrayList<OpmRecursosRol>();
+            for (OpmRecursosRol opmRecursosRolListOpmRecursosRolToAttach : opmRol.getOpmRecursosRolList()) {
+                opmRecursosRolListOpmRecursosRolToAttach = em.getReference(opmRecursosRolListOpmRecursosRolToAttach.getClass(), opmRecursosRolListOpmRecursosRolToAttach.getNmCodigo());
+                attachedOpmRecursosRolList.add(opmRecursosRolListOpmRecursosRolToAttach);
+            }
+            opmRol.setOpmRecursosRolList(attachedOpmRecursosRolList);
             em.persist(opmRol);
+            for (OpmRecursosRol opmRecursosRolListOpmRecursosRol : opmRol.getOpmRecursosRolList()) {
+                OpmRol oldNmRolOfOpmRecursosRolListOpmRecursosRol = opmRecursosRolListOpmRecursosRol.getNmRol();
+                opmRecursosRolListOpmRecursosRol.setNmRol(opmRol);
+                opmRecursosRolListOpmRecursosRol = em.merge(opmRecursosRolListOpmRecursosRol);
+                if (oldNmRolOfOpmRecursosRolListOpmRecursosRol != null) {
+                    oldNmRolOfOpmRecursosRolListOpmRecursosRol.getOpmRecursosRolList().remove(opmRecursosRolListOpmRecursosRol);
+                    oldNmRolOfOpmRecursosRolListOpmRecursosRol = em.merge(oldNmRolOfOpmRecursosRolListOpmRecursosRol);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,12 +66,45 @@ public class OpmRolJpaController implements Serializable {
         }
     }
 
-    public void edit(OpmRol opmRol) throws NonexistentEntityException, Exception {
+    public void edit(OpmRol opmRol) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmRol persistentOpmRol = em.find(OpmRol.class, opmRol.getNmCodigo());
+            List<OpmRecursosRol> opmRecursosRolListOld = persistentOpmRol.getOpmRecursosRolList();
+            List<OpmRecursosRol> opmRecursosRolListNew = opmRol.getOpmRecursosRolList();
+            List<String> illegalOrphanMessages = null;
+            for (OpmRecursosRol opmRecursosRolListOldOpmRecursosRol : opmRecursosRolListOld) {
+                if (!opmRecursosRolListNew.contains(opmRecursosRolListOldOpmRecursosRol)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmRecursosRol " + opmRecursosRolListOldOpmRecursosRol + " since its nmRol field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            List<OpmRecursosRol> attachedOpmRecursosRolListNew = new ArrayList<OpmRecursosRol>();
+            for (OpmRecursosRol opmRecursosRolListNewOpmRecursosRolToAttach : opmRecursosRolListNew) {
+                opmRecursosRolListNewOpmRecursosRolToAttach = em.getReference(opmRecursosRolListNewOpmRecursosRolToAttach.getClass(), opmRecursosRolListNewOpmRecursosRolToAttach.getNmCodigo());
+                attachedOpmRecursosRolListNew.add(opmRecursosRolListNewOpmRecursosRolToAttach);
+            }
+            opmRecursosRolListNew = attachedOpmRecursosRolListNew;
+            opmRol.setOpmRecursosRolList(opmRecursosRolListNew);
             opmRol = em.merge(opmRol);
+            for (OpmRecursosRol opmRecursosRolListNewOpmRecursosRol : opmRecursosRolListNew) {
+                if (!opmRecursosRolListOld.contains(opmRecursosRolListNewOpmRecursosRol)) {
+                    OpmRol oldNmRolOfOpmRecursosRolListNewOpmRecursosRol = opmRecursosRolListNewOpmRecursosRol.getNmRol();
+                    opmRecursosRolListNewOpmRecursosRol.setNmRol(opmRol);
+                    opmRecursosRolListNewOpmRecursosRol = em.merge(opmRecursosRolListNewOpmRecursosRol);
+                    if (oldNmRolOfOpmRecursosRolListNewOpmRecursosRol != null && !oldNmRolOfOpmRecursosRolListNewOpmRecursosRol.equals(opmRol)) {
+                        oldNmRolOfOpmRecursosRolListNewOpmRecursosRol.getOpmRecursosRolList().remove(opmRecursosRolListNewOpmRecursosRol);
+                        oldNmRolOfOpmRecursosRolListNewOpmRecursosRol = em.merge(oldNmRolOfOpmRecursosRolListNewOpmRecursosRol);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -68,7 +122,7 @@ public class OpmRolJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -79,6 +133,17 @@ public class OpmRolJpaController implements Serializable {
                 opmRol.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmRol with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            List<OpmRecursosRol> opmRecursosRolListOrphanCheck = opmRol.getOpmRecursosRolList();
+            for (OpmRecursosRol opmRecursosRolListOrphanCheckOpmRecursosRol : opmRecursosRolListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmRol (" + opmRol + ") cannot be destroyed since the OpmRecursosRol " + opmRecursosRolListOrphanCheckOpmRecursosRol + " in its opmRecursosRolList field has a non-nullable nmRol field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(opmRol);
             em.getTransaction().commit();
