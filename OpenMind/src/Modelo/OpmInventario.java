@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -29,25 +27,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "OpmInventario.findAll", query = "SELECT o FROM OpmInventario o"),
     @NamedQuery(name = "OpmInventario.findByNmCodigo", query = "SELECT o FROM OpmInventario o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmInventario.findByNvReferencia", query = "SELECT o FROM OpmInventario o WHERE o.nvReferencia = :nvReferencia"),
     @NamedQuery(name = "OpmInventario.findByNmCantidad", query = "SELECT o FROM OpmInventario o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmInventario implements Serializable {
-    @Column(name = "NM_CANTIDAD")
-    private Integer nmCantidad;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
-    @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmProducto nmProducto;
+    @Basic(optional = false)
+    @Column(name = "NV_REFERENCIA")
+    private String nvReferencia;
+    @Column(name = "NM_CANTIDAD")
+    private Integer nmCantidad;
 
     public OpmInventario() {
     }
 
     public OpmInventario(Integer nmCodigo) {
         this.nmCodigo = nmCodigo;
+    }
+
+    public OpmInventario(Integer nmCodigo, String nvReferencia) {
+        this.nmCodigo = nmCodigo;
+        this.nvReferencia = nvReferencia;
     }
 
     public Integer getNmCodigo() {
@@ -58,20 +62,20 @@ public class OpmInventario implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public int getNmCantidad() {
+    public String getNvReferencia() {
+        return nvReferencia;
+    }
+
+    public void setNvReferencia(String nvReferencia) {
+        this.nvReferencia = nvReferencia;
+    }
+
+    public Integer getNmCantidad() {
         return nmCantidad;
     }
 
-    public void setNmCantidad(int nmCantidad) {
+    public void setNmCantidad(Integer nmCantidad) {
         this.nmCantidad = nmCantidad;
-    }
-
-    public OpmProducto getNmProducto() {
-        return nmProducto;
-    }
-
-    public void setNmProducto(OpmProducto nmProducto) {
-        this.nmProducto = nmProducto;
     }
 
     @Override
@@ -96,10 +100,7 @@ public class OpmInventario implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmInventario[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmInventario[ nmCodigo=" + nmCodigo + " ]";
     }
-
-    public void setNmCantidad(Integer nmCantidad) {
-        this.nmCantidad = nmCantidad;
-    }    
+    
 }

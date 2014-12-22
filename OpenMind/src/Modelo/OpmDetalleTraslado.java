@@ -43,9 +43,9 @@ public class OpmDetalleTraslado implements Serializable {
     @JoinColumn(name = "NM_TRASLADO", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmTraslado nmTraslado;
-    @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
+    @JoinColumn(name = "NV_REFERENCIA", referencedColumnName = "NV_CODIGO")
     @ManyToOne(optional = false)
-    private OpmProducto nmProducto;
+    private OpmReferenciaProducto nvReferencia;
 
     public OpmDetalleTraslado() {
     }
@@ -83,12 +83,12 @@ public class OpmDetalleTraslado implements Serializable {
         this.nmTraslado = nmTraslado;
     }
 
-    public OpmProducto getNmProducto() {
-        return nmProducto;
+    public OpmReferenciaProducto getNvReferencia() {
+        return nvReferencia;
     }
 
-    public void setNmProducto(OpmProducto nmProducto) {
-        this.nmProducto = nmProducto;
+    public void setNvReferencia(OpmReferenciaProducto nvReferencia) {
+        this.nvReferencia = nvReferencia;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class OpmDetalleTraslado implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmDetalleTraslado[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmDetalleTraslado[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

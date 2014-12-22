@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -29,6 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "OpmDetalleRemision.findAll", query = "SELECT o FROM OpmDetalleRemision o"),
     @NamedQuery(name = "OpmDetalleRemision.findByNmCodigo", query = "SELECT o FROM OpmDetalleRemision o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmDetalleRemision.findByNmRemision", query = "SELECT o FROM OpmDetalleRemision o WHERE o.nmRemision = :nmRemision"),
+    @NamedQuery(name = "OpmDetalleRemision.findByNmProducto", query = "SELECT o FROM OpmDetalleRemision o WHERE o.nmProducto = :nmProducto"),
     @NamedQuery(name = "OpmDetalleRemision.findByNmCantidad", query = "SELECT o FROM OpmDetalleRemision o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmDetalleRemision implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -38,14 +38,14 @@ public class OpmDetalleRemision implements Serializable {
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
     @Basic(optional = false)
+    @Column(name = "NM_REMISION")
+    private int nmRemision;
+    @Basic(optional = false)
+    @Column(name = "NM_PRODUCTO")
+    private int nmProducto;
+    @Basic(optional = false)
     @Column(name = "NM_CANTIDAD")
     private int nmCantidad;
-    @JoinColumn(name = "NM_REMISION", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmRemision nmRemision;
-    @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmProducto nmProducto;
 
     public OpmDetalleRemision() {
     }
@@ -54,8 +54,10 @@ public class OpmDetalleRemision implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmDetalleRemision(Integer nmCodigo, int nmCantidad) {
+    public OpmDetalleRemision(Integer nmCodigo, int nmRemision, int nmProducto, int nmCantidad) {
         this.nmCodigo = nmCodigo;
+        this.nmRemision = nmRemision;
+        this.nmProducto = nmProducto;
         this.nmCantidad = nmCantidad;
     }
 
@@ -67,28 +69,28 @@ public class OpmDetalleRemision implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
+    public int getNmRemision() {
+        return nmRemision;
+    }
+
+    public void setNmRemision(int nmRemision) {
+        this.nmRemision = nmRemision;
+    }
+
+    public int getNmProducto() {
+        return nmProducto;
+    }
+
+    public void setNmProducto(int nmProducto) {
+        this.nmProducto = nmProducto;
+    }
+
     public int getNmCantidad() {
         return nmCantidad;
     }
 
     public void setNmCantidad(int nmCantidad) {
         this.nmCantidad = nmCantidad;
-    }
-
-    public OpmRemision getNmRemision() {
-        return nmRemision;
-    }
-
-    public void setNmRemision(OpmRemision nmRemision) {
-        this.nmRemision = nmRemision;
-    }
-
-    public OpmProducto getNmProducto() {
-        return nmProducto;
-    }
-
-    public void setNmProducto(OpmProducto nmProducto) {
-        this.nmProducto = nmProducto;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class OpmDetalleRemision implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmDetalleRemision[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmDetalleRemision[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

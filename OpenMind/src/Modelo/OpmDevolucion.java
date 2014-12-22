@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "OpmDevolucion.findAll", query = "SELECT o FROM OpmDevolucion o"),
     @NamedQuery(name = "OpmDevolucion.findByNmCodigo", query = "SELECT o FROM OpmDevolucion o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmDevolucion.findByNvNumero", query = "SELECT o FROM OpmDevolucion o WHERE o.nvNumero = :nvNumero"),
     @NamedQuery(name = "OpmDevolucion.findByDaFecha", query = "SELECT o FROM OpmDevolucion o WHERE o.daFecha = :daFecha"),
     @NamedQuery(name = "OpmDevolucion.findByNmCantidad", query = "SELECT o FROM OpmDevolucion o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmDevolucion implements Serializable {
@@ -41,6 +42,9 @@ public class OpmDevolucion implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
+    @Basic(optional = false)
+    @Column(name = "NV_NUMERO")
+    private String nvNumero;
     @Basic(optional = false)
     @Column(name = "DA_FECHA")
     @Temporal(TemporalType.DATE)
@@ -59,8 +63,9 @@ public class OpmDevolucion implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmDevolucion(Integer nmCodigo, Date daFecha, int nmCantidad) {
+    public OpmDevolucion(Integer nmCodigo, String nvNumero, Date daFecha, int nmCantidad) {
         this.nmCodigo = nmCodigo;
+        this.nvNumero = nvNumero;
         this.daFecha = daFecha;
         this.nmCantidad = nmCantidad;
     }
@@ -71,6 +76,14 @@ public class OpmDevolucion implements Serializable {
 
     public void setNmCodigo(Integer nmCodigo) {
         this.nmCodigo = nmCodigo;
+    }
+
+    public String getNvNumero() {
+        return nvNumero;
+    }
+
+    public void setNvNumero(String nvNumero) {
+        this.nvNumero = nvNumero;
     }
 
     public Date getDaFecha() {
@@ -119,7 +132,7 @@ public class OpmDevolucion implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmDevolucion[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmDevolucion[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

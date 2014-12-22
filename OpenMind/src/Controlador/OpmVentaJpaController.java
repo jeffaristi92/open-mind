@@ -14,10 +14,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Modelo.OpmUsuario;
 import Modelo.OpmPuntoVenta;
-import Modelo.OpmAbono;
+import Modelo.OpmDetalleVenta;
 import java.util.ArrayList;
 import java.util.List;
-import Modelo.OpmDetalleVenta;
+import Modelo.OpmAbonoCliente;
 import Modelo.OpmVenta;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,11 +38,11 @@ public class OpmVentaJpaController implements Serializable {
     }
 
     public void create(OpmVenta opmVenta) {
-        if (opmVenta.getOpmAbonoList() == null) {
-            opmVenta.setOpmAbonoList(new ArrayList<OpmAbono>());
-        }
         if (opmVenta.getOpmDetalleVentaList() == null) {
             opmVenta.setOpmDetalleVentaList(new ArrayList<OpmDetalleVenta>());
+        }
+        if (opmVenta.getOpmAbonoClienteList() == null) {
+            opmVenta.setOpmAbonoClienteList(new ArrayList<OpmAbonoCliente>());
         }
         EntityManager em = null;
         try {
@@ -58,18 +58,18 @@ public class OpmVentaJpaController implements Serializable {
                 nmPunto = em.getReference(nmPunto.getClass(), nmPunto.getNmCodigo());
                 opmVenta.setNmPunto(nmPunto);
             }
-            List<OpmAbono> attachedOpmAbonoList = new ArrayList<OpmAbono>();
-            for (OpmAbono opmAbonoListOpmAbonoToAttach : opmVenta.getOpmAbonoList()) {
-                opmAbonoListOpmAbonoToAttach = em.getReference(opmAbonoListOpmAbonoToAttach.getClass(), opmAbonoListOpmAbonoToAttach.getNmCodigo());
-                attachedOpmAbonoList.add(opmAbonoListOpmAbonoToAttach);
-            }
-            opmVenta.setOpmAbonoList(attachedOpmAbonoList);
             List<OpmDetalleVenta> attachedOpmDetalleVentaList = new ArrayList<OpmDetalleVenta>();
             for (OpmDetalleVenta opmDetalleVentaListOpmDetalleVentaToAttach : opmVenta.getOpmDetalleVentaList()) {
                 opmDetalleVentaListOpmDetalleVentaToAttach = em.getReference(opmDetalleVentaListOpmDetalleVentaToAttach.getClass(), opmDetalleVentaListOpmDetalleVentaToAttach.getNmCodigo());
                 attachedOpmDetalleVentaList.add(opmDetalleVentaListOpmDetalleVentaToAttach);
             }
             opmVenta.setOpmDetalleVentaList(attachedOpmDetalleVentaList);
+            List<OpmAbonoCliente> attachedOpmAbonoClienteList = new ArrayList<OpmAbonoCliente>();
+            for (OpmAbonoCliente opmAbonoClienteListOpmAbonoClienteToAttach : opmVenta.getOpmAbonoClienteList()) {
+                opmAbonoClienteListOpmAbonoClienteToAttach = em.getReference(opmAbonoClienteListOpmAbonoClienteToAttach.getClass(), opmAbonoClienteListOpmAbonoClienteToAttach.getNmCodigo());
+                attachedOpmAbonoClienteList.add(opmAbonoClienteListOpmAbonoClienteToAttach);
+            }
+            opmVenta.setOpmAbonoClienteList(attachedOpmAbonoClienteList);
             em.persist(opmVenta);
             if (nmCliente != null) {
                 nmCliente.getOpmVentaList().add(opmVenta);
@@ -79,15 +79,6 @@ public class OpmVentaJpaController implements Serializable {
                 nmPunto.getOpmVentaList().add(opmVenta);
                 nmPunto = em.merge(nmPunto);
             }
-            for (OpmAbono opmAbonoListOpmAbono : opmVenta.getOpmAbonoList()) {
-                OpmVenta oldNmVentaOfOpmAbonoListOpmAbono = opmAbonoListOpmAbono.getNmVenta();
-                opmAbonoListOpmAbono.setNmVenta(opmVenta);
-                opmAbonoListOpmAbono = em.merge(opmAbonoListOpmAbono);
-                if (oldNmVentaOfOpmAbonoListOpmAbono != null) {
-                    oldNmVentaOfOpmAbonoListOpmAbono.getOpmAbonoList().remove(opmAbonoListOpmAbono);
-                    oldNmVentaOfOpmAbonoListOpmAbono = em.merge(oldNmVentaOfOpmAbonoListOpmAbono);
-                }
-            }
             for (OpmDetalleVenta opmDetalleVentaListOpmDetalleVenta : opmVenta.getOpmDetalleVentaList()) {
                 OpmVenta oldNmVentaOfOpmDetalleVentaListOpmDetalleVenta = opmDetalleVentaListOpmDetalleVenta.getNmVenta();
                 opmDetalleVentaListOpmDetalleVenta.setNmVenta(opmVenta);
@@ -95,6 +86,15 @@ public class OpmVentaJpaController implements Serializable {
                 if (oldNmVentaOfOpmDetalleVentaListOpmDetalleVenta != null) {
                     oldNmVentaOfOpmDetalleVentaListOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListOpmDetalleVenta);
                     oldNmVentaOfOpmDetalleVentaListOpmDetalleVenta = em.merge(oldNmVentaOfOpmDetalleVentaListOpmDetalleVenta);
+                }
+            }
+            for (OpmAbonoCliente opmAbonoClienteListOpmAbonoCliente : opmVenta.getOpmAbonoClienteList()) {
+                OpmVenta oldNmVentaOfOpmAbonoClienteListOpmAbonoCliente = opmAbonoClienteListOpmAbonoCliente.getNmVenta();
+                opmAbonoClienteListOpmAbonoCliente.setNmVenta(opmVenta);
+                opmAbonoClienteListOpmAbonoCliente = em.merge(opmAbonoClienteListOpmAbonoCliente);
+                if (oldNmVentaOfOpmAbonoClienteListOpmAbonoCliente != null) {
+                    oldNmVentaOfOpmAbonoClienteListOpmAbonoCliente.getOpmAbonoClienteList().remove(opmAbonoClienteListOpmAbonoCliente);
+                    oldNmVentaOfOpmAbonoClienteListOpmAbonoCliente = em.merge(oldNmVentaOfOpmAbonoClienteListOpmAbonoCliente);
                 }
             }
             em.getTransaction().commit();
@@ -115,25 +115,25 @@ public class OpmVentaJpaController implements Serializable {
             OpmUsuario nmClienteNew = opmVenta.getNmCliente();
             OpmPuntoVenta nmPuntoOld = persistentOpmVenta.getNmPunto();
             OpmPuntoVenta nmPuntoNew = opmVenta.getNmPunto();
-            List<OpmAbono> opmAbonoListOld = persistentOpmVenta.getOpmAbonoList();
-            List<OpmAbono> opmAbonoListNew = opmVenta.getOpmAbonoList();
             List<OpmDetalleVenta> opmDetalleVentaListOld = persistentOpmVenta.getOpmDetalleVentaList();
             List<OpmDetalleVenta> opmDetalleVentaListNew = opmVenta.getOpmDetalleVentaList();
+            List<OpmAbonoCliente> opmAbonoClienteListOld = persistentOpmVenta.getOpmAbonoClienteList();
+            List<OpmAbonoCliente> opmAbonoClienteListNew = opmVenta.getOpmAbonoClienteList();
             List<String> illegalOrphanMessages = null;
-            for (OpmAbono opmAbonoListOldOpmAbono : opmAbonoListOld) {
-                if (!opmAbonoListNew.contains(opmAbonoListOldOpmAbono)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmAbono " + opmAbonoListOldOpmAbono + " since its nmVenta field is not nullable.");
-                }
-            }
             for (OpmDetalleVenta opmDetalleVentaListOldOpmDetalleVenta : opmDetalleVentaListOld) {
                 if (!opmDetalleVentaListNew.contains(opmDetalleVentaListOldOpmDetalleVenta)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain OpmDetalleVenta " + opmDetalleVentaListOldOpmDetalleVenta + " since its nmVenta field is not nullable.");
+                }
+            }
+            for (OpmAbonoCliente opmAbonoClienteListOldOpmAbonoCliente : opmAbonoClienteListOld) {
+                if (!opmAbonoClienteListNew.contains(opmAbonoClienteListOldOpmAbonoCliente)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmAbonoCliente " + opmAbonoClienteListOldOpmAbonoCliente + " since its nmVenta field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -147,13 +147,6 @@ public class OpmVentaJpaController implements Serializable {
                 nmPuntoNew = em.getReference(nmPuntoNew.getClass(), nmPuntoNew.getNmCodigo());
                 opmVenta.setNmPunto(nmPuntoNew);
             }
-            List<OpmAbono> attachedOpmAbonoListNew = new ArrayList<OpmAbono>();
-            for (OpmAbono opmAbonoListNewOpmAbonoToAttach : opmAbonoListNew) {
-                opmAbonoListNewOpmAbonoToAttach = em.getReference(opmAbonoListNewOpmAbonoToAttach.getClass(), opmAbonoListNewOpmAbonoToAttach.getNmCodigo());
-                attachedOpmAbonoListNew.add(opmAbonoListNewOpmAbonoToAttach);
-            }
-            opmAbonoListNew = attachedOpmAbonoListNew;
-            opmVenta.setOpmAbonoList(opmAbonoListNew);
             List<OpmDetalleVenta> attachedOpmDetalleVentaListNew = new ArrayList<OpmDetalleVenta>();
             for (OpmDetalleVenta opmDetalleVentaListNewOpmDetalleVentaToAttach : opmDetalleVentaListNew) {
                 opmDetalleVentaListNewOpmDetalleVentaToAttach = em.getReference(opmDetalleVentaListNewOpmDetalleVentaToAttach.getClass(), opmDetalleVentaListNewOpmDetalleVentaToAttach.getNmCodigo());
@@ -161,6 +154,13 @@ public class OpmVentaJpaController implements Serializable {
             }
             opmDetalleVentaListNew = attachedOpmDetalleVentaListNew;
             opmVenta.setOpmDetalleVentaList(opmDetalleVentaListNew);
+            List<OpmAbonoCliente> attachedOpmAbonoClienteListNew = new ArrayList<OpmAbonoCliente>();
+            for (OpmAbonoCliente opmAbonoClienteListNewOpmAbonoClienteToAttach : opmAbonoClienteListNew) {
+                opmAbonoClienteListNewOpmAbonoClienteToAttach = em.getReference(opmAbonoClienteListNewOpmAbonoClienteToAttach.getClass(), opmAbonoClienteListNewOpmAbonoClienteToAttach.getNmCodigo());
+                attachedOpmAbonoClienteListNew.add(opmAbonoClienteListNewOpmAbonoClienteToAttach);
+            }
+            opmAbonoClienteListNew = attachedOpmAbonoClienteListNew;
+            opmVenta.setOpmAbonoClienteList(opmAbonoClienteListNew);
             opmVenta = em.merge(opmVenta);
             if (nmClienteOld != null && !nmClienteOld.equals(nmClienteNew)) {
                 nmClienteOld.getOpmVentaList().remove(opmVenta);
@@ -178,17 +178,6 @@ public class OpmVentaJpaController implements Serializable {
                 nmPuntoNew.getOpmVentaList().add(opmVenta);
                 nmPuntoNew = em.merge(nmPuntoNew);
             }
-            for (OpmAbono opmAbonoListNewOpmAbono : opmAbonoListNew) {
-                if (!opmAbonoListOld.contains(opmAbonoListNewOpmAbono)) {
-                    OpmVenta oldNmVentaOfOpmAbonoListNewOpmAbono = opmAbonoListNewOpmAbono.getNmVenta();
-                    opmAbonoListNewOpmAbono.setNmVenta(opmVenta);
-                    opmAbonoListNewOpmAbono = em.merge(opmAbonoListNewOpmAbono);
-                    if (oldNmVentaOfOpmAbonoListNewOpmAbono != null && !oldNmVentaOfOpmAbonoListNewOpmAbono.equals(opmVenta)) {
-                        oldNmVentaOfOpmAbonoListNewOpmAbono.getOpmAbonoList().remove(opmAbonoListNewOpmAbono);
-                        oldNmVentaOfOpmAbonoListNewOpmAbono = em.merge(oldNmVentaOfOpmAbonoListNewOpmAbono);
-                    }
-                }
-            }
             for (OpmDetalleVenta opmDetalleVentaListNewOpmDetalleVenta : opmDetalleVentaListNew) {
                 if (!opmDetalleVentaListOld.contains(opmDetalleVentaListNewOpmDetalleVenta)) {
                     OpmVenta oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta = opmDetalleVentaListNewOpmDetalleVenta.getNmVenta();
@@ -197,6 +186,17 @@ public class OpmVentaJpaController implements Serializable {
                     if (oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta != null && !oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta.equals(opmVenta)) {
                         oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListNewOpmDetalleVenta);
                         oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta = em.merge(oldNmVentaOfOpmDetalleVentaListNewOpmDetalleVenta);
+                    }
+                }
+            }
+            for (OpmAbonoCliente opmAbonoClienteListNewOpmAbonoCliente : opmAbonoClienteListNew) {
+                if (!opmAbonoClienteListOld.contains(opmAbonoClienteListNewOpmAbonoCliente)) {
+                    OpmVenta oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente = opmAbonoClienteListNewOpmAbonoCliente.getNmVenta();
+                    opmAbonoClienteListNewOpmAbonoCliente.setNmVenta(opmVenta);
+                    opmAbonoClienteListNewOpmAbonoCliente = em.merge(opmAbonoClienteListNewOpmAbonoCliente);
+                    if (oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente != null && !oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente.equals(opmVenta)) {
+                        oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente.getOpmAbonoClienteList().remove(opmAbonoClienteListNewOpmAbonoCliente);
+                        oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente = em.merge(oldNmVentaOfOpmAbonoClienteListNewOpmAbonoCliente);
                     }
                 }
             }
@@ -230,19 +230,19 @@ public class OpmVentaJpaController implements Serializable {
                 throw new NonexistentEntityException("The opmVenta with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<OpmAbono> opmAbonoListOrphanCheck = opmVenta.getOpmAbonoList();
-            for (OpmAbono opmAbonoListOrphanCheckOpmAbono : opmAbonoListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmVenta (" + opmVenta + ") cannot be destroyed since the OpmAbono " + opmAbonoListOrphanCheckOpmAbono + " in its opmAbonoList field has a non-nullable nmVenta field.");
-            }
             List<OpmDetalleVenta> opmDetalleVentaListOrphanCheck = opmVenta.getOpmDetalleVentaList();
             for (OpmDetalleVenta opmDetalleVentaListOrphanCheckOpmDetalleVenta : opmDetalleVentaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This OpmVenta (" + opmVenta + ") cannot be destroyed since the OpmDetalleVenta " + opmDetalleVentaListOrphanCheckOpmDetalleVenta + " in its opmDetalleVentaList field has a non-nullable nmVenta field.");
+            }
+            List<OpmAbonoCliente> opmAbonoClienteListOrphanCheck = opmVenta.getOpmAbonoClienteList();
+            for (OpmAbonoCliente opmAbonoClienteListOrphanCheckOpmAbonoCliente : opmAbonoClienteListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmVenta (" + opmVenta + ") cannot be destroyed since the OpmAbonoCliente " + opmAbonoClienteListOrphanCheckOpmAbonoCliente + " in its opmAbonoClienteList field has a non-nullable nmVenta field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

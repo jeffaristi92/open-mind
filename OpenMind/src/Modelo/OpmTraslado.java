@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "OpmTraslado.findAll", query = "SELECT o FROM OpmTraslado o"),
     @NamedQuery(name = "OpmTraslado.findByNmCodigo", query = "SELECT o FROM OpmTraslado o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmTraslado.findByNvNumero", query = "SELECT o FROM OpmTraslado o WHERE o.nvNumero = :nvNumero"),
     @NamedQuery(name = "OpmTraslado.findByNmDestino", query = "SELECT o FROM OpmTraslado o WHERE o.nmDestino = :nmDestino"),
     @NamedQuery(name = "OpmTraslado.findByDaFecha", query = "SELECT o FROM OpmTraslado o WHERE o.daFecha = :daFecha")})
 public class OpmTraslado implements Serializable {
@@ -45,6 +46,9 @@ public class OpmTraslado implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
+    @Basic(optional = false)
+    @Column(name = "NV_NUMERO")
+    private String nvNumero;
     @Basic(optional = false)
     @Column(name = "NM_DESTINO")
     private int nmDestino;
@@ -65,8 +69,9 @@ public class OpmTraslado implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmTraslado(Integer nmCodigo, int nmDestino, Date daFecha) {
+    public OpmTraslado(Integer nmCodigo, String nvNumero, int nmDestino, Date daFecha) {
         this.nmCodigo = nmCodigo;
+        this.nvNumero = nvNumero;
         this.nmDestino = nmDestino;
         this.daFecha = daFecha;
     }
@@ -77,6 +82,14 @@ public class OpmTraslado implements Serializable {
 
     public void setNmCodigo(Integer nmCodigo) {
         this.nmCodigo = nmCodigo;
+    }
+
+    public String getNvNumero() {
+        return nvNumero;
+    }
+
+    public void setNvNumero(String nvNumero) {
+        this.nvNumero = nvNumero;
     }
 
     public int getNmDestino() {
@@ -134,7 +147,7 @@ public class OpmTraslado implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmTraslado[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmTraslado[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

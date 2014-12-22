@@ -6,7 +6,6 @@
 package Modelo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -37,12 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "OpmVenta.findAll", query = "SELECT o FROM OpmVenta o"),
     @NamedQuery(name = "OpmVenta.findByNmCodigo", query = "SELECT o FROM OpmVenta o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmVenta.findByNvNumero", query = "SELECT o FROM OpmVenta o WHERE o.nvNumero = :nvNumero"),
     @NamedQuery(name = "OpmVenta.findByDaFecha", query = "SELECT o FROM OpmVenta o WHERE o.daFecha = :daFecha"),
     @NamedQuery(name = "OpmVenta.findByNmFlete", query = "SELECT o FROM OpmVenta o WHERE o.nmFlete = :nmFlete")})
 public class OpmVenta implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "NM_FLETE")
-    private double nmFlete;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,13 +47,19 @@ public class OpmVenta implements Serializable {
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
     @Basic(optional = false)
+    @Column(name = "NV_NUMERO")
+    private String nvNumero;
+    @Basic(optional = false)
     @Column(name = "DA_FECHA")
     @Temporal(TemporalType.DATE)
     private Date daFecha;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmVenta")
-    private List<OpmAbono> opmAbonoList;
+    @Basic(optional = false)
+    @Column(name = "NM_FLETE")
+    private int nmFlete;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmVenta")
     private List<OpmDetalleVenta> opmDetalleVentaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmVenta")
+    private List<OpmAbonoCliente> opmAbonoClienteList;
     @JoinColumn(name = "NM_CLIENTE", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmUsuario nmCliente;
@@ -71,8 +74,9 @@ public class OpmVenta implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmVenta(Integer nmCodigo, Date daFecha, double nmFlete) {
+    public OpmVenta(Integer nmCodigo, String nvNumero, Date daFecha, int nmFlete) {
         this.nmCodigo = nmCodigo;
+        this.nvNumero = nvNumero;
         this.daFecha = daFecha;
         this.nmFlete = nmFlete;
     }
@@ -85,6 +89,14 @@ public class OpmVenta implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
+    public String getNvNumero() {
+        return nvNumero;
+    }
+
+    public void setNvNumero(String nvNumero) {
+        this.nvNumero = nvNumero;
+    }
+
     public Date getDaFecha() {
         return daFecha;
     }
@@ -93,21 +105,12 @@ public class OpmVenta implements Serializable {
         this.daFecha = daFecha;
     }
 
-    public double getNmFlete() {
+    public int getNmFlete() {
         return nmFlete;
     }
 
-    public void setNmFlete(double nmFlete) {
+    public void setNmFlete(int nmFlete) {
         this.nmFlete = nmFlete;
-    }
-
-    @XmlTransient
-    public List<OpmAbono> getOpmAbonoList() {
-        return opmAbonoList;
-    }
-
-    public void setOpmAbonoList(List<OpmAbono> opmAbonoList) {
-        this.opmAbonoList = opmAbonoList;
     }
 
     @XmlTransient
@@ -117,6 +120,15 @@ public class OpmVenta implements Serializable {
 
     public void setOpmDetalleVentaList(List<OpmDetalleVenta> opmDetalleVentaList) {
         this.opmDetalleVentaList = opmDetalleVentaList;
+    }
+
+    @XmlTransient
+    public List<OpmAbonoCliente> getOpmAbonoClienteList() {
+        return opmAbonoClienteList;
+    }
+
+    public void setOpmAbonoClienteList(List<OpmAbonoCliente> opmAbonoClienteList) {
+        this.opmAbonoClienteList = opmAbonoClienteList;
     }
 
     public OpmUsuario getNmCliente() {
@@ -157,7 +169,7 @@ public class OpmVenta implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmVenta[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmVenta[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

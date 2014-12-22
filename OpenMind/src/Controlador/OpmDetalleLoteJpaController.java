@@ -12,8 +12,8 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Modelo.OpmReferenciaProducto;
 import Modelo.OpmLote;
-import Modelo.OpmProducto;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,24 +38,24 @@ public class OpmDetalleLoteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmReferenciaProducto nvReferencia = opmDetalleLote.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmDetalleLote.setNvReferencia(nvReferencia);
+            }
             OpmLote nmLote = opmDetalleLote.getNmLote();
             if (nmLote != null) {
                 nmLote = em.getReference(nmLote.getClass(), nmLote.getNmCodigo());
                 opmDetalleLote.setNmLote(nmLote);
             }
-            OpmProducto nmProducto = opmDetalleLote.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto = em.getReference(nmProducto.getClass(), nmProducto.getNmCodigo());
-                opmDetalleLote.setNmProducto(nmProducto);
-            }
             em.persist(opmDetalleLote);
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleLoteList().add(opmDetalleLote);
+                nvReferencia = em.merge(nvReferencia);
+            }
             if (nmLote != null) {
                 nmLote.getOpmDetalleLoteList().add(opmDetalleLote);
                 nmLote = em.merge(nmLote);
-            }
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleLoteList().add(opmDetalleLote);
-                nmProducto = em.merge(nmProducto);
             }
             em.getTransaction().commit();
         } finally {
@@ -71,19 +71,27 @@ public class OpmDetalleLoteJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OpmDetalleLote persistentOpmDetalleLote = em.find(OpmDetalleLote.class, opmDetalleLote.getNmCodigo());
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmDetalleLote.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmDetalleLote.getNvReferencia();
             OpmLote nmLoteOld = persistentOpmDetalleLote.getNmLote();
             OpmLote nmLoteNew = opmDetalleLote.getNmLote();
-            OpmProducto nmProductoOld = persistentOpmDetalleLote.getNmProducto();
-            OpmProducto nmProductoNew = opmDetalleLote.getNmProducto();
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmDetalleLote.setNvReferencia(nvReferenciaNew);
+            }
             if (nmLoteNew != null) {
                 nmLoteNew = em.getReference(nmLoteNew.getClass(), nmLoteNew.getNmCodigo());
                 opmDetalleLote.setNmLote(nmLoteNew);
             }
-            if (nmProductoNew != null) {
-                nmProductoNew = em.getReference(nmProductoNew.getClass(), nmProductoNew.getNmCodigo());
-                opmDetalleLote.setNmProducto(nmProductoNew);
-            }
             opmDetalleLote = em.merge(opmDetalleLote);
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmDetalleLoteList().remove(opmDetalleLote);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
+            }
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmDetalleLoteList().add(opmDetalleLote);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
+            }
             if (nmLoteOld != null && !nmLoteOld.equals(nmLoteNew)) {
                 nmLoteOld.getOpmDetalleLoteList().remove(opmDetalleLote);
                 nmLoteOld = em.merge(nmLoteOld);
@@ -91,14 +99,6 @@ public class OpmDetalleLoteJpaController implements Serializable {
             if (nmLoteNew != null && !nmLoteNew.equals(nmLoteOld)) {
                 nmLoteNew.getOpmDetalleLoteList().add(opmDetalleLote);
                 nmLoteNew = em.merge(nmLoteNew);
-            }
-            if (nmProductoOld != null && !nmProductoOld.equals(nmProductoNew)) {
-                nmProductoOld.getOpmDetalleLoteList().remove(opmDetalleLote);
-                nmProductoOld = em.merge(nmProductoOld);
-            }
-            if (nmProductoNew != null && !nmProductoNew.equals(nmProductoOld)) {
-                nmProductoNew.getOpmDetalleLoteList().add(opmDetalleLote);
-                nmProductoNew = em.merge(nmProductoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -129,15 +129,15 @@ public class OpmDetalleLoteJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmDetalleLote with id " + id + " no longer exists.", enfe);
             }
+            OpmReferenciaProducto nvReferencia = opmDetalleLote.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleLoteList().remove(opmDetalleLote);
+                nvReferencia = em.merge(nvReferencia);
+            }
             OpmLote nmLote = opmDetalleLote.getNmLote();
             if (nmLote != null) {
                 nmLote.getOpmDetalleLoteList().remove(opmDetalleLote);
                 nmLote = em.merge(nmLote);
-            }
-            OpmProducto nmProducto = opmDetalleLote.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleLoteList().remove(opmDetalleLote);
-                nmProducto = em.merge(nmProducto);
             }
             em.remove(opmDetalleLote);
             em.getTransaction().commit();

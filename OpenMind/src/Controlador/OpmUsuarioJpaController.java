@@ -12,12 +12,11 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Modelo.OpmRol;
-import Modelo.OpmPuntoVenta;
+import Modelo.OpmFabrica;
 import java.util.ArrayList;
 import java.util.List;
 import Modelo.OpmVenta;
-import Modelo.OpmRemision;
+import Modelo.OpmTransaccion;
 import Modelo.OpmLote;
 import Modelo.OpmUsuario;
 import javax.persistence.EntityManager;
@@ -39,14 +38,14 @@ public class OpmUsuarioJpaController implements Serializable {
     }
 
     public void create(OpmUsuario opmUsuario) {
-        if (opmUsuario.getOpmPuntoVentaList() == null) {
-            opmUsuario.setOpmPuntoVentaList(new ArrayList<OpmPuntoVenta>());
+        if (opmUsuario.getOpmFabricaList() == null) {
+            opmUsuario.setOpmFabricaList(new ArrayList<OpmFabrica>());
         }
         if (opmUsuario.getOpmVentaList() == null) {
             opmUsuario.setOpmVentaList(new ArrayList<OpmVenta>());
         }
-        if (opmUsuario.getOpmRemisionList() == null) {
-            opmUsuario.setOpmRemisionList(new ArrayList<OpmRemision>());
+        if (opmUsuario.getOpmTransaccionList() == null) {
+            opmUsuario.setOpmTransaccionList(new ArrayList<OpmTransaccion>());
         }
         if (opmUsuario.getOpmLoteList() == null) {
             opmUsuario.setOpmLoteList(new ArrayList<OpmLote>());
@@ -55,29 +54,24 @@ public class OpmUsuarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            OpmRol nmRol = opmUsuario.getNmRol();
-            if (nmRol != null) {
-                nmRol = em.getReference(nmRol.getClass(), nmRol.getNmCodigo());
-                opmUsuario.setNmRol(nmRol);
+            List<OpmFabrica> attachedOpmFabricaList = new ArrayList<OpmFabrica>();
+            for (OpmFabrica opmFabricaListOpmFabricaToAttach : opmUsuario.getOpmFabricaList()) {
+                opmFabricaListOpmFabricaToAttach = em.getReference(opmFabricaListOpmFabricaToAttach.getClass(), opmFabricaListOpmFabricaToAttach.getNmCodigo());
+                attachedOpmFabricaList.add(opmFabricaListOpmFabricaToAttach);
             }
-            List<OpmPuntoVenta> attachedOpmPuntoVentaList = new ArrayList<OpmPuntoVenta>();
-            for (OpmPuntoVenta opmPuntoVentaListOpmPuntoVentaToAttach : opmUsuario.getOpmPuntoVentaList()) {
-                opmPuntoVentaListOpmPuntoVentaToAttach = em.getReference(opmPuntoVentaListOpmPuntoVentaToAttach.getClass(), opmPuntoVentaListOpmPuntoVentaToAttach.getNmCodigo());
-                attachedOpmPuntoVentaList.add(opmPuntoVentaListOpmPuntoVentaToAttach);
-            }
-            opmUsuario.setOpmPuntoVentaList(attachedOpmPuntoVentaList);
+            opmUsuario.setOpmFabricaList(attachedOpmFabricaList);
             List<OpmVenta> attachedOpmVentaList = new ArrayList<OpmVenta>();
             for (OpmVenta opmVentaListOpmVentaToAttach : opmUsuario.getOpmVentaList()) {
                 opmVentaListOpmVentaToAttach = em.getReference(opmVentaListOpmVentaToAttach.getClass(), opmVentaListOpmVentaToAttach.getNmCodigo());
                 attachedOpmVentaList.add(opmVentaListOpmVentaToAttach);
             }
             opmUsuario.setOpmVentaList(attachedOpmVentaList);
-            List<OpmRemision> attachedOpmRemisionList = new ArrayList<OpmRemision>();
-            for (OpmRemision opmRemisionListOpmRemisionToAttach : opmUsuario.getOpmRemisionList()) {
-                opmRemisionListOpmRemisionToAttach = em.getReference(opmRemisionListOpmRemisionToAttach.getClass(), opmRemisionListOpmRemisionToAttach.getNmCodigo());
-                attachedOpmRemisionList.add(opmRemisionListOpmRemisionToAttach);
+            List<OpmTransaccion> attachedOpmTransaccionList = new ArrayList<OpmTransaccion>();
+            for (OpmTransaccion opmTransaccionListOpmTransaccionToAttach : opmUsuario.getOpmTransaccionList()) {
+                opmTransaccionListOpmTransaccionToAttach = em.getReference(opmTransaccionListOpmTransaccionToAttach.getClass(), opmTransaccionListOpmTransaccionToAttach.getNmCodigo());
+                attachedOpmTransaccionList.add(opmTransaccionListOpmTransaccionToAttach);
             }
-            opmUsuario.setOpmRemisionList(attachedOpmRemisionList);
+            opmUsuario.setOpmTransaccionList(attachedOpmTransaccionList);
             List<OpmLote> attachedOpmLoteList = new ArrayList<OpmLote>();
             for (OpmLote opmLoteListOpmLoteToAttach : opmUsuario.getOpmLoteList()) {
                 opmLoteListOpmLoteToAttach = em.getReference(opmLoteListOpmLoteToAttach.getClass(), opmLoteListOpmLoteToAttach.getNmCodigo());
@@ -85,17 +79,13 @@ public class OpmUsuarioJpaController implements Serializable {
             }
             opmUsuario.setOpmLoteList(attachedOpmLoteList);
             em.persist(opmUsuario);
-            if (nmRol != null) {
-                nmRol.getOpmUsuarioList().add(opmUsuario);
-                nmRol = em.merge(nmRol);
-            }
-            for (OpmPuntoVenta opmPuntoVentaListOpmPuntoVenta : opmUsuario.getOpmPuntoVentaList()) {
-                OpmUsuario oldNmAdministradorOfOpmPuntoVentaListOpmPuntoVenta = opmPuntoVentaListOpmPuntoVenta.getNmAdministrador();
-                opmPuntoVentaListOpmPuntoVenta.setNmAdministrador(opmUsuario);
-                opmPuntoVentaListOpmPuntoVenta = em.merge(opmPuntoVentaListOpmPuntoVenta);
-                if (oldNmAdministradorOfOpmPuntoVentaListOpmPuntoVenta != null) {
-                    oldNmAdministradorOfOpmPuntoVentaListOpmPuntoVenta.getOpmPuntoVentaList().remove(opmPuntoVentaListOpmPuntoVenta);
-                    oldNmAdministradorOfOpmPuntoVentaListOpmPuntoVenta = em.merge(oldNmAdministradorOfOpmPuntoVentaListOpmPuntoVenta);
+            for (OpmFabrica opmFabricaListOpmFabrica : opmUsuario.getOpmFabricaList()) {
+                OpmUsuario oldNmAdministradorOfOpmFabricaListOpmFabrica = opmFabricaListOpmFabrica.getNmAdministrador();
+                opmFabricaListOpmFabrica.setNmAdministrador(opmUsuario);
+                opmFabricaListOpmFabrica = em.merge(opmFabricaListOpmFabrica);
+                if (oldNmAdministradorOfOpmFabricaListOpmFabrica != null) {
+                    oldNmAdministradorOfOpmFabricaListOpmFabrica.getOpmFabricaList().remove(opmFabricaListOpmFabrica);
+                    oldNmAdministradorOfOpmFabricaListOpmFabrica = em.merge(oldNmAdministradorOfOpmFabricaListOpmFabrica);
                 }
             }
             for (OpmVenta opmVentaListOpmVenta : opmUsuario.getOpmVentaList()) {
@@ -107,13 +97,13 @@ public class OpmUsuarioJpaController implements Serializable {
                     oldNmClienteOfOpmVentaListOpmVenta = em.merge(oldNmClienteOfOpmVentaListOpmVenta);
                 }
             }
-            for (OpmRemision opmRemisionListOpmRemision : opmUsuario.getOpmRemisionList()) {
-                OpmUsuario oldNmEmpleadoOfOpmRemisionListOpmRemision = opmRemisionListOpmRemision.getNmEmpleado();
-                opmRemisionListOpmRemision.setNmEmpleado(opmUsuario);
-                opmRemisionListOpmRemision = em.merge(opmRemisionListOpmRemision);
-                if (oldNmEmpleadoOfOpmRemisionListOpmRemision != null) {
-                    oldNmEmpleadoOfOpmRemisionListOpmRemision.getOpmRemisionList().remove(opmRemisionListOpmRemision);
-                    oldNmEmpleadoOfOpmRemisionListOpmRemision = em.merge(oldNmEmpleadoOfOpmRemisionListOpmRemision);
+            for (OpmTransaccion opmTransaccionListOpmTransaccion : opmUsuario.getOpmTransaccionList()) {
+                OpmUsuario oldNmUsuarioOfOpmTransaccionListOpmTransaccion = opmTransaccionListOpmTransaccion.getNmUsuario();
+                opmTransaccionListOpmTransaccion.setNmUsuario(opmUsuario);
+                opmTransaccionListOpmTransaccion = em.merge(opmTransaccionListOpmTransaccion);
+                if (oldNmUsuarioOfOpmTransaccionListOpmTransaccion != null) {
+                    oldNmUsuarioOfOpmTransaccionListOpmTransaccion.getOpmTransaccionList().remove(opmTransaccionListOpmTransaccion);
+                    oldNmUsuarioOfOpmTransaccionListOpmTransaccion = em.merge(oldNmUsuarioOfOpmTransaccionListOpmTransaccion);
                 }
             }
             for (OpmLote opmLoteListOpmLote : opmUsuario.getOpmLoteList()) {
@@ -139,23 +129,21 @@ public class OpmUsuarioJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OpmUsuario persistentOpmUsuario = em.find(OpmUsuario.class, opmUsuario.getNmCodigo());
-            OpmRol nmRolOld = persistentOpmUsuario.getNmRol();
-            OpmRol nmRolNew = opmUsuario.getNmRol();
-            List<OpmPuntoVenta> opmPuntoVentaListOld = persistentOpmUsuario.getOpmPuntoVentaList();
-            List<OpmPuntoVenta> opmPuntoVentaListNew = opmUsuario.getOpmPuntoVentaList();
+            List<OpmFabrica> opmFabricaListOld = persistentOpmUsuario.getOpmFabricaList();
+            List<OpmFabrica> opmFabricaListNew = opmUsuario.getOpmFabricaList();
             List<OpmVenta> opmVentaListOld = persistentOpmUsuario.getOpmVentaList();
             List<OpmVenta> opmVentaListNew = opmUsuario.getOpmVentaList();
-            List<OpmRemision> opmRemisionListOld = persistentOpmUsuario.getOpmRemisionList();
-            List<OpmRemision> opmRemisionListNew = opmUsuario.getOpmRemisionList();
+            List<OpmTransaccion> opmTransaccionListOld = persistentOpmUsuario.getOpmTransaccionList();
+            List<OpmTransaccion> opmTransaccionListNew = opmUsuario.getOpmTransaccionList();
             List<OpmLote> opmLoteListOld = persistentOpmUsuario.getOpmLoteList();
             List<OpmLote> opmLoteListNew = opmUsuario.getOpmLoteList();
             List<String> illegalOrphanMessages = null;
-            for (OpmPuntoVenta opmPuntoVentaListOldOpmPuntoVenta : opmPuntoVentaListOld) {
-                if (!opmPuntoVentaListNew.contains(opmPuntoVentaListOldOpmPuntoVenta)) {
+            for (OpmFabrica opmFabricaListOldOpmFabrica : opmFabricaListOld) {
+                if (!opmFabricaListNew.contains(opmFabricaListOldOpmFabrica)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain OpmPuntoVenta " + opmPuntoVentaListOldOpmPuntoVenta + " since its nmAdministrador field is not nullable.");
+                    illegalOrphanMessages.add("You must retain OpmFabrica " + opmFabricaListOldOpmFabrica + " since its nmAdministrador field is not nullable.");
                 }
             }
             for (OpmVenta opmVentaListOldOpmVenta : opmVentaListOld) {
@@ -166,12 +154,12 @@ public class OpmUsuarioJpaController implements Serializable {
                     illegalOrphanMessages.add("You must retain OpmVenta " + opmVentaListOldOpmVenta + " since its nmCliente field is not nullable.");
                 }
             }
-            for (OpmRemision opmRemisionListOldOpmRemision : opmRemisionListOld) {
-                if (!opmRemisionListNew.contains(opmRemisionListOldOpmRemision)) {
+            for (OpmTransaccion opmTransaccionListOldOpmTransaccion : opmTransaccionListOld) {
+                if (!opmTransaccionListNew.contains(opmTransaccionListOldOpmTransaccion)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain OpmRemision " + opmRemisionListOldOpmRemision + " since its nmEmpleado field is not nullable.");
+                    illegalOrphanMessages.add("You must retain OpmTransaccion " + opmTransaccionListOldOpmTransaccion + " since its nmUsuario field is not nullable.");
                 }
             }
             for (OpmLote opmLoteListOldOpmLote : opmLoteListOld) {
@@ -185,17 +173,13 @@ public class OpmUsuarioJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (nmRolNew != null) {
-                nmRolNew = em.getReference(nmRolNew.getClass(), nmRolNew.getNmCodigo());
-                opmUsuario.setNmRol(nmRolNew);
+            List<OpmFabrica> attachedOpmFabricaListNew = new ArrayList<OpmFabrica>();
+            for (OpmFabrica opmFabricaListNewOpmFabricaToAttach : opmFabricaListNew) {
+                opmFabricaListNewOpmFabricaToAttach = em.getReference(opmFabricaListNewOpmFabricaToAttach.getClass(), opmFabricaListNewOpmFabricaToAttach.getNmCodigo());
+                attachedOpmFabricaListNew.add(opmFabricaListNewOpmFabricaToAttach);
             }
-            List<OpmPuntoVenta> attachedOpmPuntoVentaListNew = new ArrayList<OpmPuntoVenta>();
-            for (OpmPuntoVenta opmPuntoVentaListNewOpmPuntoVentaToAttach : opmPuntoVentaListNew) {
-                opmPuntoVentaListNewOpmPuntoVentaToAttach = em.getReference(opmPuntoVentaListNewOpmPuntoVentaToAttach.getClass(), opmPuntoVentaListNewOpmPuntoVentaToAttach.getNmCodigo());
-                attachedOpmPuntoVentaListNew.add(opmPuntoVentaListNewOpmPuntoVentaToAttach);
-            }
-            opmPuntoVentaListNew = attachedOpmPuntoVentaListNew;
-            opmUsuario.setOpmPuntoVentaList(opmPuntoVentaListNew);
+            opmFabricaListNew = attachedOpmFabricaListNew;
+            opmUsuario.setOpmFabricaList(opmFabricaListNew);
             List<OpmVenta> attachedOpmVentaListNew = new ArrayList<OpmVenta>();
             for (OpmVenta opmVentaListNewOpmVentaToAttach : opmVentaListNew) {
                 opmVentaListNewOpmVentaToAttach = em.getReference(opmVentaListNewOpmVentaToAttach.getClass(), opmVentaListNewOpmVentaToAttach.getNmCodigo());
@@ -203,13 +187,13 @@ public class OpmUsuarioJpaController implements Serializable {
             }
             opmVentaListNew = attachedOpmVentaListNew;
             opmUsuario.setOpmVentaList(opmVentaListNew);
-            List<OpmRemision> attachedOpmRemisionListNew = new ArrayList<OpmRemision>();
-            for (OpmRemision opmRemisionListNewOpmRemisionToAttach : opmRemisionListNew) {
-                opmRemisionListNewOpmRemisionToAttach = em.getReference(opmRemisionListNewOpmRemisionToAttach.getClass(), opmRemisionListNewOpmRemisionToAttach.getNmCodigo());
-                attachedOpmRemisionListNew.add(opmRemisionListNewOpmRemisionToAttach);
+            List<OpmTransaccion> attachedOpmTransaccionListNew = new ArrayList<OpmTransaccion>();
+            for (OpmTransaccion opmTransaccionListNewOpmTransaccionToAttach : opmTransaccionListNew) {
+                opmTransaccionListNewOpmTransaccionToAttach = em.getReference(opmTransaccionListNewOpmTransaccionToAttach.getClass(), opmTransaccionListNewOpmTransaccionToAttach.getNmCodigo());
+                attachedOpmTransaccionListNew.add(opmTransaccionListNewOpmTransaccionToAttach);
             }
-            opmRemisionListNew = attachedOpmRemisionListNew;
-            opmUsuario.setOpmRemisionList(opmRemisionListNew);
+            opmTransaccionListNew = attachedOpmTransaccionListNew;
+            opmUsuario.setOpmTransaccionList(opmTransaccionListNew);
             List<OpmLote> attachedOpmLoteListNew = new ArrayList<OpmLote>();
             for (OpmLote opmLoteListNewOpmLoteToAttach : opmLoteListNew) {
                 opmLoteListNewOpmLoteToAttach = em.getReference(opmLoteListNewOpmLoteToAttach.getClass(), opmLoteListNewOpmLoteToAttach.getNmCodigo());
@@ -218,22 +202,14 @@ public class OpmUsuarioJpaController implements Serializable {
             opmLoteListNew = attachedOpmLoteListNew;
             opmUsuario.setOpmLoteList(opmLoteListNew);
             opmUsuario = em.merge(opmUsuario);
-            if (nmRolOld != null && !nmRolOld.equals(nmRolNew)) {
-                nmRolOld.getOpmUsuarioList().remove(opmUsuario);
-                nmRolOld = em.merge(nmRolOld);
-            }
-            if (nmRolNew != null && !nmRolNew.equals(nmRolOld)) {
-                nmRolNew.getOpmUsuarioList().add(opmUsuario);
-                nmRolNew = em.merge(nmRolNew);
-            }
-            for (OpmPuntoVenta opmPuntoVentaListNewOpmPuntoVenta : opmPuntoVentaListNew) {
-                if (!opmPuntoVentaListOld.contains(opmPuntoVentaListNewOpmPuntoVenta)) {
-                    OpmUsuario oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta = opmPuntoVentaListNewOpmPuntoVenta.getNmAdministrador();
-                    opmPuntoVentaListNewOpmPuntoVenta.setNmAdministrador(opmUsuario);
-                    opmPuntoVentaListNewOpmPuntoVenta = em.merge(opmPuntoVentaListNewOpmPuntoVenta);
-                    if (oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta != null && !oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta.equals(opmUsuario)) {
-                        oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta.getOpmPuntoVentaList().remove(opmPuntoVentaListNewOpmPuntoVenta);
-                        oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta = em.merge(oldNmAdministradorOfOpmPuntoVentaListNewOpmPuntoVenta);
+            for (OpmFabrica opmFabricaListNewOpmFabrica : opmFabricaListNew) {
+                if (!opmFabricaListOld.contains(opmFabricaListNewOpmFabrica)) {
+                    OpmUsuario oldNmAdministradorOfOpmFabricaListNewOpmFabrica = opmFabricaListNewOpmFabrica.getNmAdministrador();
+                    opmFabricaListNewOpmFabrica.setNmAdministrador(opmUsuario);
+                    opmFabricaListNewOpmFabrica = em.merge(opmFabricaListNewOpmFabrica);
+                    if (oldNmAdministradorOfOpmFabricaListNewOpmFabrica != null && !oldNmAdministradorOfOpmFabricaListNewOpmFabrica.equals(opmUsuario)) {
+                        oldNmAdministradorOfOpmFabricaListNewOpmFabrica.getOpmFabricaList().remove(opmFabricaListNewOpmFabrica);
+                        oldNmAdministradorOfOpmFabricaListNewOpmFabrica = em.merge(oldNmAdministradorOfOpmFabricaListNewOpmFabrica);
                     }
                 }
             }
@@ -248,14 +224,14 @@ public class OpmUsuarioJpaController implements Serializable {
                     }
                 }
             }
-            for (OpmRemision opmRemisionListNewOpmRemision : opmRemisionListNew) {
-                if (!opmRemisionListOld.contains(opmRemisionListNewOpmRemision)) {
-                    OpmUsuario oldNmEmpleadoOfOpmRemisionListNewOpmRemision = opmRemisionListNewOpmRemision.getNmEmpleado();
-                    opmRemisionListNewOpmRemision.setNmEmpleado(opmUsuario);
-                    opmRemisionListNewOpmRemision = em.merge(opmRemisionListNewOpmRemision);
-                    if (oldNmEmpleadoOfOpmRemisionListNewOpmRemision != null && !oldNmEmpleadoOfOpmRemisionListNewOpmRemision.equals(opmUsuario)) {
-                        oldNmEmpleadoOfOpmRemisionListNewOpmRemision.getOpmRemisionList().remove(opmRemisionListNewOpmRemision);
-                        oldNmEmpleadoOfOpmRemisionListNewOpmRemision = em.merge(oldNmEmpleadoOfOpmRemisionListNewOpmRemision);
+            for (OpmTransaccion opmTransaccionListNewOpmTransaccion : opmTransaccionListNew) {
+                if (!opmTransaccionListOld.contains(opmTransaccionListNewOpmTransaccion)) {
+                    OpmUsuario oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion = opmTransaccionListNewOpmTransaccion.getNmUsuario();
+                    opmTransaccionListNewOpmTransaccion.setNmUsuario(opmUsuario);
+                    opmTransaccionListNewOpmTransaccion = em.merge(opmTransaccionListNewOpmTransaccion);
+                    if (oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion != null && !oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion.equals(opmUsuario)) {
+                        oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion.getOpmTransaccionList().remove(opmTransaccionListNewOpmTransaccion);
+                        oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion = em.merge(oldNmUsuarioOfOpmTransaccionListNewOpmTransaccion);
                     }
                 }
             }
@@ -300,12 +276,12 @@ public class OpmUsuarioJpaController implements Serializable {
                 throw new NonexistentEntityException("The opmUsuario with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<OpmPuntoVenta> opmPuntoVentaListOrphanCheck = opmUsuario.getOpmPuntoVentaList();
-            for (OpmPuntoVenta opmPuntoVentaListOrphanCheckOpmPuntoVenta : opmPuntoVentaListOrphanCheck) {
+            List<OpmFabrica> opmFabricaListOrphanCheck = opmUsuario.getOpmFabricaList();
+            for (OpmFabrica opmFabricaListOrphanCheckOpmFabrica : opmFabricaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmPuntoVenta " + opmPuntoVentaListOrphanCheckOpmPuntoVenta + " in its opmPuntoVentaList field has a non-nullable nmAdministrador field.");
+                illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmFabrica " + opmFabricaListOrphanCheckOpmFabrica + " in its opmFabricaList field has a non-nullable nmAdministrador field.");
             }
             List<OpmVenta> opmVentaListOrphanCheck = opmUsuario.getOpmVentaList();
             for (OpmVenta opmVentaListOrphanCheckOpmVenta : opmVentaListOrphanCheck) {
@@ -314,12 +290,12 @@ public class OpmUsuarioJpaController implements Serializable {
                 }
                 illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmVenta " + opmVentaListOrphanCheckOpmVenta + " in its opmVentaList field has a non-nullable nmCliente field.");
             }
-            List<OpmRemision> opmRemisionListOrphanCheck = opmUsuario.getOpmRemisionList();
-            for (OpmRemision opmRemisionListOrphanCheckOpmRemision : opmRemisionListOrphanCheck) {
+            List<OpmTransaccion> opmTransaccionListOrphanCheck = opmUsuario.getOpmTransaccionList();
+            for (OpmTransaccion opmTransaccionListOrphanCheckOpmTransaccion : opmTransaccionListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmRemision " + opmRemisionListOrphanCheckOpmRemision + " in its opmRemisionList field has a non-nullable nmEmpleado field.");
+                illegalOrphanMessages.add("This OpmUsuario (" + opmUsuario + ") cannot be destroyed since the OpmTransaccion " + opmTransaccionListOrphanCheckOpmTransaccion + " in its opmTransaccionList field has a non-nullable nmUsuario field.");
             }
             List<OpmLote> opmLoteListOrphanCheck = opmUsuario.getOpmLoteList();
             for (OpmLote opmLoteListOrphanCheckOpmLote : opmLoteListOrphanCheck) {
@@ -330,11 +306,6 @@ public class OpmUsuarioJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            OpmRol nmRol = opmUsuario.getNmRol();
-            if (nmRol != null) {
-                nmRol.getOpmUsuarioList().remove(opmUsuario);
-                nmRol = em.merge(nmRol);
             }
             em.remove(opmUsuario);
             em.getTransaction().commit();

@@ -36,7 +36,6 @@ public class Principal extends javax.swing.JFrame {
         jmeProducto = new javax.swing.JMenuItem();
         jmeEmpleado = new javax.swing.JMenuItem();
         jmeCliente = new javax.swing.JMenuItem();
-        jmeProveedor = new javax.swing.JMenuItem();
         jmePuntoVenta = new javax.swing.JMenuItem();
         jmnTransacciones = new javax.swing.JMenu();
         jmeLote = new javax.swing.JMenuItem();
@@ -95,9 +94,6 @@ public class Principal extends javax.swing.JFrame {
         });
         jmnGestion.add(jmeCliente);
 
-        jmeProveedor.setText("Proveedores");
-        jmnGestion.add(jmeProveedor);
-
         jmePuntoVenta.setText("Punto Venta");
         jmnGestion.add(jmePuntoVenta);
 
@@ -106,6 +102,11 @@ public class Principal extends javax.swing.JFrame {
         jmnTransacciones.setText("Transacciones");
 
         jmeLote.setText("Lote");
+        jmeLote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmeLoteActionPerformed(evt);
+            }
+        });
         jmnTransacciones.add(jmeLote);
 
         jmeRemision.setText("Remision");
@@ -308,6 +309,16 @@ public class Principal extends javax.swing.JFrame {
         obj.setVisible(true);
     }//GEN-LAST:event_jmeEstadoResultadosActionPerformed
 
+    private void jmeLoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmeLoteActionPerformed
+        // TODO add your handling code here:
+        panContenido.removeAll();
+        Lote obj  =new Lote();
+        panContenido.add(obj);
+        obj.setSize(794, 500);
+        obj.validate();
+        obj.setVisible(true);
+    }//GEN-LAST:event_jmeLoteActionPerformed
+
     public static void main(String[] args) {
         // TODO code application logic here
             /* Set the Nimbus look and feel */
@@ -357,7 +368,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmeLote;
     private javax.swing.JMenuItem jmeNegocio;
     private javax.swing.JMenuItem jmeProducto;
-    private javax.swing.JMenuItem jmeProveedor;
     private javax.swing.JMenuItem jmePuntoVenta;
     private javax.swing.JMenuItem jmeRemision;
     private javax.swing.JMenuItem jmeTraslado;

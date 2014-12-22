@@ -14,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,16 +33,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmUsuario.findByNmCodigo", query = "SELECT o FROM OpmUsuario o WHERE o.nmCodigo = :nmCodigo"),
     @NamedQuery(name = "OpmUsuario.findByNvNombre", query = "SELECT o FROM OpmUsuario o WHERE o.nvNombre = :nvNombre"),
     @NamedQuery(name = "OpmUsuario.findByNvEmail", query = "SELECT o FROM OpmUsuario o WHERE o.nvEmail = :nvEmail"),
-    @NamedQuery(name = "OpmUsuario.findByNvTel", query = "SELECT o FROM OpmUsuario o WHERE o.nvTel = :nvTel")})
+    @NamedQuery(name = "OpmUsuario.findByNvTel", query = "SELECT o FROM OpmUsuario o WHERE o.nvTel = :nvTel"),
+    @NamedQuery(name = "OpmUsuario.findByNmRol", query = "SELECT o FROM OpmUsuario o WHERE o.nmRol = :nmRol"),
+    @NamedQuery(name = "OpmUsuario.findByNvPass", query = "SELECT o FROM OpmUsuario o WHERE o.nvPass = :nvPass"),
+    @NamedQuery(name = "OpmUsuario.findByBtActivo", query = "SELECT o FROM OpmUsuario o WHERE o.btActivo = :btActivo"),
+    @NamedQuery(name = "OpmUsuario.findByNmFabrica", query = "SELECT o FROM OpmUsuario o WHERE o.nmFabrica = :nmFabrica")})
 public class OpmUsuario implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "NV_PASS")
-    private String nvPass;
-    @Basic(optional = false)
-    @Column(name = "BT_ACTIVO")
-    private boolean btActivo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmEmpleado")
-    private List<OpmLote> opmLoteList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,15 +52,24 @@ public class OpmUsuario implements Serializable {
     private String nvEmail;
     @Column(name = "NV_TEL")
     private String nvTel;
-    @JoinColumn(name = "NM_ROL", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmRol nmRol;
+    @Basic(optional = false)
+    @Column(name = "NM_ROL")
+    private int nmRol;
+    @Column(name = "NV_PASS")
+    private String nvPass;
+    @Basic(optional = false)
+    @Column(name = "BT_ACTIVO")
+    private boolean btActivo;
+    @Column(name = "NM_FABRICA")
+    private Integer nmFabrica;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmAdministrador")
-    private List<OpmPuntoVenta> opmPuntoVentaList;
+    private List<OpmFabrica> opmFabricaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmCliente")
     private List<OpmVenta> opmVentaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmUsuario")
+    private List<OpmTransaccion> opmTransaccionList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmEmpleado")
-    private List<OpmRemision> opmRemisionList;
+    private List<OpmLote> opmLoteList;
 
     public OpmUsuario() {
     }
@@ -75,9 +78,11 @@ public class OpmUsuario implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmUsuario(Integer nmCodigo, String nvNombre) {
+    public OpmUsuario(Integer nmCodigo, String nvNombre, int nmRol, boolean btActivo) {
         this.nmCodigo = nmCodigo;
         this.nvNombre = nvNombre;
+        this.nmRol = nmRol;
+        this.btActivo = btActivo;
     }
 
     public Integer getNmCodigo() {
@@ -112,21 +117,45 @@ public class OpmUsuario implements Serializable {
         this.nvTel = nvTel;
     }
 
-    public OpmRol getNmRol() {
+    public int getNmRol() {
         return nmRol;
     }
 
-    public void setNmRol(OpmRol nmRol) {
+    public void setNmRol(int nmRol) {
         this.nmRol = nmRol;
     }
 
-    @XmlTransient
-    public List<OpmPuntoVenta> getOpmPuntoVentaList() {
-        return opmPuntoVentaList;
+    public String getNvPass() {
+        return nvPass;
     }
 
-    public void setOpmPuntoVentaList(List<OpmPuntoVenta> opmPuntoVentaList) {
-        this.opmPuntoVentaList = opmPuntoVentaList;
+    public void setNvPass(String nvPass) {
+        this.nvPass = nvPass;
+    }
+
+    public boolean getBtActivo() {
+        return btActivo;
+    }
+
+    public void setBtActivo(boolean btActivo) {
+        this.btActivo = btActivo;
+    }
+
+    public Integer getNmFabrica() {
+        return nmFabrica;
+    }
+
+    public void setNmFabrica(Integer nmFabrica) {
+        this.nmFabrica = nmFabrica;
+    }
+
+    @XmlTransient
+    public List<OpmFabrica> getOpmFabricaList() {
+        return opmFabricaList;
+    }
+
+    public void setOpmFabricaList(List<OpmFabrica> opmFabricaList) {
+        this.opmFabricaList = opmFabricaList;
     }
 
     @XmlTransient
@@ -139,12 +168,21 @@ public class OpmUsuario implements Serializable {
     }
 
     @XmlTransient
-    public List<OpmRemision> getOpmRemisionList() {
-        return opmRemisionList;
+    public List<OpmTransaccion> getOpmTransaccionList() {
+        return opmTransaccionList;
     }
 
-    public void setOpmRemisionList(List<OpmRemision> opmRemisionList) {
-        this.opmRemisionList = opmRemisionList;
+    public void setOpmTransaccionList(List<OpmTransaccion> opmTransaccionList) {
+        this.opmTransaccionList = opmTransaccionList;
+    }
+
+    @XmlTransient
+    public List<OpmLote> getOpmLoteList() {
+        return opmLoteList;
+    }
+
+    public void setOpmLoteList(List<OpmLote> opmLoteList) {
+        this.opmLoteList = opmLoteList;
     }
 
     @Override
@@ -169,32 +207,7 @@ public class OpmUsuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmUsuario[ nmCodigo=" + nmCodigo + " ]";
-    }
-
-    public boolean getBtActivo() {
-        return btActivo;
-    }
-
-    public void setBtActivo(boolean btActivo) {
-        this.btActivo = btActivo;
-    }
-
-    @XmlTransient
-    public List<OpmLote> getOpmLoteList() {
-        return opmLoteList;
-    }
-
-    public void setOpmLoteList(List<OpmLote> opmLoteList) {
-        this.opmLoteList = opmLoteList;
-    }
-
-    public String getNvPass() {
-        return nvPass;
-    }
-
-    public void setNvPass(String nvPass) {
-        this.nvPass = nvPass;
+        return "Modelo.OpmUsuario[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

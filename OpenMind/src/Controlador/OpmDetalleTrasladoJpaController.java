@@ -13,7 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Modelo.OpmTraslado;
-import Modelo.OpmProducto;
+import Modelo.OpmReferenciaProducto;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,19 +43,19 @@ public class OpmDetalleTrasladoJpaController implements Serializable {
                 nmTraslado = em.getReference(nmTraslado.getClass(), nmTraslado.getNmCodigo());
                 opmDetalleTraslado.setNmTraslado(nmTraslado);
             }
-            OpmProducto nmProducto = opmDetalleTraslado.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto = em.getReference(nmProducto.getClass(), nmProducto.getNmCodigo());
-                opmDetalleTraslado.setNmProducto(nmProducto);
+            OpmReferenciaProducto nvReferencia = opmDetalleTraslado.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmDetalleTraslado.setNvReferencia(nvReferencia);
             }
             em.persist(opmDetalleTraslado);
             if (nmTraslado != null) {
                 nmTraslado.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
                 nmTraslado = em.merge(nmTraslado);
             }
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
-                nmProducto = em.merge(nmProducto);
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
+                nvReferencia = em.merge(nvReferencia);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +73,15 @@ public class OpmDetalleTrasladoJpaController implements Serializable {
             OpmDetalleTraslado persistentOpmDetalleTraslado = em.find(OpmDetalleTraslado.class, opmDetalleTraslado.getNmCodigo());
             OpmTraslado nmTrasladoOld = persistentOpmDetalleTraslado.getNmTraslado();
             OpmTraslado nmTrasladoNew = opmDetalleTraslado.getNmTraslado();
-            OpmProducto nmProductoOld = persistentOpmDetalleTraslado.getNmProducto();
-            OpmProducto nmProductoNew = opmDetalleTraslado.getNmProducto();
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmDetalleTraslado.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmDetalleTraslado.getNvReferencia();
             if (nmTrasladoNew != null) {
                 nmTrasladoNew = em.getReference(nmTrasladoNew.getClass(), nmTrasladoNew.getNmCodigo());
                 opmDetalleTraslado.setNmTraslado(nmTrasladoNew);
             }
-            if (nmProductoNew != null) {
-                nmProductoNew = em.getReference(nmProductoNew.getClass(), nmProductoNew.getNmCodigo());
-                opmDetalleTraslado.setNmProducto(nmProductoNew);
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmDetalleTraslado.setNvReferencia(nvReferenciaNew);
             }
             opmDetalleTraslado = em.merge(opmDetalleTraslado);
             if (nmTrasladoOld != null && !nmTrasladoOld.equals(nmTrasladoNew)) {
@@ -92,13 +92,13 @@ public class OpmDetalleTrasladoJpaController implements Serializable {
                 nmTrasladoNew.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
                 nmTrasladoNew = em.merge(nmTrasladoNew);
             }
-            if (nmProductoOld != null && !nmProductoOld.equals(nmProductoNew)) {
-                nmProductoOld.getOpmDetalleTrasladoList().remove(opmDetalleTraslado);
-                nmProductoOld = em.merge(nmProductoOld);
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmDetalleTrasladoList().remove(opmDetalleTraslado);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
             }
-            if (nmProductoNew != null && !nmProductoNew.equals(nmProductoOld)) {
-                nmProductoNew.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
-                nmProductoNew = em.merge(nmProductoNew);
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmDetalleTrasladoList().add(opmDetalleTraslado);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -134,10 +134,10 @@ public class OpmDetalleTrasladoJpaController implements Serializable {
                 nmTraslado.getOpmDetalleTrasladoList().remove(opmDetalleTraslado);
                 nmTraslado = em.merge(nmTraslado);
             }
-            OpmProducto nmProducto = opmDetalleTraslado.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleTrasladoList().remove(opmDetalleTraslado);
-                nmProducto = em.merge(nmProducto);
+            OpmReferenciaProducto nvReferencia = opmDetalleTraslado.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleTrasladoList().remove(opmDetalleTraslado);
+                nvReferencia = em.merge(nvReferencia);
             }
             em.remove(opmDetalleTraslado);
             em.getTransaction().commit();

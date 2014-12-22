@@ -18,6 +18,16 @@
     <class>Modelo.OpmInventario</class>
     <class>Modelo.OpmDetalleLote</class>
     <class>Modelo.OpmLote</class>
+    <class>Modelo.OpmAbonoPunto</class>
+    <class>Modelo.OpmGrupo</class>
+    <class>Modelo.OpmGastos</class>
+    <class>Modelo.OpmClase</class>
+    <class>Modelo.OpmTransaccion</class>
+    <class>Modelo.OpmAbonoCliente</class>
+    <class>Modelo.OpmReferenciaProducto</class>
+    <class>Modelo.OpmTipoGasto</class>
+    <class>Modelo.OpmFabrica</class>
+    <class>Modelo.OpmCuenta</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/openmind?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value=""/>

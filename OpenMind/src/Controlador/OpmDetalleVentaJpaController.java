@@ -14,7 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Modelo.OpmVenta;
-import Modelo.OpmProducto;
+import Modelo.OpmReferenciaProducto;
 import Modelo.OpmDevolucion;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,10 @@ public class OpmDetalleVentaJpaController implements Serializable {
                 nmVenta = em.getReference(nmVenta.getClass(), nmVenta.getNmCodigo());
                 opmDetalleVenta.setNmVenta(nmVenta);
             }
-            OpmProducto nmProducto = opmDetalleVenta.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto = em.getReference(nmProducto.getClass(), nmProducto.getNmCodigo());
-                opmDetalleVenta.setNmProducto(nmProducto);
+            OpmReferenciaProducto nvReferencia = opmDetalleVenta.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmDetalleVenta.setNvReferencia(nvReferencia);
             }
             List<OpmDevolucion> attachedOpmDevolucionList = new ArrayList<OpmDevolucion>();
             for (OpmDevolucion opmDevolucionListOpmDevolucionToAttach : opmDetalleVenta.getOpmDevolucionList()) {
@@ -65,9 +65,9 @@ public class OpmDetalleVentaJpaController implements Serializable {
                 nmVenta.getOpmDetalleVentaList().add(opmDetalleVenta);
                 nmVenta = em.merge(nmVenta);
             }
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleVentaList().add(opmDetalleVenta);
-                nmProducto = em.merge(nmProducto);
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleVentaList().add(opmDetalleVenta);
+                nvReferencia = em.merge(nvReferencia);
             }
             for (OpmDevolucion opmDevolucionListOpmDevolucion : opmDetalleVenta.getOpmDevolucionList()) {
                 OpmDetalleVenta oldNmDetalleOfOpmDevolucionListOpmDevolucion = opmDevolucionListOpmDevolucion.getNmDetalle();
@@ -94,8 +94,8 @@ public class OpmDetalleVentaJpaController implements Serializable {
             OpmDetalleVenta persistentOpmDetalleVenta = em.find(OpmDetalleVenta.class, opmDetalleVenta.getNmCodigo());
             OpmVenta nmVentaOld = persistentOpmDetalleVenta.getNmVenta();
             OpmVenta nmVentaNew = opmDetalleVenta.getNmVenta();
-            OpmProducto nmProductoOld = persistentOpmDetalleVenta.getNmProducto();
-            OpmProducto nmProductoNew = opmDetalleVenta.getNmProducto();
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmDetalleVenta.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmDetalleVenta.getNvReferencia();
             List<OpmDevolucion> opmDevolucionListOld = persistentOpmDetalleVenta.getOpmDevolucionList();
             List<OpmDevolucion> opmDevolucionListNew = opmDetalleVenta.getOpmDevolucionList();
             List<String> illegalOrphanMessages = null;
@@ -114,9 +114,9 @@ public class OpmDetalleVentaJpaController implements Serializable {
                 nmVentaNew = em.getReference(nmVentaNew.getClass(), nmVentaNew.getNmCodigo());
                 opmDetalleVenta.setNmVenta(nmVentaNew);
             }
-            if (nmProductoNew != null) {
-                nmProductoNew = em.getReference(nmProductoNew.getClass(), nmProductoNew.getNmCodigo());
-                opmDetalleVenta.setNmProducto(nmProductoNew);
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmDetalleVenta.setNvReferencia(nvReferenciaNew);
             }
             List<OpmDevolucion> attachedOpmDevolucionListNew = new ArrayList<OpmDevolucion>();
             for (OpmDevolucion opmDevolucionListNewOpmDevolucionToAttach : opmDevolucionListNew) {
@@ -134,13 +134,13 @@ public class OpmDetalleVentaJpaController implements Serializable {
                 nmVentaNew.getOpmDetalleVentaList().add(opmDetalleVenta);
                 nmVentaNew = em.merge(nmVentaNew);
             }
-            if (nmProductoOld != null && !nmProductoOld.equals(nmProductoNew)) {
-                nmProductoOld.getOpmDetalleVentaList().remove(opmDetalleVenta);
-                nmProductoOld = em.merge(nmProductoOld);
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmDetalleVentaList().remove(opmDetalleVenta);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
             }
-            if (nmProductoNew != null && !nmProductoNew.equals(nmProductoOld)) {
-                nmProductoNew.getOpmDetalleVentaList().add(opmDetalleVenta);
-                nmProductoNew = em.merge(nmProductoNew);
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmDetalleVentaList().add(opmDetalleVenta);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
             }
             for (OpmDevolucion opmDevolucionListNewOpmDevolucion : opmDevolucionListNew) {
                 if (!opmDevolucionListOld.contains(opmDevolucionListNewOpmDevolucion)) {
@@ -198,10 +198,10 @@ public class OpmDetalleVentaJpaController implements Serializable {
                 nmVenta.getOpmDetalleVentaList().remove(opmDetalleVenta);
                 nmVenta = em.merge(nmVenta);
             }
-            OpmProducto nmProducto = opmDetalleVenta.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto.getOpmDetalleVentaList().remove(opmDetalleVenta);
-                nmProducto = em.merge(nmProducto);
+            OpmReferenciaProducto nvReferencia = opmDetalleVenta.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleVentaList().remove(opmDetalleVenta);
+                nvReferencia = em.merge(nvReferencia);
             }
             em.remove(opmDetalleVenta);
             em.getTransaction().commit();

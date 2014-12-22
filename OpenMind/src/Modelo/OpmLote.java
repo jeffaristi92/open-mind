@@ -36,14 +36,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "OpmLote.findAll", query = "SELECT o FROM OpmLote o"),
     @NamedQuery(name = "OpmLote.findByNmCodigo", query = "SELECT o FROM OpmLote o WHERE o.nmCodigo = :nmCodigo"),
-    @NamedQuery(name = "OpmLote.findByDaFecha", query = "SELECT o FROM OpmLote o WHERE o.daFecha = :daFecha"),
-    @NamedQuery(name = "OpmLote.findByNmEmpleado", query = "SELECT o FROM OpmLote o WHERE o.nmEmpleado = :nmEmpleado")})
+    @NamedQuery(name = "OpmLote.findByNvNumero", query = "SELECT o FROM OpmLote o WHERE o.nvNumero = :nvNumero"),
+    @NamedQuery(name = "OpmLote.findByDaFecha", query = "SELECT o FROM OpmLote o WHERE o.daFecha = :daFecha")})
 public class OpmLote implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmLote")
-    private List<OpmDetalleLote> opmDetalleLoteList;
-    @JoinColumn(name = "NM_EMPLEADO", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmUsuario nmEmpleado;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,9 +46,17 @@ public class OpmLote implements Serializable {
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
     @Basic(optional = false)
+    @Column(name = "NV_NUMERO")
+    private String nvNumero;
+    @Basic(optional = false)
     @Column(name = "DA_FECHA")
     @Temporal(TemporalType.DATE)
     private Date daFecha;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmLote")
+    private List<OpmDetalleLote> opmDetalleLoteList;
+    @JoinColumn(name = "NM_EMPLEADO", referencedColumnName = "NM_CODIGO")
+    @ManyToOne(optional = false)
+    private OpmUsuario nmEmpleado;
 
     public OpmLote() {
     }
@@ -62,10 +65,10 @@ public class OpmLote implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmLote(Integer nmCodigo, Date daFecha, OpmUsuario nmEmpleado) {
+    public OpmLote(Integer nmCodigo, String nvNumero, Date daFecha) {
         this.nmCodigo = nmCodigo;
+        this.nvNumero = nvNumero;
         this.daFecha = daFecha;
-        this.nmEmpleado = nmEmpleado;
     }
 
     public Integer getNmCodigo() {
@@ -76,12 +79,29 @@ public class OpmLote implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
+    public String getNvNumero() {
+        return nvNumero;
+    }
+
+    public void setNvNumero(String nvNumero) {
+        this.nvNumero = nvNumero;
+    }
+
     public Date getDaFecha() {
         return daFecha;
     }
 
     public void setDaFecha(Date daFecha) {
         this.daFecha = daFecha;
+    }
+
+    @XmlTransient
+    public List<OpmDetalleLote> getOpmDetalleLoteList() {
+        return opmDetalleLoteList;
+    }
+
+    public void setOpmDetalleLoteList(List<OpmDetalleLote> opmDetalleLoteList) {
+        this.opmDetalleLoteList = opmDetalleLoteList;
     }
 
     public OpmUsuario getNmEmpleado() {
@@ -116,14 +136,5 @@ public class OpmLote implements Serializable {
     public String toString() {
         return "Modelo.OpmLote[ nmCodigo=" + nmCodigo + " ]";
     }
-
-    @XmlTransient
-    public List<OpmDetalleLote> getOpmDetalleLoteList() {
-        return opmDetalleLoteList;
-    }
-
-    public void setOpmDetalleLoteList(List<OpmDetalleLote> opmDetalleLoteList) {
-        this.opmDetalleLoteList = opmDetalleLoteList;
-    }
- 
+    
 }

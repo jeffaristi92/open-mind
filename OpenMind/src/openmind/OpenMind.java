@@ -6,8 +6,8 @@
 package openmind;
 
 import Menus.MenuPrincipal;
+import Vista.Principal;
 import Vista.Prueba;
-import java.awt.MenuBar;
 
 /**
  *
@@ -44,12 +44,15 @@ public class OpenMind {
         //</editor-fold>
 
         /* Create and display the form */
-        
+        /*
         Prueba p = new Prueba();
         Menus.MenuPrincipal menu = new MenuPrincipal(p.getPanelContenido());
         
         p.setJMenuBar(menu.ConstruirMenu());
         
-        p.setVisible(true);
+        p.setVisible(true);*/
+        
+        Principal principal = new Principal();
+        principal.setVisible(true);
     }
 }

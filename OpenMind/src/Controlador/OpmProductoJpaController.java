@@ -7,20 +7,15 @@ package Controlador;
 
 import Controlador.exceptions.IllegalOrphanException;
 import Controlador.exceptions.NonexistentEntityException;
+import Modelo.OpmProducto;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Modelo.OpmInventario;
+import Modelo.OpmReferenciaProducto;
 import java.util.ArrayList;
 import java.util.List;
-import Modelo.OpmInventarioPunto;
-import Modelo.OpmDetalleRemision;
-import Modelo.OpmDetalleTraslado;
-import Modelo.OpmDetalleVenta;
-import Modelo.OpmDetalleLote;
-import Modelo.OpmProducto;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -40,117 +35,27 @@ public class OpmProductoJpaController implements Serializable {
     }
 
     public void create(OpmProducto opmProducto) {
-        if (opmProducto.getOpmInventarioList() == null) {
-            opmProducto.setOpmInventarioList(new ArrayList<OpmInventario>());
-        }
-        if (opmProducto.getOpmInventarioPuntoList() == null) {
-            opmProducto.setOpmInventarioPuntoList(new ArrayList<OpmInventarioPunto>());
-        }
-        if (opmProducto.getOpmDetalleRemisionList() == null) {
-            opmProducto.setOpmDetalleRemisionList(new ArrayList<OpmDetalleRemision>());
-        }
-        if (opmProducto.getOpmDetalleTrasladoList() == null) {
-            opmProducto.setOpmDetalleTrasladoList(new ArrayList<OpmDetalleTraslado>());
-        }
-        if (opmProducto.getOpmDetalleVentaList() == null) {
-            opmProducto.setOpmDetalleVentaList(new ArrayList<OpmDetalleVenta>());
-        }
-        if (opmProducto.getOpmDetalleLoteList() == null) {
-            opmProducto.setOpmDetalleLoteList(new ArrayList<OpmDetalleLote>());
+        if (opmProducto.getOpmReferenciaProductoList() == null) {
+            opmProducto.setOpmReferenciaProductoList(new ArrayList<OpmReferenciaProducto>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<OpmInventario> attachedOpmInventarioList = new ArrayList<OpmInventario>();
-            for (OpmInventario opmInventarioListOpmInventarioToAttach : opmProducto.getOpmInventarioList()) {
-                opmInventarioListOpmInventarioToAttach = em.getReference(opmInventarioListOpmInventarioToAttach.getClass(), opmInventarioListOpmInventarioToAttach.getNmCodigo());
-                attachedOpmInventarioList.add(opmInventarioListOpmInventarioToAttach);
+            List<OpmReferenciaProducto> attachedOpmReferenciaProductoList = new ArrayList<OpmReferenciaProducto>();
+            for (OpmReferenciaProducto opmReferenciaProductoListOpmReferenciaProductoToAttach : opmProducto.getOpmReferenciaProductoList()) {
+                opmReferenciaProductoListOpmReferenciaProductoToAttach = em.getReference(opmReferenciaProductoListOpmReferenciaProductoToAttach.getClass(), opmReferenciaProductoListOpmReferenciaProductoToAttach.getNvCodigo());
+                attachedOpmReferenciaProductoList.add(opmReferenciaProductoListOpmReferenciaProductoToAttach);
             }
-            opmProducto.setOpmInventarioList(attachedOpmInventarioList);
-            List<OpmInventarioPunto> attachedOpmInventarioPuntoList = new ArrayList<OpmInventarioPunto>();
-            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPuntoToAttach : opmProducto.getOpmInventarioPuntoList()) {
-                opmInventarioPuntoListOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListOpmInventarioPuntoToAttach.getNmCodigo());
-                attachedOpmInventarioPuntoList.add(opmInventarioPuntoListOpmInventarioPuntoToAttach);
-            }
-            opmProducto.setOpmInventarioPuntoList(attachedOpmInventarioPuntoList);
-            List<OpmDetalleRemision> attachedOpmDetalleRemisionList = new ArrayList<OpmDetalleRemision>();
-            for (OpmDetalleRemision opmDetalleRemisionListOpmDetalleRemisionToAttach : opmProducto.getOpmDetalleRemisionList()) {
-                opmDetalleRemisionListOpmDetalleRemisionToAttach = em.getReference(opmDetalleRemisionListOpmDetalleRemisionToAttach.getClass(), opmDetalleRemisionListOpmDetalleRemisionToAttach.getNmCodigo());
-                attachedOpmDetalleRemisionList.add(opmDetalleRemisionListOpmDetalleRemisionToAttach);
-            }
-            opmProducto.setOpmDetalleRemisionList(attachedOpmDetalleRemisionList);
-            List<OpmDetalleTraslado> attachedOpmDetalleTrasladoList = new ArrayList<OpmDetalleTraslado>();
-            for (OpmDetalleTraslado opmDetalleTrasladoListOpmDetalleTrasladoToAttach : opmProducto.getOpmDetalleTrasladoList()) {
-                opmDetalleTrasladoListOpmDetalleTrasladoToAttach = em.getReference(opmDetalleTrasladoListOpmDetalleTrasladoToAttach.getClass(), opmDetalleTrasladoListOpmDetalleTrasladoToAttach.getNmCodigo());
-                attachedOpmDetalleTrasladoList.add(opmDetalleTrasladoListOpmDetalleTrasladoToAttach);
-            }
-            opmProducto.setOpmDetalleTrasladoList(attachedOpmDetalleTrasladoList);
-            List<OpmDetalleVenta> attachedOpmDetalleVentaList = new ArrayList<OpmDetalleVenta>();
-            for (OpmDetalleVenta opmDetalleVentaListOpmDetalleVentaToAttach : opmProducto.getOpmDetalleVentaList()) {
-                opmDetalleVentaListOpmDetalleVentaToAttach = em.getReference(opmDetalleVentaListOpmDetalleVentaToAttach.getClass(), opmDetalleVentaListOpmDetalleVentaToAttach.getNmCodigo());
-                attachedOpmDetalleVentaList.add(opmDetalleVentaListOpmDetalleVentaToAttach);
-            }
-            opmProducto.setOpmDetalleVentaList(attachedOpmDetalleVentaList);
-            List<OpmDetalleLote> attachedOpmDetalleLoteList = new ArrayList<OpmDetalleLote>();
-            for (OpmDetalleLote opmDetalleLoteListOpmDetalleLoteToAttach : opmProducto.getOpmDetalleLoteList()) {
-                opmDetalleLoteListOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListOpmDetalleLoteToAttach.getNmCodigo());
-                attachedOpmDetalleLoteList.add(opmDetalleLoteListOpmDetalleLoteToAttach);
-            }
-            opmProducto.setOpmDetalleLoteList(attachedOpmDetalleLoteList);
+            opmProducto.setOpmReferenciaProductoList(attachedOpmReferenciaProductoList);
             em.persist(opmProducto);
-            for (OpmInventario opmInventarioListOpmInventario : opmProducto.getOpmInventarioList()) {
-                OpmProducto oldNmProductoOfOpmInventarioListOpmInventario = opmInventarioListOpmInventario.getNmProducto();
-                opmInventarioListOpmInventario.setNmProducto(opmProducto);
-                opmInventarioListOpmInventario = em.merge(opmInventarioListOpmInventario);
-                if (oldNmProductoOfOpmInventarioListOpmInventario != null) {
-                    oldNmProductoOfOpmInventarioListOpmInventario.getOpmInventarioList().remove(opmInventarioListOpmInventario);
-                    oldNmProductoOfOpmInventarioListOpmInventario = em.merge(oldNmProductoOfOpmInventarioListOpmInventario);
-                }
-            }
-            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPunto : opmProducto.getOpmInventarioPuntoList()) {
-                OpmProducto oldNmProductoOfOpmInventarioPuntoListOpmInventarioPunto = opmInventarioPuntoListOpmInventarioPunto.getNmProducto();
-                opmInventarioPuntoListOpmInventarioPunto.setNmProducto(opmProducto);
-                opmInventarioPuntoListOpmInventarioPunto = em.merge(opmInventarioPuntoListOpmInventarioPunto);
-                if (oldNmProductoOfOpmInventarioPuntoListOpmInventarioPunto != null) {
-                    oldNmProductoOfOpmInventarioPuntoListOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListOpmInventarioPunto);
-                    oldNmProductoOfOpmInventarioPuntoListOpmInventarioPunto = em.merge(oldNmProductoOfOpmInventarioPuntoListOpmInventarioPunto);
-                }
-            }
-            for (OpmDetalleRemision opmDetalleRemisionListOpmDetalleRemision : opmProducto.getOpmDetalleRemisionList()) {
-                OpmProducto oldNmProductoOfOpmDetalleRemisionListOpmDetalleRemision = opmDetalleRemisionListOpmDetalleRemision.getNmProducto();
-                opmDetalleRemisionListOpmDetalleRemision.setNmProducto(opmProducto);
-                opmDetalleRemisionListOpmDetalleRemision = em.merge(opmDetalleRemisionListOpmDetalleRemision);
-                if (oldNmProductoOfOpmDetalleRemisionListOpmDetalleRemision != null) {
-                    oldNmProductoOfOpmDetalleRemisionListOpmDetalleRemision.getOpmDetalleRemisionList().remove(opmDetalleRemisionListOpmDetalleRemision);
-                    oldNmProductoOfOpmDetalleRemisionListOpmDetalleRemision = em.merge(oldNmProductoOfOpmDetalleRemisionListOpmDetalleRemision);
-                }
-            }
-            for (OpmDetalleTraslado opmDetalleTrasladoListOpmDetalleTraslado : opmProducto.getOpmDetalleTrasladoList()) {
-                OpmProducto oldNmProductoOfOpmDetalleTrasladoListOpmDetalleTraslado = opmDetalleTrasladoListOpmDetalleTraslado.getNmProducto();
-                opmDetalleTrasladoListOpmDetalleTraslado.setNmProducto(opmProducto);
-                opmDetalleTrasladoListOpmDetalleTraslado = em.merge(opmDetalleTrasladoListOpmDetalleTraslado);
-                if (oldNmProductoOfOpmDetalleTrasladoListOpmDetalleTraslado != null) {
-                    oldNmProductoOfOpmDetalleTrasladoListOpmDetalleTraslado.getOpmDetalleTrasladoList().remove(opmDetalleTrasladoListOpmDetalleTraslado);
-                    oldNmProductoOfOpmDetalleTrasladoListOpmDetalleTraslado = em.merge(oldNmProductoOfOpmDetalleTrasladoListOpmDetalleTraslado);
-                }
-            }
-            for (OpmDetalleVenta opmDetalleVentaListOpmDetalleVenta : opmProducto.getOpmDetalleVentaList()) {
-                OpmProducto oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta = opmDetalleVentaListOpmDetalleVenta.getNmProducto();
-                opmDetalleVentaListOpmDetalleVenta.setNmProducto(opmProducto);
-                opmDetalleVentaListOpmDetalleVenta = em.merge(opmDetalleVentaListOpmDetalleVenta);
-                if (oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta != null) {
-                    oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListOpmDetalleVenta);
-                    oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta = em.merge(oldNmProductoOfOpmDetalleVentaListOpmDetalleVenta);
-                }
-            }
-            for (OpmDetalleLote opmDetalleLoteListOpmDetalleLote : opmProducto.getOpmDetalleLoteList()) {
-                OpmProducto oldNmProductoOfOpmDetalleLoteListOpmDetalleLote = opmDetalleLoteListOpmDetalleLote.getNmProducto();
-                opmDetalleLoteListOpmDetalleLote.setNmProducto(opmProducto);
-                opmDetalleLoteListOpmDetalleLote = em.merge(opmDetalleLoteListOpmDetalleLote);
-                if (oldNmProductoOfOpmDetalleLoteListOpmDetalleLote != null) {
-                    oldNmProductoOfOpmDetalleLoteListOpmDetalleLote.getOpmDetalleLoteList().remove(opmDetalleLoteListOpmDetalleLote);
-                    oldNmProductoOfOpmDetalleLoteListOpmDetalleLote = em.merge(oldNmProductoOfOpmDetalleLoteListOpmDetalleLote);
+            for (OpmReferenciaProducto opmReferenciaProductoListOpmReferenciaProducto : opmProducto.getOpmReferenciaProductoList()) {
+                OpmProducto oldNmProductoOfOpmReferenciaProductoListOpmReferenciaProducto = opmReferenciaProductoListOpmReferenciaProducto.getNmProducto();
+                opmReferenciaProductoListOpmReferenciaProducto.setNmProducto(opmProducto);
+                opmReferenciaProductoListOpmReferenciaProducto = em.merge(opmReferenciaProductoListOpmReferenciaProducto);
+                if (oldNmProductoOfOpmReferenciaProductoListOpmReferenciaProducto != null) {
+                    oldNmProductoOfOpmReferenciaProductoListOpmReferenciaProducto.getOpmReferenciaProductoList().remove(opmReferenciaProductoListOpmReferenciaProducto);
+                    oldNmProductoOfOpmReferenciaProductoListOpmReferenciaProducto = em.merge(oldNmProductoOfOpmReferenciaProductoListOpmReferenciaProducto);
                 }
             }
             em.getTransaction().commit();
@@ -167,194 +72,36 @@ public class OpmProductoJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OpmProducto persistentOpmProducto = em.find(OpmProducto.class, opmProducto.getNmCodigo());
-            List<OpmInventario> opmInventarioListOld = persistentOpmProducto.getOpmInventarioList();
-            List<OpmInventario> opmInventarioListNew = opmProducto.getOpmInventarioList();
-            if(opmInventarioListNew == null){
-                opmInventarioListNew = new ArrayList<>();
-            }
-            List<OpmInventarioPunto> opmInventarioPuntoListOld = persistentOpmProducto.getOpmInventarioPuntoList();
-            List<OpmInventarioPunto> opmInventarioPuntoListNew = opmProducto.getOpmInventarioPuntoList();
-            if(opmInventarioPuntoListNew == null){
-                opmInventarioPuntoListNew = new ArrayList<>();
-            }
-            List<OpmDetalleRemision> opmDetalleRemisionListOld = persistentOpmProducto.getOpmDetalleRemisionList();
-            List<OpmDetalleRemision> opmDetalleRemisionListNew = opmProducto.getOpmDetalleRemisionList();
-            if(opmDetalleRemisionListNew == null){
-                opmDetalleRemisionListNew  = new ArrayList<>();
-            }
-            List<OpmDetalleTraslado> opmDetalleTrasladoListOld = persistentOpmProducto.getOpmDetalleTrasladoList();
-            List<OpmDetalleTraslado> opmDetalleTrasladoListNew = opmProducto.getOpmDetalleTrasladoList();
-            if(opmDetalleTrasladoListNew==null){
-                opmDetalleTrasladoListNew = new ArrayList<>();
-            }
-            List<OpmDetalleVenta> opmDetalleVentaListOld = persistentOpmProducto.getOpmDetalleVentaList();
-            List<OpmDetalleVenta> opmDetalleVentaListNew = opmProducto.getOpmDetalleVentaList();
-            if(opmDetalleVentaListNew==null){
-                opmDetalleVentaListNew = new ArrayList<>();
-            }
-            List<OpmDetalleLote> opmDetalleLoteListOld = persistentOpmProducto.getOpmDetalleLoteList();
-            List<OpmDetalleLote> opmDetalleLoteListNew = opmProducto.getOpmDetalleLoteList();
-            if(opmDetalleLoteListNew == null){
-                opmDetalleLoteListNew =  new ArrayList<>();
-            }
+            List<OpmReferenciaProducto> opmReferenciaProductoListOld = persistentOpmProducto.getOpmReferenciaProductoList();
+            List<OpmReferenciaProducto> opmReferenciaProductoListNew = opmProducto.getOpmReferenciaProductoList();
             List<String> illegalOrphanMessages = null;
-            for (OpmInventario opmInventarioListOldOpmInventario : opmInventarioListOld) {
-                if (!opmInventarioListNew.contains(opmInventarioListOldOpmInventario)) {
+            for (OpmReferenciaProducto opmReferenciaProductoListOldOpmReferenciaProducto : opmReferenciaProductoListOld) {
+                if (!opmReferenciaProductoListNew.contains(opmReferenciaProductoListOldOpmReferenciaProducto)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain OpmInventario " + opmInventarioListOldOpmInventario + " since its nmProducto field is not nullable.");
-                }
-            }
-            for (OpmInventarioPunto opmInventarioPuntoListOldOpmInventarioPunto : opmInventarioPuntoListOld) {
-                if (!opmInventarioPuntoListNew.contains(opmInventarioPuntoListOldOpmInventarioPunto)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmInventarioPunto " + opmInventarioPuntoListOldOpmInventarioPunto + " since its nmProducto field is not nullable.");
-                }
-            }
-            for (OpmDetalleRemision opmDetalleRemisionListOldOpmDetalleRemision : opmDetalleRemisionListOld) {
-                if (!opmDetalleRemisionListNew.contains(opmDetalleRemisionListOldOpmDetalleRemision)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmDetalleRemision " + opmDetalleRemisionListOldOpmDetalleRemision + " since its nmProducto field is not nullable.");
-                }
-            }
-            for (OpmDetalleTraslado opmDetalleTrasladoListOldOpmDetalleTraslado : opmDetalleTrasladoListOld) {
-                if (!opmDetalleTrasladoListNew.contains(opmDetalleTrasladoListOldOpmDetalleTraslado)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmDetalleTraslado " + opmDetalleTrasladoListOldOpmDetalleTraslado + " since its nmProducto field is not nullable.");
-                }
-            }
-            for (OpmDetalleVenta opmDetalleVentaListOldOpmDetalleVenta : opmDetalleVentaListOld) {
-                if (!opmDetalleVentaListNew.contains(opmDetalleVentaListOldOpmDetalleVenta)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmDetalleVenta " + opmDetalleVentaListOldOpmDetalleVenta + " since its nmProducto field is not nullable.");
-                }
-            }
-            for (OpmDetalleLote opmDetalleLoteListOldOpmDetalleLote : opmDetalleLoteListOld) {
-                if (!opmDetalleLoteListNew.contains(opmDetalleLoteListOldOpmDetalleLote)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmDetalleLote " + opmDetalleLoteListOldOpmDetalleLote + " since its nmProducto field is not nullable.");
+                    illegalOrphanMessages.add("You must retain OpmReferenciaProducto " + opmReferenciaProductoListOldOpmReferenciaProducto + " since its nmProducto field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<OpmInventario> attachedOpmInventarioListNew = new ArrayList<OpmInventario>();
-            for (OpmInventario opmInventarioListNewOpmInventarioToAttach : opmInventarioListNew) {
-                opmInventarioListNewOpmInventarioToAttach = em.getReference(opmInventarioListNewOpmInventarioToAttach.getClass(), opmInventarioListNewOpmInventarioToAttach.getNmCodigo());
-                attachedOpmInventarioListNew.add(opmInventarioListNewOpmInventarioToAttach);
+            List<OpmReferenciaProducto> attachedOpmReferenciaProductoListNew = new ArrayList<OpmReferenciaProducto>();
+            for (OpmReferenciaProducto opmReferenciaProductoListNewOpmReferenciaProductoToAttach : opmReferenciaProductoListNew) {
+                opmReferenciaProductoListNewOpmReferenciaProductoToAttach = em.getReference(opmReferenciaProductoListNewOpmReferenciaProductoToAttach.getClass(), opmReferenciaProductoListNewOpmReferenciaProductoToAttach.getNvCodigo());
+                attachedOpmReferenciaProductoListNew.add(opmReferenciaProductoListNewOpmReferenciaProductoToAttach);
             }
-            opmInventarioListNew = attachedOpmInventarioListNew;
-            opmProducto.setOpmInventarioList(opmInventarioListNew);
-            List<OpmInventarioPunto> attachedOpmInventarioPuntoListNew = new ArrayList<OpmInventarioPunto>();
-            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPuntoToAttach : opmInventarioPuntoListNew) {
-                opmInventarioPuntoListNewOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getNmCodigo());
-                attachedOpmInventarioPuntoListNew.add(opmInventarioPuntoListNewOpmInventarioPuntoToAttach);
-            }
-            opmInventarioPuntoListNew = attachedOpmInventarioPuntoListNew;
-            opmProducto.setOpmInventarioPuntoList(opmInventarioPuntoListNew);
-            List<OpmDetalleRemision> attachedOpmDetalleRemisionListNew = new ArrayList<OpmDetalleRemision>();
-            for (OpmDetalleRemision opmDetalleRemisionListNewOpmDetalleRemisionToAttach : opmDetalleRemisionListNew) {
-                opmDetalleRemisionListNewOpmDetalleRemisionToAttach = em.getReference(opmDetalleRemisionListNewOpmDetalleRemisionToAttach.getClass(), opmDetalleRemisionListNewOpmDetalleRemisionToAttach.getNmCodigo());
-                attachedOpmDetalleRemisionListNew.add(opmDetalleRemisionListNewOpmDetalleRemisionToAttach);
-            }
-            opmDetalleRemisionListNew = attachedOpmDetalleRemisionListNew;
-            opmProducto.setOpmDetalleRemisionList(opmDetalleRemisionListNew);
-            List<OpmDetalleTraslado> attachedOpmDetalleTrasladoListNew = new ArrayList<OpmDetalleTraslado>();
-            for (OpmDetalleTraslado opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach : opmDetalleTrasladoListNew) {
-                opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach = em.getReference(opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach.getClass(), opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach.getNmCodigo());
-                attachedOpmDetalleTrasladoListNew.add(opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach);
-            }
-            opmDetalleTrasladoListNew = attachedOpmDetalleTrasladoListNew;
-            opmProducto.setOpmDetalleTrasladoList(opmDetalleTrasladoListNew);
-            List<OpmDetalleVenta> attachedOpmDetalleVentaListNew = new ArrayList<OpmDetalleVenta>();
-            for (OpmDetalleVenta opmDetalleVentaListNewOpmDetalleVentaToAttach : opmDetalleVentaListNew) {
-                opmDetalleVentaListNewOpmDetalleVentaToAttach = em.getReference(opmDetalleVentaListNewOpmDetalleVentaToAttach.getClass(), opmDetalleVentaListNewOpmDetalleVentaToAttach.getNmCodigo());
-                attachedOpmDetalleVentaListNew.add(opmDetalleVentaListNewOpmDetalleVentaToAttach);
-            }
-            opmDetalleVentaListNew = attachedOpmDetalleVentaListNew;
-            opmProducto.setOpmDetalleVentaList(opmDetalleVentaListNew);
-            List<OpmDetalleLote> attachedOpmDetalleLoteListNew = new ArrayList<OpmDetalleLote>();
-            for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLoteToAttach : opmDetalleLoteListNew) {
-                opmDetalleLoteListNewOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListNewOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListNewOpmDetalleLoteToAttach.getNmCodigo());
-                attachedOpmDetalleLoteListNew.add(opmDetalleLoteListNewOpmDetalleLoteToAttach);
-            }
-            opmDetalleLoteListNew = attachedOpmDetalleLoteListNew;
-            opmProducto.setOpmDetalleLoteList(opmDetalleLoteListNew);
+            opmReferenciaProductoListNew = attachedOpmReferenciaProductoListNew;
+            opmProducto.setOpmReferenciaProductoList(opmReferenciaProductoListNew);
             opmProducto = em.merge(opmProducto);
-            for (OpmInventario opmInventarioListNewOpmInventario : opmInventarioListNew) {
-                if (!opmInventarioListOld.contains(opmInventarioListNewOpmInventario)) {
-                    OpmProducto oldNmProductoOfOpmInventarioListNewOpmInventario = opmInventarioListNewOpmInventario.getNmProducto();
-                    opmInventarioListNewOpmInventario.setNmProducto(opmProducto);
-                    opmInventarioListNewOpmInventario = em.merge(opmInventarioListNewOpmInventario);
-                    if (oldNmProductoOfOpmInventarioListNewOpmInventario != null && !oldNmProductoOfOpmInventarioListNewOpmInventario.equals(opmProducto)) {
-                        oldNmProductoOfOpmInventarioListNewOpmInventario.getOpmInventarioList().remove(opmInventarioListNewOpmInventario);
-                        oldNmProductoOfOpmInventarioListNewOpmInventario = em.merge(oldNmProductoOfOpmInventarioListNewOpmInventario);
-                    }
-                }
-            }
-            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPunto : opmInventarioPuntoListNew) {
-                if (!opmInventarioPuntoListOld.contains(opmInventarioPuntoListNewOpmInventarioPunto)) {
-                    OpmProducto oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto = opmInventarioPuntoListNewOpmInventarioPunto.getNmProducto();
-                    opmInventarioPuntoListNewOpmInventarioPunto.setNmProducto(opmProducto);
-                    opmInventarioPuntoListNewOpmInventarioPunto = em.merge(opmInventarioPuntoListNewOpmInventarioPunto);
-                    if (oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto != null && !oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto.equals(opmProducto)) {
-                        oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListNewOpmInventarioPunto);
-                        oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto = em.merge(oldNmProductoOfOpmInventarioPuntoListNewOpmInventarioPunto);
-                    }
-                }
-            }
-            for (OpmDetalleRemision opmDetalleRemisionListNewOpmDetalleRemision : opmDetalleRemisionListNew) {
-                if (!opmDetalleRemisionListOld.contains(opmDetalleRemisionListNewOpmDetalleRemision)) {
-                    OpmProducto oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision = opmDetalleRemisionListNewOpmDetalleRemision.getNmProducto();
-                    opmDetalleRemisionListNewOpmDetalleRemision.setNmProducto(opmProducto);
-                    opmDetalleRemisionListNewOpmDetalleRemision = em.merge(opmDetalleRemisionListNewOpmDetalleRemision);
-                    if (oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision != null && !oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision.equals(opmProducto)) {
-                        oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision.getOpmDetalleRemisionList().remove(opmDetalleRemisionListNewOpmDetalleRemision);
-                        oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision = em.merge(oldNmProductoOfOpmDetalleRemisionListNewOpmDetalleRemision);
-                    }
-                }
-            }
-            for (OpmDetalleTraslado opmDetalleTrasladoListNewOpmDetalleTraslado : opmDetalleTrasladoListNew) {
-                if (!opmDetalleTrasladoListOld.contains(opmDetalleTrasladoListNewOpmDetalleTraslado)) {
-                    OpmProducto oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado = opmDetalleTrasladoListNewOpmDetalleTraslado.getNmProducto();
-                    opmDetalleTrasladoListNewOpmDetalleTraslado.setNmProducto(opmProducto);
-                    opmDetalleTrasladoListNewOpmDetalleTraslado = em.merge(opmDetalleTrasladoListNewOpmDetalleTraslado);
-                    if (oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado != null && !oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado.equals(opmProducto)) {
-                        oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado.getOpmDetalleTrasladoList().remove(opmDetalleTrasladoListNewOpmDetalleTraslado);
-                        oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado = em.merge(oldNmProductoOfOpmDetalleTrasladoListNewOpmDetalleTraslado);
-                    }
-                }
-            }
-            for (OpmDetalleVenta opmDetalleVentaListNewOpmDetalleVenta : opmDetalleVentaListNew) {
-                if (!opmDetalleVentaListOld.contains(opmDetalleVentaListNewOpmDetalleVenta)) {
-                    OpmProducto oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta = opmDetalleVentaListNewOpmDetalleVenta.getNmProducto();
-                    opmDetalleVentaListNewOpmDetalleVenta.setNmProducto(opmProducto);
-                    opmDetalleVentaListNewOpmDetalleVenta = em.merge(opmDetalleVentaListNewOpmDetalleVenta);
-                    if (oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta != null && !oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta.equals(opmProducto)) {
-                        oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListNewOpmDetalleVenta);
-                        oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta = em.merge(oldNmProductoOfOpmDetalleVentaListNewOpmDetalleVenta);
-                    }
-                }
-            }
-            for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLote : opmDetalleLoteListNew) {
-                if (!opmDetalleLoteListOld.contains(opmDetalleLoteListNewOpmDetalleLote)) {
-                    OpmProducto oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote = opmDetalleLoteListNewOpmDetalleLote.getNmProducto();
-                    opmDetalleLoteListNewOpmDetalleLote.setNmProducto(opmProducto);
-                    opmDetalleLoteListNewOpmDetalleLote = em.merge(opmDetalleLoteListNewOpmDetalleLote);
-                    if (oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote != null && !oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote.equals(opmProducto)) {
-                        oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote.getOpmDetalleLoteList().remove(opmDetalleLoteListNewOpmDetalleLote);
-                        oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote = em.merge(oldNmProductoOfOpmDetalleLoteListNewOpmDetalleLote);
+            for (OpmReferenciaProducto opmReferenciaProductoListNewOpmReferenciaProducto : opmReferenciaProductoListNew) {
+                if (!opmReferenciaProductoListOld.contains(opmReferenciaProductoListNewOpmReferenciaProducto)) {
+                    OpmProducto oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto = opmReferenciaProductoListNewOpmReferenciaProducto.getNmProducto();
+                    opmReferenciaProductoListNewOpmReferenciaProducto.setNmProducto(opmProducto);
+                    opmReferenciaProductoListNewOpmReferenciaProducto = em.merge(opmReferenciaProductoListNewOpmReferenciaProducto);
+                    if (oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto != null && !oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto.equals(opmProducto)) {
+                        oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto.getOpmReferenciaProductoList().remove(opmReferenciaProductoListNewOpmReferenciaProducto);
+                        oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto = em.merge(oldNmProductoOfOpmReferenciaProductoListNewOpmReferenciaProducto);
                     }
                 }
             }
@@ -388,47 +135,12 @@ public class OpmProductoJpaController implements Serializable {
                 throw new NonexistentEntityException("The opmProducto with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<OpmInventario> opmInventarioListOrphanCheck = opmProducto.getOpmInventarioList();
-            for (OpmInventario opmInventarioListOrphanCheckOpmInventario : opmInventarioListOrphanCheck) {
+            List<OpmReferenciaProducto> opmReferenciaProductoListOrphanCheck = opmProducto.getOpmReferenciaProductoList();
+            for (OpmReferenciaProducto opmReferenciaProductoListOrphanCheckOpmReferenciaProducto : opmReferenciaProductoListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmInventario " + opmInventarioListOrphanCheckOpmInventario + " in its opmInventarioList field has a non-nullable nmProducto field.");
-            }
-            List<OpmInventarioPunto> opmInventarioPuntoListOrphanCheck = opmProducto.getOpmInventarioPuntoList();
-            for (OpmInventarioPunto opmInventarioPuntoListOrphanCheckOpmInventarioPunto : opmInventarioPuntoListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmInventarioPunto " + opmInventarioPuntoListOrphanCheckOpmInventarioPunto + " in its opmInventarioPuntoList field has a non-nullable nmProducto field.");
-            }
-            List<OpmDetalleRemision> opmDetalleRemisionListOrphanCheck = opmProducto.getOpmDetalleRemisionList();
-            for (OpmDetalleRemision opmDetalleRemisionListOrphanCheckOpmDetalleRemision : opmDetalleRemisionListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleRemision " + opmDetalleRemisionListOrphanCheckOpmDetalleRemision + " in its opmDetalleRemisionList field has a non-nullable nmProducto field.");
-            }
-            List<OpmDetalleTraslado> opmDetalleTrasladoListOrphanCheck = opmProducto.getOpmDetalleTrasladoList();
-            for (OpmDetalleTraslado opmDetalleTrasladoListOrphanCheckOpmDetalleTraslado : opmDetalleTrasladoListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleTraslado " + opmDetalleTrasladoListOrphanCheckOpmDetalleTraslado + " in its opmDetalleTrasladoList field has a non-nullable nmProducto field.");
-            }
-            List<OpmDetalleVenta> opmDetalleVentaListOrphanCheck = opmProducto.getOpmDetalleVentaList();
-            for (OpmDetalleVenta opmDetalleVentaListOrphanCheckOpmDetalleVenta : opmDetalleVentaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleVenta " + opmDetalleVentaListOrphanCheckOpmDetalleVenta + " in its opmDetalleVentaList field has a non-nullable nmProducto field.");
-            }
-            List<OpmDetalleLote> opmDetalleLoteListOrphanCheck = opmProducto.getOpmDetalleLoteList();
-            for (OpmDetalleLote opmDetalleLoteListOrphanCheckOpmDetalleLote : opmDetalleLoteListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmDetalleLote " + opmDetalleLoteListOrphanCheckOpmDetalleLote + " in its opmDetalleLoteList field has a non-nullable nmProducto field.");
+                illegalOrphanMessages.add("This OpmProducto (" + opmProducto + ") cannot be destroyed since the OpmReferenciaProducto " + opmReferenciaProductoListOrphanCheckOpmReferenciaProducto + " in its opmReferenciaProductoList field has a non-nullable nmProducto field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

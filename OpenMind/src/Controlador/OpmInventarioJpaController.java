@@ -8,14 +8,13 @@ package Controlador;
 import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmInventario;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Modelo.OpmProducto;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -37,16 +36,7 @@ public class OpmInventarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            OpmProducto nmProducto = opmInventario.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto = em.getReference(nmProducto.getClass(), nmProducto.getNmCodigo());
-                opmInventario.setNmProducto(nmProducto);
-            }
             em.persist(opmInventario);
-            if (nmProducto != null) {
-                nmProducto.getOpmInventarioList().add(opmInventario);
-                nmProducto = em.merge(nmProducto);
-            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -60,22 +50,7 @@ public class OpmInventarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            OpmInventario persistentOpmInventario = em.find(OpmInventario.class, opmInventario.getNmCodigo());
-            OpmProducto nmProductoOld = persistentOpmInventario.getNmProducto();
-            OpmProducto nmProductoNew = opmInventario.getNmProducto();
-            if (nmProductoNew != null) {
-                nmProductoNew = em.getReference(nmProductoNew.getClass(), nmProductoNew.getNmCodigo());
-                opmInventario.setNmProducto(nmProductoNew);
-            }
             opmInventario = em.merge(opmInventario);
-            if (nmProductoOld != null && !nmProductoOld.equals(nmProductoNew)) {
-                nmProductoOld.getOpmInventarioList().remove(opmInventario);
-                nmProductoOld = em.merge(nmProductoOld);
-            }
-            if (nmProductoNew != null && !nmProductoNew.equals(nmProductoOld)) {
-                nmProductoNew.getOpmInventarioList().add(opmInventario);
-                nmProductoNew = em.merge(nmProductoNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -104,11 +79,6 @@ public class OpmInventarioJpaController implements Serializable {
                 opmInventario.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmInventario with id " + id + " no longer exists.", enfe);
-            }
-            OpmProducto nmProducto = opmInventario.getNmProducto();
-            if (nmProducto != null) {
-                nmProducto.getOpmInventarioList().remove(opmInventario);
-                nmProducto = em.merge(nmProducto);
             }
             em.remove(opmInventario);
             em.getTransaction().commit();

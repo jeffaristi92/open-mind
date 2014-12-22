@@ -29,16 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "OpmDetalleLote.findAll", query = "SELECT o FROM OpmDetalleLote o"),
     @NamedQuery(name = "OpmDetalleLote.findByNmCodigo", query = "SELECT o FROM OpmDetalleLote o WHERE o.nmCodigo = :nmCodigo"),
-    @NamedQuery(name = "OpmDetalleLote.findByNmLote", query = "SELECT o FROM OpmDetalleLote o WHERE o.nmLote = :nmLote"),
-    @NamedQuery(name = "OpmDetalleLote.findByNmProducto", query = "SELECT o FROM OpmDetalleLote o WHERE o.nmProducto = :nmProducto"),
     @NamedQuery(name = "OpmDetalleLote.findByNmCantidad", query = "SELECT o FROM OpmDetalleLote o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmDetalleLote implements Serializable {
-    @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmProducto nmProducto;
-    @JoinColumn(name = "NM_LOTE", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmLote nmLote;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +40,12 @@ public class OpmDetalleLote implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CANTIDAD")
     private int nmCantidad;
+    @JoinColumn(name = "NV_REFERENCIA", referencedColumnName = "NV_CODIGO")
+    @ManyToOne(optional = false)
+    private OpmReferenciaProducto nvReferencia;
+    @JoinColumn(name = "NM_LOTE", referencedColumnName = "NM_CODIGO")
+    @ManyToOne(optional = false)
+    private OpmLote nmLote;
 
     public OpmDetalleLote() {
     }
@@ -56,10 +54,8 @@ public class OpmDetalleLote implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmDetalleLote(Integer nmCodigo, OpmLote nmLote, OpmProducto nmProducto, int nmCantidad) {
+    public OpmDetalleLote(Integer nmCodigo, int nmCantidad) {
         this.nmCodigo = nmCodigo;
-        this.nmLote = nmLote;
-        this.nmProducto = nmProducto;
         this.nmCantidad = nmCantidad;
     }
 
@@ -71,28 +67,28 @@ public class OpmDetalleLote implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmLote getNmLote() {
-        return nmLote;
-    }
-
-    public void setNmLote(OpmLote nmLote) {
-        this.nmLote = nmLote;
-    }
-
-    public OpmProducto getNmProducto() {
-        return nmProducto;
-    }
-
-    public void setNmProducto(OpmProducto nmProducto) {
-        this.nmProducto = nmProducto;
-    }
-
     public int getNmCantidad() {
         return nmCantidad;
     }
 
     public void setNmCantidad(int nmCantidad) {
         this.nmCantidad = nmCantidad;
+    }
+
+    public OpmReferenciaProducto getNvReferencia() {
+        return nvReferencia;
+    }
+
+    public void setNvReferencia(OpmReferenciaProducto nvReferencia) {
+        this.nvReferencia = nvReferencia;
+    }
+
+    public OpmLote getNmLote() {
+        return nmLote;
+    }
+
+    public void setNmLote(OpmLote nmLote) {
+        this.nmLote = nmLote;
     }
 
     @Override
@@ -118,5 +114,6 @@ public class OpmDetalleLote implements Serializable {
     @Override
     public String toString() {
         return "Modelo.OpmDetalleLote[ nmCodigo=" + nmCodigo + " ]";
-    }    
+    }
+    
 }

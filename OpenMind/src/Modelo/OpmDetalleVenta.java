@@ -36,9 +36,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmDetalleVenta.findByNmCantidad", query = "SELECT o FROM OpmDetalleVenta o WHERE o.nmCantidad = :nmCantidad"),
     @NamedQuery(name = "OpmDetalleVenta.findByNmPrecio", query = "SELECT o FROM OpmDetalleVenta o WHERE o.nmPrecio = :nmPrecio")})
 public class OpmDetalleVenta implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "NM_PRECIO")
-    private double nmPrecio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,12 +45,15 @@ public class OpmDetalleVenta implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CANTIDAD")
     private int nmCantidad;
+    @Basic(optional = false)
+    @Column(name = "NM_PRECIO")
+    private double nmPrecio;
     @JoinColumn(name = "NM_VENTA", referencedColumnName = "NM_CODIGO")
     @ManyToOne(optional = false)
     private OpmVenta nmVenta;
-    @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
+    @JoinColumn(name = "NV_REFERENCIA", referencedColumnName = "NV_CODIGO")
     @ManyToOne(optional = false)
-    private OpmProducto nmProducto;
+    private OpmReferenciaProducto nvReferencia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmDetalle")
     private List<OpmDevolucion> opmDevolucionList;
 
@@ -64,7 +64,7 @@ public class OpmDetalleVenta implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmDetalleVenta(Integer nmCodigo, int nmCantidad, int nmPrecio) {
+    public OpmDetalleVenta(Integer nmCodigo, int nmCantidad, double nmPrecio) {
         this.nmCodigo = nmCodigo;
         this.nmCantidad = nmCantidad;
         this.nmPrecio = nmPrecio;
@@ -90,7 +90,7 @@ public class OpmDetalleVenta implements Serializable {
         return nmPrecio;
     }
 
-    public void setNmPrecio(int nmPrecio) {
+    public void setNmPrecio(double nmPrecio) {
         this.nmPrecio = nmPrecio;
     }
 
@@ -102,12 +102,12 @@ public class OpmDetalleVenta implements Serializable {
         this.nmVenta = nmVenta;
     }
 
-    public OpmProducto getNmProducto() {
-        return nmProducto;
+    public OpmReferenciaProducto getNvReferencia() {
+        return nvReferencia;
     }
 
-    public void setNmProducto(OpmProducto nmProducto) {
-        this.nmProducto = nmProducto;
+    public void setNvReferencia(OpmReferenciaProducto nvReferencia) {
+        this.nvReferencia = nvReferencia;
     }
 
     @XmlTransient
@@ -141,10 +141,7 @@ public class OpmDetalleVenta implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmDetalleVenta[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmDetalleVenta[ nmCodigo=" + nmCodigo + " ]";
     }
-
-    public void setNmPrecio(double nmPrecio) {
-        this.nmPrecio = nmPrecio;
-    }
+    
 }

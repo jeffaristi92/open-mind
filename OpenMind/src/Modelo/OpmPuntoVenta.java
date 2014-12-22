@@ -14,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -33,8 +31,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "OpmPuntoVenta.findAll", query = "SELECT o FROM OpmPuntoVenta o"),
     @NamedQuery(name = "OpmPuntoVenta.findByNmCodigo", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nmCodigo = :nmCodigo"),
+    @NamedQuery(name = "OpmPuntoVenta.findByNvNombre", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nvNombre = :nvNombre"),
     @NamedQuery(name = "OpmPuntoVenta.findByNvDireccion", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nvDireccion = :nvDireccion"),
-    @NamedQuery(name = "OpmPuntoVenta.findByNvTel", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nvTel = :nvTel")})
+    @NamedQuery(name = "OpmPuntoVenta.findByNvTel", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nvTel = :nvTel"),
+    @NamedQuery(name = "OpmPuntoVenta.findByNmAdministrador", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nmAdministrador = :nmAdministrador"),
+    @NamedQuery(name = "OpmPuntoVenta.findByNmFabrica", query = "SELECT o FROM OpmPuntoVenta o WHERE o.nmFabrica = :nmFabrica")})
 public class OpmPuntoVenta implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,22 +44,28 @@ public class OpmPuntoVenta implements Serializable {
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
     @Basic(optional = false)
+    @Column(name = "NV_NOMBRE")
+    private String nvNombre;
+    @Basic(optional = false)
     @Column(name = "NV_DIRECCION")
     private String nvDireccion;
     @Basic(optional = false)
     @Column(name = "NV_TEL")
     private String nvTel;
+    @Basic(optional = false)
+    @Column(name = "NM_ADMINISTRADOR")
+    private int nmAdministrador;
+    @Basic(optional = false)
+    @Column(name = "NM_FABRICA")
+    private int nmFabrica;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmOrigen")
     private List<OpmTraslado> opmTrasladoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPuntoVenta")
-    private List<OpmInventarioPunto> opmInventarioPuntoList;
-    @JoinColumn(name = "NM_ADMINISTRADOR", referencedColumnName = "NM_CODIGO")
-    @ManyToOne(optional = false)
-    private OpmUsuario nmAdministrador;
+    private List<OpmGastos> opmGastosList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPunto")
     private List<OpmVenta> opmVentaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPunto")
-    private List<OpmRemision> opmRemisionList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPuntoVenta")
+    private List<OpmTransaccion> opmTransaccionList;
 
     public OpmPuntoVenta() {
     }
@@ -67,10 +74,13 @@ public class OpmPuntoVenta implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmPuntoVenta(Integer nmCodigo, String nvDireccion, String nvTel) {
+    public OpmPuntoVenta(Integer nmCodigo, String nvNombre, String nvDireccion, String nvTel, int nmAdministrador, int nmFabrica) {
         this.nmCodigo = nmCodigo;
+        this.nvNombre = nvNombre;
         this.nvDireccion = nvDireccion;
         this.nvTel = nvTel;
+        this.nmAdministrador = nmAdministrador;
+        this.nmFabrica = nmFabrica;
     }
 
     public Integer getNmCodigo() {
@@ -79,6 +89,14 @@ public class OpmPuntoVenta implements Serializable {
 
     public void setNmCodigo(Integer nmCodigo) {
         this.nmCodigo = nmCodigo;
+    }
+
+    public String getNvNombre() {
+        return nvNombre;
+    }
+
+    public void setNvNombre(String nvNombre) {
+        this.nvNombre = nvNombre;
     }
 
     public String getNvDireccion() {
@@ -97,6 +115,22 @@ public class OpmPuntoVenta implements Serializable {
         this.nvTel = nvTel;
     }
 
+    public int getNmAdministrador() {
+        return nmAdministrador;
+    }
+
+    public void setNmAdministrador(int nmAdministrador) {
+        this.nmAdministrador = nmAdministrador;
+    }
+
+    public int getNmFabrica() {
+        return nmFabrica;
+    }
+
+    public void setNmFabrica(int nmFabrica) {
+        this.nmFabrica = nmFabrica;
+    }
+
     @XmlTransient
     public List<OpmTraslado> getOpmTrasladoList() {
         return opmTrasladoList;
@@ -107,20 +141,12 @@ public class OpmPuntoVenta implements Serializable {
     }
 
     @XmlTransient
-    public List<OpmInventarioPunto> getOpmInventarioPuntoList() {
-        return opmInventarioPuntoList;
+    public List<OpmGastos> getOpmGastosList() {
+        return opmGastosList;
     }
 
-    public void setOpmInventarioPuntoList(List<OpmInventarioPunto> opmInventarioPuntoList) {
-        this.opmInventarioPuntoList = opmInventarioPuntoList;
-    }
-
-    public OpmUsuario getNmAdministrador() {
-        return nmAdministrador;
-    }
-
-    public void setNmAdministrador(OpmUsuario nmAdministrador) {
-        this.nmAdministrador = nmAdministrador;
+    public void setOpmGastosList(List<OpmGastos> opmGastosList) {
+        this.opmGastosList = opmGastosList;
     }
 
     @XmlTransient
@@ -133,12 +159,12 @@ public class OpmPuntoVenta implements Serializable {
     }
 
     @XmlTransient
-    public List<OpmRemision> getOpmRemisionList() {
-        return opmRemisionList;
+    public List<OpmTransaccion> getOpmTransaccionList() {
+        return opmTransaccionList;
     }
 
-    public void setOpmRemisionList(List<OpmRemision> opmRemisionList) {
-        this.opmRemisionList = opmRemisionList;
+    public void setOpmTransaccionList(List<OpmTransaccion> opmTransaccionList) {
+        this.opmTransaccionList = opmTransaccionList;
     }
 
     @Override
@@ -163,7 +189,7 @@ public class OpmPuntoVenta implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmPuntoVenta[ nmCodigo=" + nmCodigo + " ]";
+        return "Modelo.OpmPuntoVenta[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

@@ -6,7 +6,6 @@
 package Modelo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -34,21 +33,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmProducto.findByNmCodigo", query = "SELECT o FROM OpmProducto o WHERE o.nmCodigo = :nmCodigo"),
     @NamedQuery(name = "OpmProducto.findByNvNombre", query = "SELECT o FROM OpmProducto o WHERE o.nvNombre = :nvNombre"),
     @NamedQuery(name = "OpmProducto.findByNvDescripcion", query = "SELECT o FROM OpmProducto o WHERE o.nvDescripcion = :nvDescripcion"),
-    @NamedQuery(name = "OpmProducto.findByNmCosto", query = "SELECT o FROM OpmProducto o WHERE o.nmCosto = :nmCosto"),
-    @NamedQuery(name = "OpmProducto.findByNmValor", query = "SELECT o FROM OpmProducto o WHERE o.nmValor = :nmValor")})
+    @NamedQuery(name = "OpmProducto.findByNmCostoPp", query = "SELECT o FROM OpmProducto o WHERE o.nmCostoPp = :nmCostoPp"),
+    @NamedQuery(name = "OpmProducto.findByNmValorPv", query = "SELECT o FROM OpmProducto o WHERE o.nmValorPv = :nmValorPv"),
+    @NamedQuery(name = "OpmProducto.findByNmValorPm", query = "SELECT o FROM OpmProducto o WHERE o.nmValorPm = :nmValorPm"),
+    @NamedQuery(name = "OpmProducto.findByNmValorVs", query = "SELECT o FROM OpmProducto o WHERE o.nmValorVs = :nmValorVs"),
+    @NamedQuery(name = "OpmProducto.findByBtActivo", query = "SELECT o FROM OpmProducto o WHERE o.btActivo = :btActivo")})
 public class OpmProducto implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "BT_ACTIVO")
-    private boolean btActivo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmDetalleLote> opmDetalleLoteList;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @Column(name = "NM_COSTO")
-    private double nmCosto;
-    @Basic(optional = false)
-    @Column(name = "NM_VALOR")
-    private double nmValor;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,16 +51,23 @@ public class OpmProducto implements Serializable {
     @Basic(optional = false)
     @Column(name = "NV_DESCRIPCION")
     private String nvDescripcion;
+    @Basic(optional = false)
+    @Column(name = "NM_COSTO_PP")
+    private double nmCostoPp;
+    @Basic(optional = false)
+    @Column(name = "NM_VALOR_PV")
+    private double nmValorPv;
+    @Basic(optional = false)
+    @Column(name = "NM_VALOR_PM")
+    private double nmValorPm;
+    @Basic(optional = false)
+    @Column(name = "NM_VALOR_VS")
+    private double nmValorVs;
+    @Basic(optional = false)
+    @Column(name = "BT_ACTIVO")
+    private boolean btActivo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmInventario> opmInventarioList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmInventarioPunto> opmInventarioPuntoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmDetalleRemision> opmDetalleRemisionList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmDetalleTraslado> opmDetalleTrasladoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmProducto")
-    private List<OpmDetalleVenta> opmDetalleVentaList;
+    private List<OpmReferenciaProducto> opmReferenciaProductoList;
 
     public OpmProducto() {
     }
@@ -79,12 +76,15 @@ public class OpmProducto implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public OpmProducto(Integer nmCodigo, String nvNombre, String nvDescripcion, double nmCosto, double nmValor) {
+    public OpmProducto(Integer nmCodigo, String nvNombre, String nvDescripcion, double nmCostoPp, double nmValorPv, double nmValorPm, double nmValorVs, boolean btActivo) {
         this.nmCodigo = nmCodigo;
         this.nvNombre = nvNombre;
         this.nvDescripcion = nvDescripcion;
-        this.nmCosto = nmCosto;
-        this.nmValor = nmValor;
+        this.nmCostoPp = nmCostoPp;
+        this.nmValorPv = nmValorPv;
+        this.nmValorPm = nmValorPm;
+        this.nmValorVs = nmValorVs;
+        this.btActivo = btActivo;
     }
 
     public Integer getNmCodigo() {
@@ -111,65 +111,53 @@ public class OpmProducto implements Serializable {
         this.nvDescripcion = nvDescripcion;
     }
 
-    public double getNmCosto() {
-        return nmCosto;
+    public double getNmCostoPp() {
+        return nmCostoPp;
     }
 
-    public void setNmCosto(double nmCosto) {
-        this.nmCosto = nmCosto;
+    public void setNmCostoPp(double nmCostoPp) {
+        this.nmCostoPp = nmCostoPp;
     }
 
-    public double getNmValor() {
-        return nmValor;
+    public double getNmValorPv() {
+        return nmValorPv;
     }
 
-    public void setNmValor(double nmValor) {
-        this.nmValor = nmValor;
+    public void setNmValorPv(double nmValorPv) {
+        this.nmValorPv = nmValorPv;
     }
 
-    @XmlTransient
-    public List<OpmInventario> getOpmInventarioList() {
-        return opmInventarioList;
+    public double getNmValorPm() {
+        return nmValorPm;
     }
 
-    public void setOpmInventarioList(List<OpmInventario> opmInventarioList) {
-        this.opmInventarioList = opmInventarioList;
+    public void setNmValorPm(double nmValorPm) {
+        this.nmValorPm = nmValorPm;
     }
 
-    @XmlTransient
-    public List<OpmInventarioPunto> getOpmInventarioPuntoList() {
-        return opmInventarioPuntoList;
+    public double getNmValorVs() {
+        return nmValorVs;
     }
 
-    public void setOpmInventarioPuntoList(List<OpmInventarioPunto> opmInventarioPuntoList) {
-        this.opmInventarioPuntoList = opmInventarioPuntoList;
+    public void setNmValorVs(double nmValorVs) {
+        this.nmValorVs = nmValorVs;
     }
 
-    @XmlTransient
-    public List<OpmDetalleRemision> getOpmDetalleRemisionList() {
-        return opmDetalleRemisionList;
+    public boolean getBtActivo() {
+        return btActivo;
     }
 
-    public void setOpmDetalleRemisionList(List<OpmDetalleRemision> opmDetalleRemisionList) {
-        this.opmDetalleRemisionList = opmDetalleRemisionList;
+    public void setBtActivo(boolean btActivo) {
+        this.btActivo = btActivo;
     }
 
     @XmlTransient
-    public List<OpmDetalleTraslado> getOpmDetalleTrasladoList() {
-        return opmDetalleTrasladoList;
+    public List<OpmReferenciaProducto> getOpmReferenciaProductoList() {
+        return opmReferenciaProductoList;
     }
 
-    public void setOpmDetalleTrasladoList(List<OpmDetalleTraslado> opmDetalleTrasladoList) {
-        this.opmDetalleTrasladoList = opmDetalleTrasladoList;
-    }
-
-    @XmlTransient
-    public List<OpmDetalleVenta> getOpmDetalleVentaList() {
-        return opmDetalleVentaList;
-    }
-
-    public void setOpmDetalleVentaList(List<OpmDetalleVenta> opmDetalleVentaList) {
-        this.opmDetalleVentaList = opmDetalleVentaList;
+    public void setOpmReferenciaProductoList(List<OpmReferenciaProducto> opmReferenciaProductoList) {
+        this.opmReferenciaProductoList = opmReferenciaProductoList;
     }
 
     @Override
@@ -194,24 +182,7 @@ public class OpmProducto implements Serializable {
 
     @Override
     public String toString() {
-        return "Controlador.OpmProducto[ nmCodigo=" + nmCodigo + " ]";
-    }
-
-    public boolean getBtActivo() {
-        return btActivo;
-    }
-
-    public void setBtActivo(boolean btActivo) {
-        this.btActivo = btActivo;
-    }
-
-    @XmlTransient
-    public List<OpmDetalleLote> getOpmDetalleLoteList() {
-        return opmDetalleLoteList;
-    }
-
-    public void setOpmDetalleLoteList(List<OpmDetalleLote> opmDetalleLoteList) {
-        this.opmDetalleLoteList = opmDetalleLoteList;
+        return "Modelo.OpmProducto[ nmCodigo=" + nmCodigo + " ]";
     }
     
 }

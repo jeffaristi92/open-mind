@@ -5,19 +5,16 @@
  */
 package Controlador;
 
-import Controlador.exceptions.IllegalOrphanException;
 import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmRol;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Modelo.OpmUsuario;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -35,29 +32,11 @@ public class OpmRolJpaController implements Serializable {
     }
 
     public void create(OpmRol opmRol) {
-        if (opmRol.getOpmUsuarioList() == null) {
-            opmRol.setOpmUsuarioList(new ArrayList<OpmUsuario>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<OpmUsuario> attachedOpmUsuarioList = new ArrayList<OpmUsuario>();
-            for (OpmUsuario opmUsuarioListOpmUsuarioToAttach : opmRol.getOpmUsuarioList()) {
-                opmUsuarioListOpmUsuarioToAttach = em.getReference(opmUsuarioListOpmUsuarioToAttach.getClass(), opmUsuarioListOpmUsuarioToAttach.getNmCodigo());
-                attachedOpmUsuarioList.add(opmUsuarioListOpmUsuarioToAttach);
-            }
-            opmRol.setOpmUsuarioList(attachedOpmUsuarioList);
             em.persist(opmRol);
-            for (OpmUsuario opmUsuarioListOpmUsuario : opmRol.getOpmUsuarioList()) {
-                OpmRol oldNmRolOfOpmUsuarioListOpmUsuario = opmUsuarioListOpmUsuario.getNmRol();
-                opmUsuarioListOpmUsuario.setNmRol(opmRol);
-                opmUsuarioListOpmUsuario = em.merge(opmUsuarioListOpmUsuario);
-                if (oldNmRolOfOpmUsuarioListOpmUsuario != null) {
-                    oldNmRolOfOpmUsuarioListOpmUsuario.getOpmUsuarioList().remove(opmUsuarioListOpmUsuario);
-                    oldNmRolOfOpmUsuarioListOpmUsuario = em.merge(oldNmRolOfOpmUsuarioListOpmUsuario);
-                }
-            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -66,45 +45,12 @@ public class OpmRolJpaController implements Serializable {
         }
     }
 
-    public void edit(OpmRol opmRol) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(OpmRol opmRol) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            OpmRol persistentOpmRol = em.find(OpmRol.class, opmRol.getNmCodigo());
-            List<OpmUsuario> opmUsuarioListOld = persistentOpmRol.getOpmUsuarioList();
-            List<OpmUsuario> opmUsuarioListNew = opmRol.getOpmUsuarioList();
-            List<String> illegalOrphanMessages = null;
-            for (OpmUsuario opmUsuarioListOldOpmUsuario : opmUsuarioListOld) {
-                if (!opmUsuarioListNew.contains(opmUsuarioListOldOpmUsuario)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OpmUsuario " + opmUsuarioListOldOpmUsuario + " since its nmRol field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            List<OpmUsuario> attachedOpmUsuarioListNew = new ArrayList<OpmUsuario>();
-            for (OpmUsuario opmUsuarioListNewOpmUsuarioToAttach : opmUsuarioListNew) {
-                opmUsuarioListNewOpmUsuarioToAttach = em.getReference(opmUsuarioListNewOpmUsuarioToAttach.getClass(), opmUsuarioListNewOpmUsuarioToAttach.getNmCodigo());
-                attachedOpmUsuarioListNew.add(opmUsuarioListNewOpmUsuarioToAttach);
-            }
-            opmUsuarioListNew = attachedOpmUsuarioListNew;
-            opmRol.setOpmUsuarioList(opmUsuarioListNew);
             opmRol = em.merge(opmRol);
-            for (OpmUsuario opmUsuarioListNewOpmUsuario : opmUsuarioListNew) {
-                if (!opmUsuarioListOld.contains(opmUsuarioListNewOpmUsuario)) {
-                    OpmRol oldNmRolOfOpmUsuarioListNewOpmUsuario = opmUsuarioListNewOpmUsuario.getNmRol();
-                    opmUsuarioListNewOpmUsuario.setNmRol(opmRol);
-                    opmUsuarioListNewOpmUsuario = em.merge(opmUsuarioListNewOpmUsuario);
-                    if (oldNmRolOfOpmUsuarioListNewOpmUsuario != null && !oldNmRolOfOpmUsuarioListNewOpmUsuario.equals(opmRol)) {
-                        oldNmRolOfOpmUsuarioListNewOpmUsuario.getOpmUsuarioList().remove(opmUsuarioListNewOpmUsuario);
-                        oldNmRolOfOpmUsuarioListNewOpmUsuario = em.merge(oldNmRolOfOpmUsuarioListNewOpmUsuario);
-                    }
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -122,7 +68,7 @@ public class OpmRolJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -133,17 +79,6 @@ public class OpmRolJpaController implements Serializable {
                 opmRol.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmRol with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            List<OpmUsuario> opmUsuarioListOrphanCheck = opmRol.getOpmUsuarioList();
-            for (OpmUsuario opmUsuarioListOrphanCheckOpmUsuario : opmUsuarioListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This OpmRol (" + opmRol + ") cannot be destroyed since the OpmUsuario " + opmUsuarioListOrphanCheckOpmUsuario + " in its opmUsuarioList field has a non-nullable nmRol field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(opmRol);
             em.getTransaction().commit();
