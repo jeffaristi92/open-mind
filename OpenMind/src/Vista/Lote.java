@@ -169,8 +169,8 @@ public final class Lote extends javax.swing.JPanel {
         // TODO add your handling code here:
         OpmProducto producto = lsProductos.get(jcbProductos.getSelectedIndex());
         DefaultTableModel modelo = (DefaultTableModel) jtbDetalleRemision.getModel();
-        double valorTotal = Integer.parseInt(jtfCantidad.getText())*producto.getNmValor();
-        modelo.addRow(new Object[]{jtfCantidad.getText(),producto.getNvNombre(),producto.getNmCosto(), valorTotal});
+        double valorTotal = Integer.parseInt(jtfCantidad.getText())*producto.getNmValorPv();
+        modelo.addRow(new Object[]{jtfCantidad.getText(),producto.getNvNombre(),producto.getNmCostoPp(), valorTotal});
         
     }//GEN-LAST:event_jbtAgregarActionPerformed
 

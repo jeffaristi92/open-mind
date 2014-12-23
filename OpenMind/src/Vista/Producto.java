@@ -56,8 +56,8 @@ public class Producto extends javax.swing.JPanel {
                 (Object) producto.getNmCodigo(),
                 producto.getNvNombre(),
                 producto.getNvDescripcion(),
-                producto.getNmCosto(),
-                producto.getNmValor(),
+                producto.getNmCostoPp(),
+                producto.getNmValorPv(),
                 (producto.getBtActivo()) ? "Si" : "No"
             };
             modelo.addRow(fila);
@@ -186,8 +186,8 @@ public class Producto extends javax.swing.JPanel {
             producto.setNmCodigo(Integer.parseInt(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0) + ""));
             producto.setNvNombre(tblProductos.getValueAt(tblProductos.getSelectedRow(), 1) + "");
             producto.setNvDescripcion(tblProductos.getValueAt(tblProductos.getSelectedRow(), 2) + "");
-            producto.setNmCosto(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 3) + ""));
-            producto.setNmValor(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 4) + ""));
+            producto.setNmCostoPp(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 3) + ""));
+            producto.setNmValorPv(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 4) + ""));
             producto.setBtActivo(tblProductos.getValueAt(tblProductos.getSelectedRow(), 5).equals("Si"));
         }
         return producto;

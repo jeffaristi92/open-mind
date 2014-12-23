@@ -6,14 +6,19 @@
 package Vista;
 
 import Controlador.ConnectionFactory;
-import Controlador.OpmRecursosRolJpaController;
 import Controlador.OpmRolJpaController;
 import Controlador.OpmUsuarioJpaController;
+import Transversal.Componente;
 import Modelo.OpmRecursosRol;
 import Modelo.OpmRol;
 import Modelo.OpmUsuario;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import openmind.OpenMind;
 
 /**
  *
@@ -24,10 +29,16 @@ public class Login extends javax.swing.JPanel {
     /**
      * Creates new form Login
      */
+    OpenMind programa;
+    
     public Login() {
         initComponents();
     }
-
+    
+    public void setPrograma(OpenMind programa) {
+        this.programa = programa;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -96,24 +107,21 @@ public class Login extends javax.swing.JPanel {
         String pass = jtpPassword.getText();
 
         OpmUsuario user = controladorUsuario.findOpmUsuario(usuario);
-        
+
         if (user != null) {
             if (pass.equals(user.getNvPass())) {
-                JOptionPane.showMessageDialog(this, "Login exitoso","Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Login exitoso", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                 OpmRolJpaController controladorRol = new OpmRolJpaController((new ConnectionFactory()).getFactory());
-                OpmRol rol =  controladorRol.findOpmRol(user.getNmRol());
-                List<OpmRecursosRol> lstRecursos = rol.getOpmRecursosRolList();
-                for(OpmRecursosRol recurso : lstRecursos){
-                    System.out.println(recurso.getNmRecurso());
-                }
+                OpmRol rol = controladorRol.findOpmRol(user.getNmRol());
+                programa.setUsuario(user);
+                programa.setRecursos(rol.getOpmRecursosRolList());
             } else {
-                JOptionPane.showMessageDialog(this, "Usuario o contraeña incorrectos","Mensaje", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Usuario o contraeña incorrectos", "Mensaje", JOptionPane.ERROR_MESSAGE);
             }
-        }else {
-                JOptionPane.showMessageDialog(this, "Usuario o contraeña incorrectos","Mensaje", JOptionPane.ERROR_MESSAGE);
-            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Usuario o contraeña incorrectos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jbtIngresarActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

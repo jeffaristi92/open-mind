@@ -28,8 +28,8 @@ public class PanelFormularioProducto extends javax.swing.JPanel {
         OpmProducto producto = new OpmProducto();
         producto.setNvNombre(txfNombre.getText());
         producto.setNvDescripcion(txfDescripcion.getText());
-        producto.setNmCosto(Double.parseDouble(txfCosto.getText()));
-        producto.setNmValor(Double.parseDouble(txfVenta.getText()));
+        producto.setNmCostoPp(Double.parseDouble(txfCosto.getText()));
+        producto.setNmValorPv(Double.parseDouble(txfVenta.getText()));
         producto.setBtActivo(rbtActivo.isSelected());
 
         return producto;
@@ -40,8 +40,8 @@ public class PanelFormularioProducto extends javax.swing.JPanel {
         rbtActivo.setSelected(producto.getBtActivo());
         txfNombre.setText(producto.getNvNombre());
         txfDescripcion.setText(producto.getNvDescripcion());
-        txfCosto.setText(producto.getNmCosto() + "");
-        txfVenta.setText(producto.getNmValor() + "");
+        txfCosto.setText(producto.getNmCostoPp()+ "");
+        txfVenta.setText(producto.getNmValorPv()+ "");
     }
 
     public boolean validarCamposObligatorios() {
