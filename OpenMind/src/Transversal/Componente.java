@@ -12,6 +12,7 @@ import Vista.Empleado;
 import Vista.Lote;
 import Vista.Producto;
 import Vista.PuntoVenta;
+import Vista.ReferenciaProducto;
 import Vista.Remision;
 import Vista.ReporteEstadoResultados;
 import Vista.ReporteInventario;
@@ -31,12 +32,18 @@ public class Componente {
                 return new PuntoVenta();
             case "Producto":
                 return new Producto();
+            case "Referencia Producto":
+                return new ReferenciaProducto();
             case "Empleado":
                 return new Empleado();
             case "Lote":
-                return new Lote();
+                Lote lote =  new Lote();
+                lote.setUsuario(usuario);
+                return lote;
             case "Remision":
-                return new Remision();
+                Remision remision = new Remision();
+                remision.setUsuario(usuario);
+                return remision;
             case "Venta":
                 Venta venta = new Venta();
                 venta.setUsuario(usuario);
@@ -50,7 +57,9 @@ public class Componente {
             case "Reporte Estado Resultados":
                 return new ReporteEstadoResultados();
             case "Reporte Inventario":
-                return new ReporteInventario();
+                ReporteInventario inventario = new ReporteInventario();
+                inventario.setUsuario(usuario);
+                return inventario;
             default:
                 return null;
         }

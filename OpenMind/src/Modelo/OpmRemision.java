@@ -7,7 +7,9 @@ package Modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +17,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -54,6 +58,8 @@ public class OpmRemision implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_PUNTO")
     private int nmPunto;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmRemision")
+    private List<OpmDetalleRemision> opmDetalleRemisionList;
 
     public OpmRemision() {
     }
@@ -108,6 +114,15 @@ public class OpmRemision implements Serializable {
 
     public void setNmPunto(int nmPunto) {
         this.nmPunto = nmPunto;
+    }
+
+    @XmlTransient
+    public List<OpmDetalleRemision> getOpmDetalleRemisionList() {
+        return opmDetalleRemisionList;
+    }
+
+    public void setOpmDetalleRemisionList(List<OpmDetalleRemision> opmDetalleRemisionList) {
+        this.opmDetalleRemisionList = opmDetalleRemisionList;
     }
 
     @Override

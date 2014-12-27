@@ -28,8 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "OpmRecursosRol.findAll", query = "SELECT o FROM OpmRecursosRol o"),
-    @NamedQuery(name = "OpmRecursosRol.findByNmCodigo", query = "SELECT o FROM OpmRecursosRol o WHERE o.nmCodigo = :nmCodigo"),
-    @NamedQuery(name = "OpmRecursosRol.findByNmRol", query = "SELECT o FROM OpmRecursosRol o WHERE o.nmRol = :nmRol")})
+    @NamedQuery(name = "OpmRecursosRol.findByNmCodigo", query = "SELECT o FROM OpmRecursosRol o WHERE o.nmCodigo = :nmCodigo")})
 public class OpmRecursosRol implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

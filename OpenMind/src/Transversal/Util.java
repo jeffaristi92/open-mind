@@ -6,6 +6,7 @@
 package Transversal;
 
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -23,10 +24,24 @@ public class Util {
         return true;
     }
 
-    static boolean validarNumero(String valor) {
+    public static String getFormatoMoneda(double valor) {
+        DecimalFormat formato = new DecimalFormat("$###,###.###");
+        return formato.format(valor);
+    }
+
+    public static String getValorMoneda(String moneda) {
+        return moneda.replace("$", "").replace(".", "");
+    }
+
+    public static boolean validarNumero(String valor, boolean entero) {
         try {
-            Double.parseDouble(valor);
-            return true;
+            if (entero) {
+                Integer.parseInt(valor);
+                return true;
+            } else {
+                Double.parseDouble(valor);
+                return true;
+            }
         } catch (Exception exp) {
             return false;
         }
@@ -37,7 +52,7 @@ public class Util {
         if (Character.isDigit(key) || (key == '.')) {
             if (decimal) {
                 if (key == '.') {
-                    if(cadena.contains(".")){
+                    if (cadena.contains(".")) {
                         return false;
                     }
                 }
@@ -46,7 +61,7 @@ public class Util {
                     return false;
                 }
             }
-        }else{
+        } else {
             return false;
         }
         return true;

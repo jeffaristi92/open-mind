@@ -58,6 +58,8 @@ public class OpmPuntoVenta implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_FABRICA")
     private int nmFabrica;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPuntoVenta")
+    private List<OpmInventarioPunto> opmInventarioPuntoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmOrigen")
     private List<OpmTraslado> opmTrasladoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmPuntoVenta")
@@ -129,6 +131,15 @@ public class OpmPuntoVenta implements Serializable {
 
     public void setNmFabrica(int nmFabrica) {
         this.nmFabrica = nmFabrica;
+    }
+
+    @XmlTransient
+    public List<OpmInventarioPunto> getOpmInventarioPuntoList() {
+        return opmInventarioPuntoList;
+    }
+
+    public void setOpmInventarioPuntoList(List<OpmInventarioPunto> opmInventarioPuntoList) {
+        this.opmInventarioPuntoList = opmInventarioPuntoList;
     }
 
     @XmlTransient

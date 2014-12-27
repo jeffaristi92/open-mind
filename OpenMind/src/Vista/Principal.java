@@ -6,6 +6,7 @@
 package Vista;
 
 import java.awt.Component;
+import java.awt.Toolkit;
 
 /**
  *
@@ -19,7 +20,8 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         setLocationRelativeTo(null);
-        setResizable(false);
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -42,11 +44,11 @@ public class Principal extends javax.swing.JFrame {
         jpnContenido.setLayout(jpnContenidoLayout);
         jpnContenidoLayout.setHorizontalGroup(
             jpnContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 780, Short.MAX_VALUE)
+            .addGap(0, 880, Short.MAX_VALUE)
         );
         jpnContenidoLayout.setVerticalGroup(
             jpnContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 521, Short.MAX_VALUE)
+            .addGap(0, 478, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -71,12 +73,13 @@ public class Principal extends javax.swing.JFrame {
 
     public void limpiar() {
         jpnContenido.removeAll();
+        repaint();
     }
 
     public void setComponente(Component obj) {
         limpiar();
         jpnContenido.add(obj);
-        obj.setSize(794, 500);
+        obj.setSize(jpnContenido.getSize());
         obj.validate();
         obj.setVisible(true);
     }

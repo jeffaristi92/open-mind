@@ -12,9 +12,10 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Modelo.OpmTraslado;
+import Modelo.OpmInventarioPunto;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.OpmTraslado;
 import Modelo.OpmGastos;
 import Modelo.OpmPuntoVenta;
 import Modelo.OpmVenta;
@@ -38,6 +39,9 @@ public class OpmPuntoVentaJpaController implements Serializable {
     }
 
     public void create(OpmPuntoVenta opmPuntoVenta) {
+        if (opmPuntoVenta.getOpmInventarioPuntoList() == null) {
+            opmPuntoVenta.setOpmInventarioPuntoList(new ArrayList<OpmInventarioPunto>());
+        }
         if (opmPuntoVenta.getOpmTrasladoList() == null) {
             opmPuntoVenta.setOpmTrasladoList(new ArrayList<OpmTraslado>());
         }
@@ -54,6 +58,12 @@ public class OpmPuntoVentaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<OpmInventarioPunto> attachedOpmInventarioPuntoList = new ArrayList<OpmInventarioPunto>();
+            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPuntoToAttach : opmPuntoVenta.getOpmInventarioPuntoList()) {
+                opmInventarioPuntoListOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListOpmInventarioPuntoToAttach.getNmCodigo());
+                attachedOpmInventarioPuntoList.add(opmInventarioPuntoListOpmInventarioPuntoToAttach);
+            }
+            opmPuntoVenta.setOpmInventarioPuntoList(attachedOpmInventarioPuntoList);
             List<OpmTraslado> attachedOpmTrasladoList = new ArrayList<OpmTraslado>();
             for (OpmTraslado opmTrasladoListOpmTrasladoToAttach : opmPuntoVenta.getOpmTrasladoList()) {
                 opmTrasladoListOpmTrasladoToAttach = em.getReference(opmTrasladoListOpmTrasladoToAttach.getClass(), opmTrasladoListOpmTrasladoToAttach.getNmCodigo());
@@ -79,6 +89,15 @@ public class OpmPuntoVentaJpaController implements Serializable {
             }
             opmPuntoVenta.setOpmTransaccionList(attachedOpmTransaccionList);
             em.persist(opmPuntoVenta);
+            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPunto : opmPuntoVenta.getOpmInventarioPuntoList()) {
+                OpmPuntoVenta oldNmPuntoVentaOfOpmInventarioPuntoListOpmInventarioPunto = opmInventarioPuntoListOpmInventarioPunto.getNmPuntoVenta();
+                opmInventarioPuntoListOpmInventarioPunto.setNmPuntoVenta(opmPuntoVenta);
+                opmInventarioPuntoListOpmInventarioPunto = em.merge(opmInventarioPuntoListOpmInventarioPunto);
+                if (oldNmPuntoVentaOfOpmInventarioPuntoListOpmInventarioPunto != null) {
+                    oldNmPuntoVentaOfOpmInventarioPuntoListOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListOpmInventarioPunto);
+                    oldNmPuntoVentaOfOpmInventarioPuntoListOpmInventarioPunto = em.merge(oldNmPuntoVentaOfOpmInventarioPuntoListOpmInventarioPunto);
+                }
+            }
             for (OpmTraslado opmTrasladoListOpmTraslado : opmPuntoVenta.getOpmTrasladoList()) {
                 OpmPuntoVenta oldNmOrigenOfOpmTrasladoListOpmTraslado = opmTrasladoListOpmTraslado.getNmOrigen();
                 opmTrasladoListOpmTraslado.setNmOrigen(opmPuntoVenta);
@@ -129,6 +148,8 @@ public class OpmPuntoVentaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OpmPuntoVenta persistentOpmPuntoVenta = em.find(OpmPuntoVenta.class, opmPuntoVenta.getNmCodigo());
+            List<OpmInventarioPunto> opmInventarioPuntoListOld = persistentOpmPuntoVenta.getOpmInventarioPuntoList();
+            List<OpmInventarioPunto> opmInventarioPuntoListNew = opmPuntoVenta.getOpmInventarioPuntoList();
             List<OpmTraslado> opmTrasladoListOld = persistentOpmPuntoVenta.getOpmTrasladoList();
             List<OpmTraslado> opmTrasladoListNew = opmPuntoVenta.getOpmTrasladoList();
             List<OpmGastos> opmGastosListOld = persistentOpmPuntoVenta.getOpmGastosList();
@@ -138,6 +159,14 @@ public class OpmPuntoVentaJpaController implements Serializable {
             List<OpmTransaccion> opmTransaccionListOld = persistentOpmPuntoVenta.getOpmTransaccionList();
             List<OpmTransaccion> opmTransaccionListNew = opmPuntoVenta.getOpmTransaccionList();
             List<String> illegalOrphanMessages = null;
+            for (OpmInventarioPunto opmInventarioPuntoListOldOpmInventarioPunto : opmInventarioPuntoListOld) {
+                if (!opmInventarioPuntoListNew.contains(opmInventarioPuntoListOldOpmInventarioPunto)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmInventarioPunto " + opmInventarioPuntoListOldOpmInventarioPunto + " since its nmPuntoVenta field is not nullable.");
+                }
+            }
             for (OpmTraslado opmTrasladoListOldOpmTraslado : opmTrasladoListOld) {
                 if (!opmTrasladoListNew.contains(opmTrasladoListOldOpmTraslado)) {
                     if (illegalOrphanMessages == null) {
@@ -173,6 +202,13 @@ public class OpmPuntoVentaJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            List<OpmInventarioPunto> attachedOpmInventarioPuntoListNew = new ArrayList<OpmInventarioPunto>();
+            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPuntoToAttach : opmInventarioPuntoListNew) {
+                opmInventarioPuntoListNewOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getNmCodigo());
+                attachedOpmInventarioPuntoListNew.add(opmInventarioPuntoListNewOpmInventarioPuntoToAttach);
+            }
+            opmInventarioPuntoListNew = attachedOpmInventarioPuntoListNew;
+            opmPuntoVenta.setOpmInventarioPuntoList(opmInventarioPuntoListNew);
             List<OpmTraslado> attachedOpmTrasladoListNew = new ArrayList<OpmTraslado>();
             for (OpmTraslado opmTrasladoListNewOpmTrasladoToAttach : opmTrasladoListNew) {
                 opmTrasladoListNewOpmTrasladoToAttach = em.getReference(opmTrasladoListNewOpmTrasladoToAttach.getClass(), opmTrasladoListNewOpmTrasladoToAttach.getNmCodigo());
@@ -202,6 +238,17 @@ public class OpmPuntoVentaJpaController implements Serializable {
             opmTransaccionListNew = attachedOpmTransaccionListNew;
             opmPuntoVenta.setOpmTransaccionList(opmTransaccionListNew);
             opmPuntoVenta = em.merge(opmPuntoVenta);
+            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPunto : opmInventarioPuntoListNew) {
+                if (!opmInventarioPuntoListOld.contains(opmInventarioPuntoListNewOpmInventarioPunto)) {
+                    OpmPuntoVenta oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto = opmInventarioPuntoListNewOpmInventarioPunto.getNmPuntoVenta();
+                    opmInventarioPuntoListNewOpmInventarioPunto.setNmPuntoVenta(opmPuntoVenta);
+                    opmInventarioPuntoListNewOpmInventarioPunto = em.merge(opmInventarioPuntoListNewOpmInventarioPunto);
+                    if (oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto != null && !oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto.equals(opmPuntoVenta)) {
+                        oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListNewOpmInventarioPunto);
+                        oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto = em.merge(oldNmPuntoVentaOfOpmInventarioPuntoListNewOpmInventarioPunto);
+                    }
+                }
+            }
             for (OpmTraslado opmTrasladoListNewOpmTraslado : opmTrasladoListNew) {
                 if (!opmTrasladoListOld.contains(opmTrasladoListNewOpmTraslado)) {
                     OpmPuntoVenta oldNmOrigenOfOpmTrasladoListNewOpmTraslado = opmTrasladoListNewOpmTraslado.getNmOrigen();
@@ -276,6 +323,13 @@ public class OpmPuntoVentaJpaController implements Serializable {
                 throw new NonexistentEntityException("The opmPuntoVenta with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
+            List<OpmInventarioPunto> opmInventarioPuntoListOrphanCheck = opmPuntoVenta.getOpmInventarioPuntoList();
+            for (OpmInventarioPunto opmInventarioPuntoListOrphanCheckOpmInventarioPunto : opmInventarioPuntoListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmPuntoVenta (" + opmPuntoVenta + ") cannot be destroyed since the OpmInventarioPunto " + opmInventarioPuntoListOrphanCheckOpmInventarioPunto + " in its opmInventarioPuntoList field has a non-nullable nmPuntoVenta field.");
+            }
             List<OpmTraslado> opmTrasladoListOrphanCheck = opmPuntoVenta.getOpmTrasladoList();
             for (OpmTraslado opmTrasladoListOrphanCheckOpmTraslado : opmTrasladoListOrphanCheck) {
                 if (illegalOrphanMessages == null) {

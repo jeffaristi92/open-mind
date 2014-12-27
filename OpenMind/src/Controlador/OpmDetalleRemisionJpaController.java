@@ -8,13 +8,15 @@ package Controlador;
 import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmDetalleRemision;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Modelo.OpmRemision;
+import Modelo.OpmReferenciaProducto;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -36,7 +38,25 @@ public class OpmDetalleRemisionJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmRemision nmRemision = opmDetalleRemision.getNmRemision();
+            if (nmRemision != null) {
+                nmRemision = em.getReference(nmRemision.getClass(), nmRemision.getNmCodigo());
+                opmDetalleRemision.setNmRemision(nmRemision);
+            }
+            OpmReferenciaProducto nvReferencia = opmDetalleRemision.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmDetalleRemision.setNvReferencia(nvReferencia);
+            }
             em.persist(opmDetalleRemision);
+            if (nmRemision != null) {
+                nmRemision.getOpmDetalleRemisionList().add(opmDetalleRemision);
+                nmRemision = em.merge(nmRemision);
+            }
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleRemisionList().add(opmDetalleRemision);
+                nvReferencia = em.merge(nvReferencia);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -50,7 +70,36 @@ public class OpmDetalleRemisionJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmDetalleRemision persistentOpmDetalleRemision = em.find(OpmDetalleRemision.class, opmDetalleRemision.getNmCodigo());
+            OpmRemision nmRemisionOld = persistentOpmDetalleRemision.getNmRemision();
+            OpmRemision nmRemisionNew = opmDetalleRemision.getNmRemision();
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmDetalleRemision.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmDetalleRemision.getNvReferencia();
+            if (nmRemisionNew != null) {
+                nmRemisionNew = em.getReference(nmRemisionNew.getClass(), nmRemisionNew.getNmCodigo());
+                opmDetalleRemision.setNmRemision(nmRemisionNew);
+            }
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmDetalleRemision.setNvReferencia(nvReferenciaNew);
+            }
             opmDetalleRemision = em.merge(opmDetalleRemision);
+            if (nmRemisionOld != null && !nmRemisionOld.equals(nmRemisionNew)) {
+                nmRemisionOld.getOpmDetalleRemisionList().remove(opmDetalleRemision);
+                nmRemisionOld = em.merge(nmRemisionOld);
+            }
+            if (nmRemisionNew != null && !nmRemisionNew.equals(nmRemisionOld)) {
+                nmRemisionNew.getOpmDetalleRemisionList().add(opmDetalleRemision);
+                nmRemisionNew = em.merge(nmRemisionNew);
+            }
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmDetalleRemisionList().remove(opmDetalleRemision);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
+            }
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmDetalleRemisionList().add(opmDetalleRemision);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -79,6 +128,16 @@ public class OpmDetalleRemisionJpaController implements Serializable {
                 opmDetalleRemision.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmDetalleRemision with id " + id + " no longer exists.", enfe);
+            }
+            OpmRemision nmRemision = opmDetalleRemision.getNmRemision();
+            if (nmRemision != null) {
+                nmRemision.getOpmDetalleRemisionList().remove(opmDetalleRemision);
+                nmRemision = em.merge(nmRemision);
+            }
+            OpmReferenciaProducto nvReferencia = opmDetalleRemision.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmDetalleRemisionList().remove(opmDetalleRemision);
+                nvReferencia = em.merge(nvReferencia);
             }
             em.remove(opmDetalleRemision);
             em.getTransaction().commit();

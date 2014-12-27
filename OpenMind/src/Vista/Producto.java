@@ -7,9 +7,12 @@ package Vista;
 
 import Controlador.ConnectionFactory;
 import Controlador.OpmProductoJpaController;
+import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmProducto;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
@@ -35,9 +38,9 @@ public class Producto extends javax.swing.JPanel {
         initComponents();
         formularioProducto = new PanelFormularioProducto();
         panelFormulario.add(formularioProducto);
-        formularioProducto.setSize(760, 120);
-        formularioProducto.validate();
+        formularioProducto.setSize(1100, 180);
         formularioProducto.setVisible(true);
+        formularioProducto.validate();
         _jpaControladorProducto = new OpmProductoJpaController((new ConnectionFactory()).getFactory());
         mtdActualizarTabla();
     }
@@ -58,6 +61,8 @@ public class Producto extends javax.swing.JPanel {
                 producto.getNvDescripcion(),
                 producto.getNmCostoPp(),
                 producto.getNmValorPv(),
+                producto.getNmValorPm(),
+                producto.getNmValorVs(),
                 (producto.getBtActivo()) ? "Si" : "No"
             };
             modelo.addRow(fila);
@@ -81,8 +86,15 @@ public class Producto extends javax.swing.JPanel {
         tblProductos = new javax.swing.JTable();
         panelFormulario = new javax.swing.JPanel();
 
+        jbtBuscar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jbtBuscar.setText("Buscar");
+        jbtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtBuscarActionPerformed(evt);
+            }
+        });
 
+        jbtActualizar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jbtActualizar.setText("Actualizar");
         jbtActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,6 +102,7 @@ public class Producto extends javax.swing.JPanel {
             }
         });
 
+        jbtRegistrar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jbtRegistrar.setText("Registrar");
         jbtRegistrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -103,11 +116,11 @@ public class Producto extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Codigo", "Nombre", "Descripcion", "Costo Produccion", "Precio Venta", "Activo"
+                "Codigo", "Nombre", "Descripcion", "Costo Produccion", "Precio Venta", "Precio Por Mayor", "Precio Sugerido", "Activo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -127,17 +140,15 @@ public class Producto extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblProductos);
 
-        panelFormulario.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
         javax.swing.GroupLayout panelFormularioLayout = new javax.swing.GroupLayout(panelFormulario);
         panelFormulario.setLayout(panelFormularioLayout);
         panelFormularioLayout.setHorizontalGroup(
             panelFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 766, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         panelFormularioLayout.setVerticalGroup(
             panelFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 126, Short.MAX_VALUE)
+            .addGap(0, 171, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -147,17 +158,14 @@ public class Producto extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jbtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jbtActualizar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jbtRegistrar))
-                            .addComponent(panelFormulario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jbtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbtActualizar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtRegistrar))
+                    .addComponent(panelFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -165,12 +173,12 @@ public class Producto extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panelFormulario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbtBuscar)
-                    .addComponent(jbtActualizar)
-                    .addComponent(jbtRegistrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jbtBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(jbtActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -182,13 +190,17 @@ public class Producto extends javax.swing.JPanel {
 
         if (fuente == FuenteDatos.Formulario) {
             producto = formularioProducto.getDatos();
+            OpmProducto aux = _jpaControladorProducto.findOpmProducto(producto.getNmCodigo());
+            producto.setOpmReferenciaProductoList(aux.getOpmReferenciaProductoList());
         } else {
             producto.setNmCodigo(Integer.parseInt(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0) + ""));
             producto.setNvNombre(tblProductos.getValueAt(tblProductos.getSelectedRow(), 1) + "");
             producto.setNvDescripcion(tblProductos.getValueAt(tblProductos.getSelectedRow(), 2) + "");
             producto.setNmCostoPp(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 3) + ""));
             producto.setNmValorPv(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 4) + ""));
-            producto.setBtActivo(tblProductos.getValueAt(tblProductos.getSelectedRow(), 5).equals("Si"));
+            producto.setNmValorPm(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 5) + ""));
+            producto.setNmValorVs(Double.parseDouble(tblProductos.getValueAt(tblProductos.getSelectedRow(), 6) + ""));
+            producto.setBtActivo(tblProductos.getValueAt(tblProductos.getSelectedRow(), 7).equals("Si"));
         }
         return producto;
     }
@@ -197,9 +209,11 @@ public class Producto extends javax.swing.JPanel {
         if (formularioProducto.validarCamposObligatorios()) {
             try {
                 OpmProducto producto = getDatos(FuenteDatos.Formulario);
+                producto.setNmCodigo(null);
                 _jpaControladorProducto.create(producto);
                 mtdActualizarTabla();
             } catch (Exception exp) {
+                System.out.println(exp.getMessage());
                 JOptionPane.showMessageDialog(this, "No se pudo registrar el producto.\n Verifique que no existe otro producto con el mismo nombre", "Error", ERROR_MESSAGE);
             }
         } else {
@@ -211,11 +225,10 @@ public class Producto extends javax.swing.JPanel {
     private void jbtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtActualizarActionPerformed
         try {
             OpmProducto producto = getDatos(FuenteDatos.Formulario);
-            producto.setNmCodigo(formularioProducto.getCodigo());
             _jpaControladorProducto.edit(producto);
             mtdActualizarTabla();
         } catch (Exception exc) {
-            System.out.println(exc.getMessage());
+            Logger.getLogger(Producto.class.getName()).log(Level.SEVERE, null, exc);
             JOptionPane.showMessageDialog(this, "No se pudo actualizar el producto.\n Verifique que los campos son correctos", "Error", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jbtActualizarActionPerformed
@@ -232,6 +245,10 @@ public class Producto extends javax.swing.JPanel {
         // TODO add your handling code here:
         formularioProducto.setDatos(getDatos(FuenteDatos.Tabla));
     }//GEN-LAST:event_tblProductosMouseClicked
+
+    private void jbtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbtBuscarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

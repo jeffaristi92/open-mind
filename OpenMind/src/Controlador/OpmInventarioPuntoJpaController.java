@@ -8,13 +8,15 @@ package Controlador;
 import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmInventarioPunto;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Modelo.OpmReferenciaProducto;
+import Modelo.OpmPuntoVenta;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -36,7 +38,25 @@ public class OpmInventarioPuntoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmReferenciaProducto nvReferencia = opmInventarioPunto.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmInventarioPunto.setNvReferencia(nvReferencia);
+            }
+            OpmPuntoVenta nmPuntoVenta = opmInventarioPunto.getNmPuntoVenta();
+            if (nmPuntoVenta != null) {
+                nmPuntoVenta = em.getReference(nmPuntoVenta.getClass(), nmPuntoVenta.getNmCodigo());
+                opmInventarioPunto.setNmPuntoVenta(nmPuntoVenta);
+            }
             em.persist(opmInventarioPunto);
+            if (nvReferencia != null) {
+                nvReferencia.getOpmInventarioPuntoList().add(opmInventarioPunto);
+                nvReferencia = em.merge(nvReferencia);
+            }
+            if (nmPuntoVenta != null) {
+                nmPuntoVenta.getOpmInventarioPuntoList().add(opmInventarioPunto);
+                nmPuntoVenta = em.merge(nmPuntoVenta);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -50,7 +70,36 @@ public class OpmInventarioPuntoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmInventarioPunto persistentOpmInventarioPunto = em.find(OpmInventarioPunto.class, opmInventarioPunto.getNmCodigo());
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmInventarioPunto.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmInventarioPunto.getNvReferencia();
+            OpmPuntoVenta nmPuntoVentaOld = persistentOpmInventarioPunto.getNmPuntoVenta();
+            OpmPuntoVenta nmPuntoVentaNew = opmInventarioPunto.getNmPuntoVenta();
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmInventarioPunto.setNvReferencia(nvReferenciaNew);
+            }
+            if (nmPuntoVentaNew != null) {
+                nmPuntoVentaNew = em.getReference(nmPuntoVentaNew.getClass(), nmPuntoVentaNew.getNmCodigo());
+                opmInventarioPunto.setNmPuntoVenta(nmPuntoVentaNew);
+            }
             opmInventarioPunto = em.merge(opmInventarioPunto);
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmInventarioPuntoList().remove(opmInventarioPunto);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
+            }
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmInventarioPuntoList().add(opmInventarioPunto);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
+            }
+            if (nmPuntoVentaOld != null && !nmPuntoVentaOld.equals(nmPuntoVentaNew)) {
+                nmPuntoVentaOld.getOpmInventarioPuntoList().remove(opmInventarioPunto);
+                nmPuntoVentaOld = em.merge(nmPuntoVentaOld);
+            }
+            if (nmPuntoVentaNew != null && !nmPuntoVentaNew.equals(nmPuntoVentaOld)) {
+                nmPuntoVentaNew.getOpmInventarioPuntoList().add(opmInventarioPunto);
+                nmPuntoVentaNew = em.merge(nmPuntoVentaNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -79,6 +128,16 @@ public class OpmInventarioPuntoJpaController implements Serializable {
                 opmInventarioPunto.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmInventarioPunto with id " + id + " no longer exists.", enfe);
+            }
+            OpmReferenciaProducto nvReferencia = opmInventarioPunto.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmInventarioPuntoList().remove(opmInventarioPunto);
+                nvReferencia = em.merge(nvReferencia);
+            }
+            OpmPuntoVenta nmPuntoVenta = opmInventarioPunto.getNmPuntoVenta();
+            if (nmPuntoVenta != null) {
+                nmPuntoVenta.getOpmInventarioPuntoList().remove(opmInventarioPunto);
+                nmPuntoVenta = em.merge(nmPuntoVenta);
             }
             em.remove(opmInventarioPunto);
             em.getTransaction().commit();

@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,7 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "OpmInventario.findAll", query = "SELECT o FROM OpmInventario o"),
     @NamedQuery(name = "OpmInventario.findByNmCodigo", query = "SELECT o FROM OpmInventario o WHERE o.nmCodigo = :nmCodigo"),
-    @NamedQuery(name = "OpmInventario.findByNvReferencia", query = "SELECT o FROM OpmInventario o WHERE o.nvReferencia = :nvReferencia"),
     @NamedQuery(name = "OpmInventario.findByNmCantidad", query = "SELECT o FROM OpmInventario o WHERE o.nmCantidad = :nmCantidad")})
 public class OpmInventario implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -36,22 +37,17 @@ public class OpmInventario implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_CODIGO")
     private Integer nmCodigo;
-    @Basic(optional = false)
-    @Column(name = "NV_REFERENCIA")
-    private String nvReferencia;
     @Column(name = "NM_CANTIDAD")
     private Integer nmCantidad;
+    @JoinColumn(name = "NV_REFERENCIA", referencedColumnName = "NV_CODIGO")
+    @ManyToOne(optional = false)
+    private OpmReferenciaProducto nvReferencia;
 
     public OpmInventario() {
     }
 
     public OpmInventario(Integer nmCodigo) {
         this.nmCodigo = nmCodigo;
-    }
-
-    public OpmInventario(Integer nmCodigo, String nvReferencia) {
-        this.nmCodigo = nmCodigo;
-        this.nvReferencia = nvReferencia;
     }
 
     public Integer getNmCodigo() {
@@ -62,20 +58,20 @@ public class OpmInventario implements Serializable {
         this.nmCodigo = nmCodigo;
     }
 
-    public String getNvReferencia() {
-        return nvReferencia;
-    }
-
-    public void setNvReferencia(String nvReferencia) {
-        this.nvReferencia = nvReferencia;
-    }
-
     public Integer getNmCantidad() {
         return nmCantidad;
     }
 
     public void setNmCantidad(Integer nmCantidad) {
         this.nmCantidad = nmCantidad;
+    }
+
+    public OpmReferenciaProducto getNvReferencia() {
+        return nvReferencia;
+    }
+
+    public void setNvReferencia(OpmReferenciaProducto nvReferencia) {
+        this.nvReferencia = nvReferencia;
     }
 
     @Override

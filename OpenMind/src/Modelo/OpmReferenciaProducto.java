@@ -47,9 +47,15 @@ public class OpmReferenciaProducto implements Serializable {
     @Column(name = "NV_GENERO")
     private Character nvGenero;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
+    private List<OpmInventarioPunto> opmInventarioPuntoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
     private List<OpmDetalleLote> opmDetalleLoteList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
     private List<OpmDetalleVenta> opmDetalleVentaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
+    private List<OpmInventario> opmInventarioList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
+    private List<OpmDetalleRemision> opmDetalleRemisionList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nvReferencia")
     private List<OpmDetalleTraslado> opmDetalleTrasladoList;
     @JoinColumn(name = "NM_PRODUCTO", referencedColumnName = "NM_CODIGO")
@@ -96,6 +102,15 @@ public class OpmReferenciaProducto implements Serializable {
     }
 
     @XmlTransient
+    public List<OpmInventarioPunto> getOpmInventarioPuntoList() {
+        return opmInventarioPuntoList;
+    }
+
+    public void setOpmInventarioPuntoList(List<OpmInventarioPunto> opmInventarioPuntoList) {
+        this.opmInventarioPuntoList = opmInventarioPuntoList;
+    }
+
+    @XmlTransient
     public List<OpmDetalleLote> getOpmDetalleLoteList() {
         return opmDetalleLoteList;
     }
@@ -111,6 +126,24 @@ public class OpmReferenciaProducto implements Serializable {
 
     public void setOpmDetalleVentaList(List<OpmDetalleVenta> opmDetalleVentaList) {
         this.opmDetalleVentaList = opmDetalleVentaList;
+    }
+
+    @XmlTransient
+    public List<OpmInventario> getOpmInventarioList() {
+        return opmInventarioList;
+    }
+
+    public void setOpmInventarioList(List<OpmInventario> opmInventarioList) {
+        this.opmInventarioList = opmInventarioList;
+    }
+
+    @XmlTransient
+    public List<OpmDetalleRemision> getOpmDetalleRemisionList() {
+        return opmDetalleRemisionList;
+    }
+
+    public void setOpmDetalleRemisionList(List<OpmDetalleRemision> opmDetalleRemisionList) {
+        this.opmDetalleRemisionList = opmDetalleRemisionList;
     }
 
     @XmlTransient

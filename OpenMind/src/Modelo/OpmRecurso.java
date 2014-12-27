@@ -31,10 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OpmRecurso.findByNmCodigo", query = "SELECT o FROM OpmRecurso o WHERE o.nmCodigo = :nmCodigo"),
     @NamedQuery(name = "OpmRecurso.findByNvNombre", query = "SELECT o FROM OpmRecurso o WHERE o.nvNombre = :nvNombre"),
     @NamedQuery(name = "OpmRecurso.findByNvDescripcion", query = "SELECT o FROM OpmRecurso o WHERE o.nvDescripcion = :nvDescripcion"),
-    @NamedQuery(name = "OpmRecurso.findByNmOrden", query = "SELECT o FROM OpmRecurso o WHERE o.nmOrden = :nmOrden")})
+    @NamedQuery(name = "OpmRecurso.findByNmOrden", query = "SELECT o FROM OpmRecurso o WHERE o.nmOrden = :nmOrden"),
+    @NamedQuery(name = "OpmRecurso.findByNmPadre", query = "SELECT o FROM OpmRecurso o WHERE o.nmPadre = :nmPadre")})
 public class OpmRecurso implements Serializable {
-    @Column(name = "NM_PADRE")
-    private Integer nmPadre;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -48,6 +47,8 @@ public class OpmRecurso implements Serializable {
     @Basic(optional = false)
     @Column(name = "NM_ORDEN")
     private int nmOrden;
+    @Column(name = "NM_PADRE")
+    private Integer nmPadre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmRecurso")
     private List<OpmRecursosRol> opmRecursosRolList;
 
@@ -96,6 +97,14 @@ public class OpmRecurso implements Serializable {
         this.nmOrden = nmOrden;
     }
 
+    public Integer getNmPadre() {
+        return nmPadre;
+    }
+
+    public void setNmPadre(Integer nmPadre) {
+        this.nmPadre = nmPadre;
+    }
+
     @XmlTransient
     public List<OpmRecursosRol> getOpmRecursosRolList() {
         return opmRecursosRolList;
@@ -128,14 +137,6 @@ public class OpmRecurso implements Serializable {
     @Override
     public String toString() {
         return "Modelo.OpmRecurso[ nmCodigo=" + nmCodigo + " ]";
-    }
-
-    public Integer getNmPadre() {
-        return nmPadre;
-    }
-
-    public void setNmPadre(Integer nmPadre) {
-        this.nmPadre = nmPadre;
     }
     
 }

@@ -14,10 +14,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Modelo.OpmProducto;
-import Modelo.OpmDetalleLote;
+import Modelo.OpmInventarioPunto;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.OpmDetalleLote;
 import Modelo.OpmDetalleVenta;
+import Modelo.OpmInventario;
+import Modelo.OpmDetalleRemision;
 import Modelo.OpmDetalleTraslado;
 import Modelo.OpmReferenciaProducto;
 import javax.persistence.EntityManager;
@@ -39,11 +42,20 @@ public class OpmReferenciaProductoJpaController implements Serializable {
     }
 
     public void create(OpmReferenciaProducto opmReferenciaProducto) throws PreexistingEntityException, Exception {
+        if (opmReferenciaProducto.getOpmInventarioPuntoList() == null) {
+            opmReferenciaProducto.setOpmInventarioPuntoList(new ArrayList<OpmInventarioPunto>());
+        }
         if (opmReferenciaProducto.getOpmDetalleLoteList() == null) {
             opmReferenciaProducto.setOpmDetalleLoteList(new ArrayList<OpmDetalleLote>());
         }
         if (opmReferenciaProducto.getOpmDetalleVentaList() == null) {
             opmReferenciaProducto.setOpmDetalleVentaList(new ArrayList<OpmDetalleVenta>());
+        }
+        if (opmReferenciaProducto.getOpmInventarioList() == null) {
+            opmReferenciaProducto.setOpmInventarioList(new ArrayList<OpmInventario>());
+        }
+        if (opmReferenciaProducto.getOpmDetalleRemisionList() == null) {
+            opmReferenciaProducto.setOpmDetalleRemisionList(new ArrayList<OpmDetalleRemision>());
         }
         if (opmReferenciaProducto.getOpmDetalleTrasladoList() == null) {
             opmReferenciaProducto.setOpmDetalleTrasladoList(new ArrayList<OpmDetalleTraslado>());
@@ -57,6 +69,12 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                 nmProducto = em.getReference(nmProducto.getClass(), nmProducto.getNmCodigo());
                 opmReferenciaProducto.setNmProducto(nmProducto);
             }
+            List<OpmInventarioPunto> attachedOpmInventarioPuntoList = new ArrayList<OpmInventarioPunto>();
+            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPuntoToAttach : opmReferenciaProducto.getOpmInventarioPuntoList()) {
+                opmInventarioPuntoListOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListOpmInventarioPuntoToAttach.getNmCodigo());
+                attachedOpmInventarioPuntoList.add(opmInventarioPuntoListOpmInventarioPuntoToAttach);
+            }
+            opmReferenciaProducto.setOpmInventarioPuntoList(attachedOpmInventarioPuntoList);
             List<OpmDetalleLote> attachedOpmDetalleLoteList = new ArrayList<OpmDetalleLote>();
             for (OpmDetalleLote opmDetalleLoteListOpmDetalleLoteToAttach : opmReferenciaProducto.getOpmDetalleLoteList()) {
                 opmDetalleLoteListOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListOpmDetalleLoteToAttach.getNmCodigo());
@@ -69,6 +87,18 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                 attachedOpmDetalleVentaList.add(opmDetalleVentaListOpmDetalleVentaToAttach);
             }
             opmReferenciaProducto.setOpmDetalleVentaList(attachedOpmDetalleVentaList);
+            List<OpmInventario> attachedOpmInventarioList = new ArrayList<OpmInventario>();
+            for (OpmInventario opmInventarioListOpmInventarioToAttach : opmReferenciaProducto.getOpmInventarioList()) {
+                opmInventarioListOpmInventarioToAttach = em.getReference(opmInventarioListOpmInventarioToAttach.getClass(), opmInventarioListOpmInventarioToAttach.getNmCodigo());
+                attachedOpmInventarioList.add(opmInventarioListOpmInventarioToAttach);
+            }
+            opmReferenciaProducto.setOpmInventarioList(attachedOpmInventarioList);
+            List<OpmDetalleRemision> attachedOpmDetalleRemisionList = new ArrayList<OpmDetalleRemision>();
+            for (OpmDetalleRemision opmDetalleRemisionListOpmDetalleRemisionToAttach : opmReferenciaProducto.getOpmDetalleRemisionList()) {
+                opmDetalleRemisionListOpmDetalleRemisionToAttach = em.getReference(opmDetalleRemisionListOpmDetalleRemisionToAttach.getClass(), opmDetalleRemisionListOpmDetalleRemisionToAttach.getNmCodigo());
+                attachedOpmDetalleRemisionList.add(opmDetalleRemisionListOpmDetalleRemisionToAttach);
+            }
+            opmReferenciaProducto.setOpmDetalleRemisionList(attachedOpmDetalleRemisionList);
             List<OpmDetalleTraslado> attachedOpmDetalleTrasladoList = new ArrayList<OpmDetalleTraslado>();
             for (OpmDetalleTraslado opmDetalleTrasladoListOpmDetalleTrasladoToAttach : opmReferenciaProducto.getOpmDetalleTrasladoList()) {
                 opmDetalleTrasladoListOpmDetalleTrasladoToAttach = em.getReference(opmDetalleTrasladoListOpmDetalleTrasladoToAttach.getClass(), opmDetalleTrasladoListOpmDetalleTrasladoToAttach.getNmCodigo());
@@ -79,6 +109,15 @@ public class OpmReferenciaProductoJpaController implements Serializable {
             if (nmProducto != null) {
                 nmProducto.getOpmReferenciaProductoList().add(opmReferenciaProducto);
                 nmProducto = em.merge(nmProducto);
+            }
+            for (OpmInventarioPunto opmInventarioPuntoListOpmInventarioPunto : opmReferenciaProducto.getOpmInventarioPuntoList()) {
+                OpmReferenciaProducto oldNvReferenciaOfOpmInventarioPuntoListOpmInventarioPunto = opmInventarioPuntoListOpmInventarioPunto.getNvReferencia();
+                opmInventarioPuntoListOpmInventarioPunto.setNvReferencia(opmReferenciaProducto);
+                opmInventarioPuntoListOpmInventarioPunto = em.merge(opmInventarioPuntoListOpmInventarioPunto);
+                if (oldNvReferenciaOfOpmInventarioPuntoListOpmInventarioPunto != null) {
+                    oldNvReferenciaOfOpmInventarioPuntoListOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListOpmInventarioPunto);
+                    oldNvReferenciaOfOpmInventarioPuntoListOpmInventarioPunto = em.merge(oldNvReferenciaOfOpmInventarioPuntoListOpmInventarioPunto);
+                }
             }
             for (OpmDetalleLote opmDetalleLoteListOpmDetalleLote : opmReferenciaProducto.getOpmDetalleLoteList()) {
                 OpmReferenciaProducto oldNvReferenciaOfOpmDetalleLoteListOpmDetalleLote = opmDetalleLoteListOpmDetalleLote.getNvReferencia();
@@ -96,6 +135,24 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                 if (oldNvReferenciaOfOpmDetalleVentaListOpmDetalleVenta != null) {
                     oldNvReferenciaOfOpmDetalleVentaListOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListOpmDetalleVenta);
                     oldNvReferenciaOfOpmDetalleVentaListOpmDetalleVenta = em.merge(oldNvReferenciaOfOpmDetalleVentaListOpmDetalleVenta);
+                }
+            }
+            for (OpmInventario opmInventarioListOpmInventario : opmReferenciaProducto.getOpmInventarioList()) {
+                OpmReferenciaProducto oldNvReferenciaOfOpmInventarioListOpmInventario = opmInventarioListOpmInventario.getNvReferencia();
+                opmInventarioListOpmInventario.setNvReferencia(opmReferenciaProducto);
+                opmInventarioListOpmInventario = em.merge(opmInventarioListOpmInventario);
+                if (oldNvReferenciaOfOpmInventarioListOpmInventario != null) {
+                    oldNvReferenciaOfOpmInventarioListOpmInventario.getOpmInventarioList().remove(opmInventarioListOpmInventario);
+                    oldNvReferenciaOfOpmInventarioListOpmInventario = em.merge(oldNvReferenciaOfOpmInventarioListOpmInventario);
+                }
+            }
+            for (OpmDetalleRemision opmDetalleRemisionListOpmDetalleRemision : opmReferenciaProducto.getOpmDetalleRemisionList()) {
+                OpmReferenciaProducto oldNvReferenciaOfOpmDetalleRemisionListOpmDetalleRemision = opmDetalleRemisionListOpmDetalleRemision.getNvReferencia();
+                opmDetalleRemisionListOpmDetalleRemision.setNvReferencia(opmReferenciaProducto);
+                opmDetalleRemisionListOpmDetalleRemision = em.merge(opmDetalleRemisionListOpmDetalleRemision);
+                if (oldNvReferenciaOfOpmDetalleRemisionListOpmDetalleRemision != null) {
+                    oldNvReferenciaOfOpmDetalleRemisionListOpmDetalleRemision.getOpmDetalleRemisionList().remove(opmDetalleRemisionListOpmDetalleRemision);
+                    oldNvReferenciaOfOpmDetalleRemisionListOpmDetalleRemision = em.merge(oldNvReferenciaOfOpmDetalleRemisionListOpmDetalleRemision);
                 }
             }
             for (OpmDetalleTraslado opmDetalleTrasladoListOpmDetalleTraslado : opmReferenciaProducto.getOpmDetalleTrasladoList()) {
@@ -128,13 +185,27 @@ public class OpmReferenciaProductoJpaController implements Serializable {
             OpmReferenciaProducto persistentOpmReferenciaProducto = em.find(OpmReferenciaProducto.class, opmReferenciaProducto.getNvCodigo());
             OpmProducto nmProductoOld = persistentOpmReferenciaProducto.getNmProducto();
             OpmProducto nmProductoNew = opmReferenciaProducto.getNmProducto();
+            List<OpmInventarioPunto> opmInventarioPuntoListOld = persistentOpmReferenciaProducto.getOpmInventarioPuntoList();
+            List<OpmInventarioPunto> opmInventarioPuntoListNew = opmReferenciaProducto.getOpmInventarioPuntoList();
             List<OpmDetalleLote> opmDetalleLoteListOld = persistentOpmReferenciaProducto.getOpmDetalleLoteList();
             List<OpmDetalleLote> opmDetalleLoteListNew = opmReferenciaProducto.getOpmDetalleLoteList();
             List<OpmDetalleVenta> opmDetalleVentaListOld = persistentOpmReferenciaProducto.getOpmDetalleVentaList();
             List<OpmDetalleVenta> opmDetalleVentaListNew = opmReferenciaProducto.getOpmDetalleVentaList();
+            List<OpmInventario> opmInventarioListOld = persistentOpmReferenciaProducto.getOpmInventarioList();
+            List<OpmInventario> opmInventarioListNew = opmReferenciaProducto.getOpmInventarioList();
+            List<OpmDetalleRemision> opmDetalleRemisionListOld = persistentOpmReferenciaProducto.getOpmDetalleRemisionList();
+            List<OpmDetalleRemision> opmDetalleRemisionListNew = opmReferenciaProducto.getOpmDetalleRemisionList();
             List<OpmDetalleTraslado> opmDetalleTrasladoListOld = persistentOpmReferenciaProducto.getOpmDetalleTrasladoList();
             List<OpmDetalleTraslado> opmDetalleTrasladoListNew = opmReferenciaProducto.getOpmDetalleTrasladoList();
             List<String> illegalOrphanMessages = null;
+            for (OpmInventarioPunto opmInventarioPuntoListOldOpmInventarioPunto : opmInventarioPuntoListOld) {
+                if (!opmInventarioPuntoListNew.contains(opmInventarioPuntoListOldOpmInventarioPunto)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmInventarioPunto " + opmInventarioPuntoListOldOpmInventarioPunto + " since its nvReferencia field is not nullable.");
+                }
+            }
             for (OpmDetalleLote opmDetalleLoteListOldOpmDetalleLote : opmDetalleLoteListOld) {
                 if (!opmDetalleLoteListNew.contains(opmDetalleLoteListOldOpmDetalleLote)) {
                     if (illegalOrphanMessages == null) {
@@ -149,6 +220,22 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain OpmDetalleVenta " + opmDetalleVentaListOldOpmDetalleVenta + " since its nvReferencia field is not nullable.");
+                }
+            }
+            for (OpmInventario opmInventarioListOldOpmInventario : opmInventarioListOld) {
+                if (!opmInventarioListNew.contains(opmInventarioListOldOpmInventario)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmInventario " + opmInventarioListOldOpmInventario + " since its nvReferencia field is not nullable.");
+                }
+            }
+            for (OpmDetalleRemision opmDetalleRemisionListOldOpmDetalleRemision : opmDetalleRemisionListOld) {
+                if (!opmDetalleRemisionListNew.contains(opmDetalleRemisionListOldOpmDetalleRemision)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OpmDetalleRemision " + opmDetalleRemisionListOldOpmDetalleRemision + " since its nvReferencia field is not nullable.");
                 }
             }
             for (OpmDetalleTraslado opmDetalleTrasladoListOldOpmDetalleTraslado : opmDetalleTrasladoListOld) {
@@ -166,6 +253,13 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                 nmProductoNew = em.getReference(nmProductoNew.getClass(), nmProductoNew.getNmCodigo());
                 opmReferenciaProducto.setNmProducto(nmProductoNew);
             }
+            List<OpmInventarioPunto> attachedOpmInventarioPuntoListNew = new ArrayList<OpmInventarioPunto>();
+            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPuntoToAttach : opmInventarioPuntoListNew) {
+                opmInventarioPuntoListNewOpmInventarioPuntoToAttach = em.getReference(opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getClass(), opmInventarioPuntoListNewOpmInventarioPuntoToAttach.getNmCodigo());
+                attachedOpmInventarioPuntoListNew.add(opmInventarioPuntoListNewOpmInventarioPuntoToAttach);
+            }
+            opmInventarioPuntoListNew = attachedOpmInventarioPuntoListNew;
+            opmReferenciaProducto.setOpmInventarioPuntoList(opmInventarioPuntoListNew);
             List<OpmDetalleLote> attachedOpmDetalleLoteListNew = new ArrayList<OpmDetalleLote>();
             for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLoteToAttach : opmDetalleLoteListNew) {
                 opmDetalleLoteListNewOpmDetalleLoteToAttach = em.getReference(opmDetalleLoteListNewOpmDetalleLoteToAttach.getClass(), opmDetalleLoteListNewOpmDetalleLoteToAttach.getNmCodigo());
@@ -180,6 +274,20 @@ public class OpmReferenciaProductoJpaController implements Serializable {
             }
             opmDetalleVentaListNew = attachedOpmDetalleVentaListNew;
             opmReferenciaProducto.setOpmDetalleVentaList(opmDetalleVentaListNew);
+            List<OpmInventario> attachedOpmInventarioListNew = new ArrayList<OpmInventario>();
+            for (OpmInventario opmInventarioListNewOpmInventarioToAttach : opmInventarioListNew) {
+                opmInventarioListNewOpmInventarioToAttach = em.getReference(opmInventarioListNewOpmInventarioToAttach.getClass(), opmInventarioListNewOpmInventarioToAttach.getNmCodigo());
+                attachedOpmInventarioListNew.add(opmInventarioListNewOpmInventarioToAttach);
+            }
+            opmInventarioListNew = attachedOpmInventarioListNew;
+            opmReferenciaProducto.setOpmInventarioList(opmInventarioListNew);
+            List<OpmDetalleRemision> attachedOpmDetalleRemisionListNew = new ArrayList<OpmDetalleRemision>();
+            for (OpmDetalleRemision opmDetalleRemisionListNewOpmDetalleRemisionToAttach : opmDetalleRemisionListNew) {
+                opmDetalleRemisionListNewOpmDetalleRemisionToAttach = em.getReference(opmDetalleRemisionListNewOpmDetalleRemisionToAttach.getClass(), opmDetalleRemisionListNewOpmDetalleRemisionToAttach.getNmCodigo());
+                attachedOpmDetalleRemisionListNew.add(opmDetalleRemisionListNewOpmDetalleRemisionToAttach);
+            }
+            opmDetalleRemisionListNew = attachedOpmDetalleRemisionListNew;
+            opmReferenciaProducto.setOpmDetalleRemisionList(opmDetalleRemisionListNew);
             List<OpmDetalleTraslado> attachedOpmDetalleTrasladoListNew = new ArrayList<OpmDetalleTraslado>();
             for (OpmDetalleTraslado opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach : opmDetalleTrasladoListNew) {
                 opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach = em.getReference(opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach.getClass(), opmDetalleTrasladoListNewOpmDetalleTrasladoToAttach.getNmCodigo());
@@ -195,6 +303,17 @@ public class OpmReferenciaProductoJpaController implements Serializable {
             if (nmProductoNew != null && !nmProductoNew.equals(nmProductoOld)) {
                 nmProductoNew.getOpmReferenciaProductoList().add(opmReferenciaProducto);
                 nmProductoNew = em.merge(nmProductoNew);
+            }
+            for (OpmInventarioPunto opmInventarioPuntoListNewOpmInventarioPunto : opmInventarioPuntoListNew) {
+                if (!opmInventarioPuntoListOld.contains(opmInventarioPuntoListNewOpmInventarioPunto)) {
+                    OpmReferenciaProducto oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto = opmInventarioPuntoListNewOpmInventarioPunto.getNvReferencia();
+                    opmInventarioPuntoListNewOpmInventarioPunto.setNvReferencia(opmReferenciaProducto);
+                    opmInventarioPuntoListNewOpmInventarioPunto = em.merge(opmInventarioPuntoListNewOpmInventarioPunto);
+                    if (oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto != null && !oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto.equals(opmReferenciaProducto)) {
+                        oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto.getOpmInventarioPuntoList().remove(opmInventarioPuntoListNewOpmInventarioPunto);
+                        oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto = em.merge(oldNvReferenciaOfOpmInventarioPuntoListNewOpmInventarioPunto);
+                    }
+                }
             }
             for (OpmDetalleLote opmDetalleLoteListNewOpmDetalleLote : opmDetalleLoteListNew) {
                 if (!opmDetalleLoteListOld.contains(opmDetalleLoteListNewOpmDetalleLote)) {
@@ -215,6 +334,28 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                     if (oldNvReferenciaOfOpmDetalleVentaListNewOpmDetalleVenta != null && !oldNvReferenciaOfOpmDetalleVentaListNewOpmDetalleVenta.equals(opmReferenciaProducto)) {
                         oldNvReferenciaOfOpmDetalleVentaListNewOpmDetalleVenta.getOpmDetalleVentaList().remove(opmDetalleVentaListNewOpmDetalleVenta);
                         oldNvReferenciaOfOpmDetalleVentaListNewOpmDetalleVenta = em.merge(oldNvReferenciaOfOpmDetalleVentaListNewOpmDetalleVenta);
+                    }
+                }
+            }
+            for (OpmInventario opmInventarioListNewOpmInventario : opmInventarioListNew) {
+                if (!opmInventarioListOld.contains(opmInventarioListNewOpmInventario)) {
+                    OpmReferenciaProducto oldNvReferenciaOfOpmInventarioListNewOpmInventario = opmInventarioListNewOpmInventario.getNvReferencia();
+                    opmInventarioListNewOpmInventario.setNvReferencia(opmReferenciaProducto);
+                    opmInventarioListNewOpmInventario = em.merge(opmInventarioListNewOpmInventario);
+                    if (oldNvReferenciaOfOpmInventarioListNewOpmInventario != null && !oldNvReferenciaOfOpmInventarioListNewOpmInventario.equals(opmReferenciaProducto)) {
+                        oldNvReferenciaOfOpmInventarioListNewOpmInventario.getOpmInventarioList().remove(opmInventarioListNewOpmInventario);
+                        oldNvReferenciaOfOpmInventarioListNewOpmInventario = em.merge(oldNvReferenciaOfOpmInventarioListNewOpmInventario);
+                    }
+                }
+            }
+            for (OpmDetalleRemision opmDetalleRemisionListNewOpmDetalleRemision : opmDetalleRemisionListNew) {
+                if (!opmDetalleRemisionListOld.contains(opmDetalleRemisionListNewOpmDetalleRemision)) {
+                    OpmReferenciaProducto oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision = opmDetalleRemisionListNewOpmDetalleRemision.getNvReferencia();
+                    opmDetalleRemisionListNewOpmDetalleRemision.setNvReferencia(opmReferenciaProducto);
+                    opmDetalleRemisionListNewOpmDetalleRemision = em.merge(opmDetalleRemisionListNewOpmDetalleRemision);
+                    if (oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision != null && !oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision.equals(opmReferenciaProducto)) {
+                        oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision.getOpmDetalleRemisionList().remove(opmDetalleRemisionListNewOpmDetalleRemision);
+                        oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision = em.merge(oldNvReferenciaOfOpmDetalleRemisionListNewOpmDetalleRemision);
                     }
                 }
             }
@@ -259,6 +400,13 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                 throw new NonexistentEntityException("The opmReferenciaProducto with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
+            List<OpmInventarioPunto> opmInventarioPuntoListOrphanCheck = opmReferenciaProducto.getOpmInventarioPuntoList();
+            for (OpmInventarioPunto opmInventarioPuntoListOrphanCheckOpmInventarioPunto : opmInventarioPuntoListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmReferenciaProducto (" + opmReferenciaProducto + ") cannot be destroyed since the OpmInventarioPunto " + opmInventarioPuntoListOrphanCheckOpmInventarioPunto + " in its opmInventarioPuntoList field has a non-nullable nvReferencia field.");
+            }
             List<OpmDetalleLote> opmDetalleLoteListOrphanCheck = opmReferenciaProducto.getOpmDetalleLoteList();
             for (OpmDetalleLote opmDetalleLoteListOrphanCheckOpmDetalleLote : opmDetalleLoteListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
@@ -272,6 +420,20 @@ public class OpmReferenciaProductoJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This OpmReferenciaProducto (" + opmReferenciaProducto + ") cannot be destroyed since the OpmDetalleVenta " + opmDetalleVentaListOrphanCheckOpmDetalleVenta + " in its opmDetalleVentaList field has a non-nullable nvReferencia field.");
+            }
+            List<OpmInventario> opmInventarioListOrphanCheck = opmReferenciaProducto.getOpmInventarioList();
+            for (OpmInventario opmInventarioListOrphanCheckOpmInventario : opmInventarioListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmReferenciaProducto (" + opmReferenciaProducto + ") cannot be destroyed since the OpmInventario " + opmInventarioListOrphanCheckOpmInventario + " in its opmInventarioList field has a non-nullable nvReferencia field.");
+            }
+            List<OpmDetalleRemision> opmDetalleRemisionListOrphanCheck = opmReferenciaProducto.getOpmDetalleRemisionList();
+            for (OpmDetalleRemision opmDetalleRemisionListOrphanCheckOpmDetalleRemision : opmDetalleRemisionListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This OpmReferenciaProducto (" + opmReferenciaProducto + ") cannot be destroyed since the OpmDetalleRemision " + opmDetalleRemisionListOrphanCheckOpmDetalleRemision + " in its opmDetalleRemisionList field has a non-nullable nvReferencia field.");
             }
             List<OpmDetalleTraslado> opmDetalleTrasladoListOrphanCheck = opmReferenciaProducto.getOpmDetalleTrasladoList();
             for (OpmDetalleTraslado opmDetalleTrasladoListOrphanCheckOpmDetalleTraslado : opmDetalleTrasladoListOrphanCheck) {

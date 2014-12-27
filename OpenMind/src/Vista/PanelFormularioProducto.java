@@ -7,7 +7,7 @@ package Vista;
 
 import Modelo.OpmProducto;
 import Transversal.Util;
-import java.awt.event.KeyEvent;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,40 +20,101 @@ public class PanelFormularioProducto extends javax.swing.JPanel {
     /**
      * Creates new form PanelFormularioProducto
      */
+    public enum Vista {
+
+        Edicion, ConsultaFabrica, ConsultaPuntoVenta, ConsultaCliente
+    };
+
     public PanelFormularioProducto() {
         initComponents();
     }
 
     public OpmProducto getDatos() {
         OpmProducto producto = new OpmProducto();
-        producto.setNvNombre(txfNombre.getText());
-        producto.setNvDescripcion(txfDescripcion.getText());
-        producto.setNmCostoPp(Double.parseDouble(txfCosto.getText()));
-        producto.setNmValorPv(Double.parseDouble(txfVenta.getText()));
-        producto.setBtActivo(rbtActivo.isSelected());
+        if (!jtfCodigo.getText().isEmpty()) {
+            producto.setNmCodigo(Integer.parseInt(jtfCodigo.getText()));
+        }
+        producto.setNvNombre(jtfNombre.getText());
+        producto.setNvDescripcion(jtfDescripcion.getText());
+        producto.setNmCostoPp(Double.parseDouble(jtfCostoProduccion.getText()));
+        producto.setNmValorPv(Double.parseDouble(jtfCostoVentaPV.getText()));
+        producto.setNmValorPm(Double.parseDouble(jtfCostoPorMayor.getText()));
+        producto.setNmValorVs(Double.parseDouble(jtfCostoSugerido.getText()));
+
+        producto.setBtActivo(jrbActivo.isSelected());
 
         return producto;
     }
 
     public void setDatos(OpmProducto producto) {
-        txfCodigo.setText(producto.getNmCodigo().toString());
-        rbtActivo.setSelected(producto.getBtActivo());
-        txfNombre.setText(producto.getNvNombre());
-        txfDescripcion.setText(producto.getNvDescripcion());
-        txfCosto.setText(producto.getNmCostoPp()+ "");
-        txfVenta.setText(producto.getNmValorPv()+ "");
+        jtfCodigo.setText(producto.getNmCodigo().toString());
+        jrbActivo.setSelected(producto.getBtActivo());
+        jtfNombre.setText(producto.getNvNombre());
+        jtfDescripcion.setText(producto.getNvDescripcion());
+        jtfCostoProduccion.setText(producto.getNmCostoPp() + "");
+        jtfCostoVentaPV.setText(producto.getNmValorPm() + "");
+        jtfCostoPorMayor.setText(producto.getNmCostoPp() + "");
+        jtfCostoSugerido.setText(producto.getNmValorVs() + "");
     }
 
     public boolean validarCamposObligatorios() {
         List<String> campos = new ArrayList<>();
-        campos.add(txfNombre.getText());
-        campos.add(txfCosto.getText());
-        campos.add(txfVenta.getText());
+        campos.add(jtfNombre.getText());
+        campos.add(jtfCostoProduccion.getText());
+        campos.add(jtfCostoVentaPV.getText());
+        campos.add(jtfCostoPorMayor.getText());
+        campos.add(jtfCostoSugerido.getText());
         return Util.validarCamposObligatorios(campos);
     }
 
     public int getCodigo() {
-        return Integer.parseInt(txfCodigo.getText());
+        return Integer.parseInt(jtfCodigo.getText());
+    }
+
+    public void setVista(Vista v) {
+        switch (v) {
+            case Edicion:
+                break;
+            case ConsultaFabrica:
+                jrbActivo.setEnabled(false);
+                jtfNombre.setEditable(false);
+                jtfDescripcion.setEditable(false);
+                jtfCostoProduccion.setEditable(false);
+                jtfCostoVentaPV.setEditable(false);
+                jtfCostoPorMayor.setEditable(false);
+                jtfCostoSugerido.setEditable(false);
+                break;
+            case ConsultaPuntoVenta:
+                jrbActivo.setEnabled(false);
+                jtfNombre.setEditable(false);
+                jtfDescripcion.setEditable(false);
+                
+                jtfCostoProduccion.setEditable(false);
+                jlbCostroProduccion.setVisible(false);
+                jtfCostoProduccion.setVisible(false);
+                
+                jtfCostoVentaPV.setEditable(false);
+                jlbCostoVentaPV.setVisible(false);
+                jtfCostoVentaPV.setVisible(false);
+                
+                jtfCostoPorMayor.setEditable(false);
+                Point pcpm = jtfCostoPorMayor.getLocation();
+                jtfCostoPorMayor.setLocation(pcpm.x,pcpm.y-38);
+                Point lpcpm = jlbCostoPorMayor.getLocation();
+                jlbCostoPorMayor.setLocation(lpcpm.x,lpcpm.y-38);
+                
+                jtfCostoSugerido.setEditable(false);
+                Point pcs = jtfCostoSugerido.getLocation();
+                jtfCostoSugerido.setLocation(pcs.x,pcs.y-38);
+                Point lpcs = jlbCostoSugerido.getLocation();
+                jlbCostoSugerido.setLocation(lpcs.x,lpcs.y-38);
+                repaint();
+                break;
+            case ConsultaCliente:
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -66,77 +127,96 @@ public class PanelFormularioProducto extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txfCodigo = new javax.swing.JTextField();
-        rbtActivo = new javax.swing.JRadioButton();
+        jrbActivo = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
-        txfNombre = new javax.swing.JTextField();
-        txfDescripcion = new javax.swing.JTextField();
+        jtfNombre = new javax.swing.JTextField();
+        jtfDescripcion = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txfVenta = new javax.swing.JTextField();
-        txfCosto = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        jlbCostoVentaPV = new javax.swing.JLabel();
+        jlbCostroProduccion = new javax.swing.JLabel();
+        jlbCostoPorMayor = new javax.swing.JLabel();
+        jlbCostoSugerido = new javax.swing.JLabel();
+        jtfCodigo = new javax.swing.JFormattedTextField();
+        jtfCostoProduccion = new javax.swing.JTextField();
+        jtfCostoVentaPV = new javax.swing.JTextField();
+        jtfCostoPorMayor = new javax.swing.JTextField();
+        jtfCostoSugerido = new javax.swing.JTextField();
 
         jLabel1.setText("Codigo");
 
-        txfCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txfCodigoKeyTyped(evt);
-            }
-        });
-
-        rbtActivo.setSelected(true);
-        rbtActivo.setText("Activo");
+        jrbActivo.setSelected(true);
+        jrbActivo.setText("Activo");
 
         jLabel2.setText("Nombre(*)");
 
         jLabel3.setText("Descripcion");
 
-        jLabel5.setText("Costo Venta(*)");
+        jlbCostoVentaPV.setText("Costo Venta(*)");
 
-        txfVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+        jlbCostroProduccion.setText("Costo Produccion(*)");
+
+        jlbCostoPorMayor.setText("Costo Por Mayor(*)");
+
+        jlbCostoSugerido.setText("Costo Sugerido(*)");
+
+        jtfCodigo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
+        jtfCostoProduccion.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txfVentaKeyTyped(evt);
+                jtfCostoProduccionKeyTyped(evt);
             }
         });
 
-        txfCosto.addKeyListener(new java.awt.event.KeyAdapter() {
+        jtfCostoVentaPV.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txfCostoKeyTyped(evt);
+                jtfCostoVentaPVKeyTyped(evt);
             }
         });
 
-        jLabel4.setText("Costo Produccion(*)");
+        jtfCostoPorMayor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfCostoPorMayorKeyTyped(evt);
+            }
+        });
+
+        jtfCostoSugerido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfCostoSugeridoKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jLabel2))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(46, 46, 46)
+                            .addComponent(jLabel2))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jlbCostroProduccion, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jlbCostoPorMayor))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txfNombre)
-                    .addComponent(txfCodigo)
-                    .addComponent(txfCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jtfCostoPorMayor)
+                    .addComponent(jtfCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                    .addComponent(jtfNombre)
+                    .addComponent(jtfCostoProduccion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(rbtActivo)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txfDescripcion)
-                    .addComponent(txfVenta))
-                .addContainerGap())
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jlbCostoSugerido, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jlbCostoVentaPV, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jtfCostoVentaPV)
+                    .addComponent(jrbActivo)
+                    .addComponent(jtfDescripcion)
+                    .addComponent(jtfCostoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,57 +224,74 @@ public class PanelFormularioProducto extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rbtActivo))
+                    .addComponent(jrbActivo)
+                    .addComponent(jtfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(txfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txfCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(txfVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jlbCostroProduccion)
+                    .addComponent(jlbCostoVentaPV)
+                    .addComponent(jtfCostoProduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtfCostoVentaPV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlbCostoPorMayor)
+                    .addComponent(jlbCostoSugerido)
+                    .addComponent(jtfCostoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtfCostoPorMayor))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txfCostoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfCostoKeyTyped
+    private void jtfCostoProduccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCostoProduccionKeyTyped
         // TODO add your handling code here:
-        if (!Util.validarCampoNumerico(evt, true, txfCosto.getText())) {
+        if (!Util.validarCampoNumerico(evt, true, jtfCostoProduccion.getText())) {
             evt.consume();
         }
-    }//GEN-LAST:event_txfCostoKeyTyped
+    }//GEN-LAST:event_jtfCostoProduccionKeyTyped
 
-    private void txfVentaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfVentaKeyTyped
+    private void jtfCostoVentaPVKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCostoVentaPVKeyTyped
         // TODO add your handling code here:
-        if (!Util.validarCampoNumerico(evt, true, txfVenta.getText())) {
+        if (!Util.validarCampoNumerico(evt, true, jtfCostoVentaPV.getText())) {
             evt.consume();
         }
-    }//GEN-LAST:event_txfVentaKeyTyped
+    }//GEN-LAST:event_jtfCostoVentaPVKeyTyped
 
-    private void txfCodigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfCodigoKeyTyped
+    private void jtfCostoPorMayorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCostoPorMayorKeyTyped
         // TODO add your handling code here:
-        if (!Util.validarCampoNumerico(evt, false, txfCodigo.getText())) {
+        if (!Util.validarCampoNumerico(evt, true, jtfCostoPorMayor.getText())) {
             evt.consume();
         }
-    }//GEN-LAST:event_txfCodigoKeyTyped
+    }//GEN-LAST:event_jtfCostoPorMayorKeyTyped
+
+    private void jtfCostoSugeridoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCostoSugeridoKeyTyped
+        // TODO add your handling code here:
+        if (!Util.validarCampoNumerico(evt, true, jtfCostoSugerido.getText())) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtfCostoSugeridoKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JRadioButton rbtActivo;
-    private javax.swing.JTextField txfCodigo;
-    private javax.swing.JTextField txfCosto;
-    private javax.swing.JTextField txfDescripcion;
-    private javax.swing.JTextField txfNombre;
-    private javax.swing.JTextField txfVenta;
+    private javax.swing.JLabel jlbCostoPorMayor;
+    private javax.swing.JLabel jlbCostoSugerido;
+    private javax.swing.JLabel jlbCostoVentaPV;
+    private javax.swing.JLabel jlbCostroProduccion;
+    private javax.swing.JRadioButton jrbActivo;
+    private javax.swing.JFormattedTextField jtfCodigo;
+    private javax.swing.JTextField jtfCostoPorMayor;
+    private javax.swing.JTextField jtfCostoProduccion;
+    private javax.swing.JTextField jtfCostoSugerido;
+    private javax.swing.JTextField jtfCostoVentaPV;
+    private javax.swing.JTextField jtfDescripcion;
+    private javax.swing.JTextField jtfNombre;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,13 +8,14 @@ package Controlador;
 import Controlador.exceptions.NonexistentEntityException;
 import Modelo.OpmInventario;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Modelo.OpmReferenciaProducto;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -36,7 +37,16 @@ public class OpmInventarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmReferenciaProducto nvReferencia = opmInventario.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia = em.getReference(nvReferencia.getClass(), nvReferencia.getNvCodigo());
+                opmInventario.setNvReferencia(nvReferencia);
+            }
             em.persist(opmInventario);
+            if (nvReferencia != null) {
+                nvReferencia.getOpmInventarioList().add(opmInventario);
+                nvReferencia = em.merge(nvReferencia);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -50,7 +60,22 @@ public class OpmInventarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            OpmInventario persistentOpmInventario = em.find(OpmInventario.class, opmInventario.getNmCodigo());
+            OpmReferenciaProducto nvReferenciaOld = persistentOpmInventario.getNvReferencia();
+            OpmReferenciaProducto nvReferenciaNew = opmInventario.getNvReferencia();
+            if (nvReferenciaNew != null) {
+                nvReferenciaNew = em.getReference(nvReferenciaNew.getClass(), nvReferenciaNew.getNvCodigo());
+                opmInventario.setNvReferencia(nvReferenciaNew);
+            }
             opmInventario = em.merge(opmInventario);
+            if (nvReferenciaOld != null && !nvReferenciaOld.equals(nvReferenciaNew)) {
+                nvReferenciaOld.getOpmInventarioList().remove(opmInventario);
+                nvReferenciaOld = em.merge(nvReferenciaOld);
+            }
+            if (nvReferenciaNew != null && !nvReferenciaNew.equals(nvReferenciaOld)) {
+                nvReferenciaNew.getOpmInventarioList().add(opmInventario);
+                nvReferenciaNew = em.merge(nvReferenciaNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -79,6 +104,11 @@ public class OpmInventarioJpaController implements Serializable {
                 opmInventario.getNmCodigo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The opmInventario with id " + id + " no longer exists.", enfe);
+            }
+            OpmReferenciaProducto nvReferencia = opmInventario.getNvReferencia();
+            if (nvReferencia != null) {
+                nvReferencia.getOpmInventarioList().remove(opmInventario);
+                nvReferencia = em.merge(nvReferencia);
             }
             em.remove(opmInventario);
             em.getTransaction().commit();
